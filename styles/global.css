@@ -39,6 +39,7 @@ ul.footer {
   padding-top: 1em;
 }
 li.footer {
+  list-style: none;
   font-size: 0.8em;
   padding-top: 0.25em;
   padding-bottom: 0.25em;

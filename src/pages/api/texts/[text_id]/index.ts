@@ -16,8 +16,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'GET': // get text
       const selectValues =
         req.query.brf !== undefined
-          ? escape`texts.id, title, users.photo_id as author_photo_id, texts.photo_id as photo_id, substring(abstract,128) as abstract, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, updated_at, is_released, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5`
-          : escape`texts.id, title, users.photo_id as author_photo_id,texts.photo_id as photo_id, abstract, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, created_at, updated_at, number_of_updated, category1, category2, chapter_order, learning_contents, learning_requirements, is_released, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5`;
+          ? escape`texts.id, title, users.photo_id as author_photo_id, texts.photo_id as photo_id, abstract, explanation, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, updated_at, is_released, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5`
+          : escape`texts.id, title, users.photo_id as author_photo_id,texts.photo_id as photo_id, abstract, explanation, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, created_at, updated_at, number_of_updated, category1, category2, chapter_order, learning_contents, learning_requirements, is_released, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5`;
 
       const selectQuery = escape`select `.append(selectValues).append(escape`
         from texts
@@ -90,6 +90,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         } else {
           const title = req.body.title;
           const abstract = req.body.abstract;
+          const explanation = req.body.explanation;
           const price = req.body.price;
           const category1 = req.body.category1;
           const category2 = req.body.category2;
@@ -105,6 +106,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           set
           title = ${title},
           abstract = ${abstract},
+          explanation = ${explanation},
           price = ${price},
           category1 = ${category1},
           category2 = ${category2},

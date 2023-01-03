@@ -25,6 +25,7 @@ create table texts(
   title varchar(255),
   is_released boolean not null,
   abstract mediumtext,
+  explanation mediumtext,
   photo_id varchar(8),
   price smallint,
   chapter_order varchar(1024),

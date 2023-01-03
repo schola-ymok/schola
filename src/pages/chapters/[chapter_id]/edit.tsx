@@ -183,52 +183,5 @@ const EditChapter: NextPage = () => {
   );
 };
 
-/*
-          <ContentInput
-            content={content}
-            handleContentChange={handleContentChange}
-            setCursorPosition={setCursorPosition}
-            inputRef={inputRef}
-          />
-          */
-const TitleInput = ({ title, handleTitleChange }) => (
-  <Box
-    sx={{
-      p: 1,
-      border: '2px solid ' + Consts.COLOR.Grey,
-      '&:hover': {
-        border: '2px solid ' + Consts.COLOR.Primary,
-      },
-    }}
-  >
-    <InputBase
-      placeholder='タイトル'
-      value={title}
-      sx={{ fontSize: '1.3em', fontWeight: 'bold' }}
-      variant='outlined'
-      fullWidth
-      onChange={handleTitleChange}
-    />
-  </Box>
-);
-
-const ContentInput = ({ content, handleContentChange, inputRef, setCursorPosition }) => (
-  <InputBase
-    placeholder='マークダウンで入力'
-    value={content}
-    onChange={handleContentChange}
-    variant='outlined'
-    fullWidth
-    multiline
-    minRows={10}
-    maxRows={25}
-    sx={{ border: '2px solid pink' }}
-    onSelect={() => {
-      setCursorPosition(inputRef.current.selectionStart);
-    }}
-    inputRef={inputRef}
-  />
-);
-
 EditChapter.getLayout = (page) => <EditChapterLayout>{page}</EditChapterLayout>;
 export default EditChapter;

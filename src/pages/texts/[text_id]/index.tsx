@@ -425,7 +425,7 @@ const Text: NextPage = () => {
 
               <Box sx={{ pl: 1, py: 1 }}>
                 <ReadMoreText height='220' fontSize='0.9em'>
-                  {data.abstract}
+                  {data.explanation}
                 </ReadMoreText>
               </Box>
             </Box>
@@ -796,7 +796,7 @@ const Text: NextPage = () => {
           <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>解説</Box>
 
           <Box sx={{ pl: 1, py: { xs: 0.2, sm: 1 } }}>
-            <ReadMoreText height='220'>{data.abstract}</ReadMoreText>
+            <ReadMoreText height='220'>{data.explanation}</ReadMoreText>
           </Box>
         </Box>
 

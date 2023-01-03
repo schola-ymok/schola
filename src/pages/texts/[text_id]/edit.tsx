@@ -29,6 +29,7 @@ const EditText = () => {
   const textId = router.query.text_id;
   const [price, setPrice] = useState(100);
   const [abstract, setAbstract] = useState('');
+  const [explanation, setExplanation] = useState('');
   const [title, setTitle] = useState('');
   const [category1, setCategory1] = useState('nul');
   const [category2, setCategory2] = useState('nul');
@@ -67,6 +68,10 @@ const EditText = () => {
     setAbstract(e.target.value);
   };
 
+  const onExplanationChange = (e) => {
+    setExplanation(e.target.value);
+  };
+
   const onTitleChange = (e) => {
     setTitle(e.target.value);
   };
@@ -102,6 +107,7 @@ const EditText = () => {
     if (data) {
       if (data.price) setPrice(data.price);
       if (data.abstract) setAbstract(data.abstract);
+      if (data.explanation) setExplanation(data.explanation);
       setTitle(data.title);
       if (data.category1) setCategory1(data.category1);
       if (data.category2) setCategory2(data.category2);
@@ -118,6 +124,7 @@ const EditText = () => {
       textId,
       title,
       abstract,
+      explanation,
       category1,
       category2,
       price,
@@ -241,12 +248,37 @@ const EditText = () => {
             }}
           >
             <InputBase
-              placeholder='概要'
+              placeholder='テキストの概要'
               value={abstract}
               fullWidth
-              rows={7}
+              rows={4}
               multiline
               onChange={onAbstractChange}
+            />
+          </Box>
+        </Box>
+
+        {/* explanation */}
+        <Box sx={{ mt: { xs: 1, md: 2 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
+          <Box
+            sx={{
+              p: 1,
+              mx: 'auto',
+              width: '100%',
+              maxWidth: 800,
+              border: '2px solid ' + Consts.COLOR.Grey,
+              '&:hover': {
+                border: '2px solid ' + Consts.COLOR.Primary,
+              },
+            }}
+          >
+            <InputBase
+              placeholder='テキストの詳細な解説'
+              value={explanation}
+              fullWidth
+              rows={8}
+              multiline
+              onChange={onExplanationChange}
             />
           </Box>
         </Box>
@@ -439,7 +471,7 @@ const EditText = () => {
               <ReactTags
                 placeholder='学習内容を８個まで入力'
                 tags={learningContents}
-                autofocus={true}
+                autofocus={false}
                 allowDragDrop={false}
                 handleAddition={(tag) => setLearningContents([...learningContents, tag])}
                 handleDelete={(index) =>
@@ -479,7 +511,7 @@ const EditText = () => {
               <ReactTags
                 placeholder='学習条件を８個まで入力'
                 tags={learningRequirements}
-                autofocus={true}
+                autofocus={false}
                 allowDragDrop={false}
                 handleAddition={(tag) => setLearningRequirements([...learningRequirements, tag])}
                 handleDelete={(index) =>

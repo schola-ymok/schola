@@ -2,6 +2,7 @@ export const updateText = async (
   id,
   title,
   abstract,
+  explanation,
   category1,
   category2,
   price,
@@ -13,6 +14,7 @@ export const updateText = async (
     const res = await authAxios.put('/api/texts/' + id, {
       title: title,
       abstract: abstract,
+      explanation: explanation,
       category1: category1,
       category2: category2,
       price: price,
@@ -20,7 +22,6 @@ export const updateText = async (
       learning_requirements: learningRequirements,
     });
 
-    console.log(res.data);
     if (res.data.status == 'ok') {
       return { textId: res.data.text_id };
     } else {

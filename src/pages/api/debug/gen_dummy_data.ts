@@ -11,7 +11,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const USER_NUM = 50;
-  const REP_AUTHOR_ID = 'fewjZcxk';
+  const REP_AUTHOR_ID = 'ZUjBKTRU';
 
   const wikiPath = path.resolve('./src/pages/api/debug/', 'wiki.json');
   const wikiJson = JSON.parse(fs.readFileSync(wikiPath, 'utf8'));
@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   var accountName, displayName, userId, firebaseId;
   for (var i = 0; i < USER_NUM; i++) {
     accountName = 'account-' + i;
-    displayName = 'display-' + i;
+    displayName = 'ダミーユーザ ' + i;
     userId = 'uid-' + ('0000' + i).slice(-4);
     firebaseId = genid() + genid() + genid() + genid() + genid() + genid();
 
@@ -110,7 +110,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     let avgRate = 0;
 
     for (var i = 0; i < USER_NUM; i++) {
-      if (Math.random() > 0.4) {
+      if (Math.random() > 0.7) {
         const uid = 'uid-' + ('0000' + i).slice(-4);
         const { error: error3 } = await dbQuery(escape`
             insert into purchases (
@@ -124,7 +124,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         numOfSales++;
         if (error3) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
 
-        if (Math.random() > 0.2) {
+        if (Math.random() > 0.5) {
           const rate = Math.floor(Math.random() * 5) + 1;
           const title = 'review_title_' + Math.floor(Math.random() * 500);
           const comment = 'review_comment_' + Math.floor(Math.random() * 500);

@@ -8,11 +8,11 @@ import Consts from 'utils/Consts';
 
 const SearchBox = ({ fullWidth }) => {
   const router = useRouter();
-  const query = router.query.keyword === undefined ? '' : router.query.keyword;
 
   const [searchQuery, setSearchQuery] = useState('');
   const inputRef = useRef();
 
+  // to clear search box text
   const handleChangeRoute = () => {
     if (inputRef.current) {
       inputRef.current.value = '';
@@ -27,7 +27,7 @@ const SearchBox = ({ fullWidth }) => {
   }, []);
 
   const handleSearch = () => {
-    router.push(`search?keyword=${searchQuery}`);
+    router.push(`/search?keyword=${searchQuery}`);
   };
 
   const width = fullWidth ? '100%' : '260px';

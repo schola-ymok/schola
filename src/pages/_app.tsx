@@ -1,19 +1,23 @@
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
-import { AuthProvider } from 'components/auth/AuthContext';
-import createEmotionCache from 'components/mui/createEmotionCache';
-import theme from 'components/mui/theme';
 import { NextPage } from 'next';
 import { AppProps } from 'next/app';
+import NextNprogress from 'nextjs-progressbar';
 import PropTypes from 'prop-types';
 import { ReactElement, ReactNode } from 'react';
 
+import { AuthProvider } from 'components/auth/AuthContext';
+import createEmotionCache from 'components/mui/createEmotionCache';
+import theme from 'components/mui/theme';
+
 import 'libs/firebase/firebase';
 import { StateProvider } from 'states/store';
+
 import { GlobalStyles } from '@mui/material';
 
 import '../../styles/global.css';
+import Consts from 'utils/Consts';
 
 type NextPageWithLayout = NextPage & {
   gtLayout?: (page: ReactElement) => ReactNode;
@@ -40,7 +44,15 @@ function MyApp(props: AppPropsWithLayout) {
         <CssBaseline />
         <GlobalStyles />
         <StateProvider>
-          <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
+          <AuthProvider>
+            <NextNprogress
+              color={Consts.COLOR.Primary}
+              height={2}
+              showOnShallow={true}
+              options={{ showSpinner: false }}
+            />
+            {getLayout(<Component {...pageProps} />)}
+          </AuthProvider>
         </StateProvider>
       </ThemeProvider>
     </CacheProvider>

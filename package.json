@@ -22,6 +22,7 @@
     "github-slugger": "^2.0.0",
     "hast-util-to-string": "^2.0.0",
     "next": "^12.1.7-canary.52",
+    "nextjs-progressbar": "^0.0.16",
     "react": "^17.0.2",
     "react-dom": "17.0.2",
     "react-easy-crop": "^4.6.2",

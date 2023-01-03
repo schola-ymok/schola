@@ -35,21 +35,14 @@ import NotificationIcon from './headers/NotificationIcon';
 import SearchBox from './headers/SearchBox';
 
 const AvatarButton = ({ photoId, onClick, size }) => {
-  if (photoId) {
-    return (
-      <Avatar
-        onClick={onClick}
-        sx={{ width: size, height: size, cursor: 'pointer' }}
-        src={Consts.IMAGE_STORE_URL + photoId + '.png'}
-      />
-    );
-  } else {
-    return (
-      <Avatar onClick={onClick} sx={{ width: size, height: size, cursor: 'pointer' }}>
-        aa
-      </Avatar>
-    );
-  }
-};
+  const imageUrl = photoId ? Consts.IMAGE_STORE_URL + photoId + '.png' : '/avatar-default.svg';
 
+  return (
+    <Avatar
+      onClick={onClick}
+      sx={{ width: size, height: size, cursor: 'pointer' }}
+      src={imageUrl}
+    />
+  );
+};
 export default AvatarButton;

@@ -1,10 +1,13 @@
+import { Box } from '@mui/material';
 import Link from 'next/link';
 
 const Logo = () => {
   return (
     <Link href='/'>
-      <a style={{ display: 'flex', alignItems: 'center' }}>
-        <img src='/logo.png' />
+      <a>
+        <Box>
+          <img src='/logo.svg' width='110px' height='41px' />
+        </Box>
       </a>
     </Link>
   );

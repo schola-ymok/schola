@@ -1,19 +1,15 @@
-
-import {
-    Box,
-    Button
-} from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import useSWR from 'swr';
 
 import { getBriefText } from 'api/getBriefText';
 import { getReviews } from 'api/getReviews';
-import { AuthContext } from 'components/auth/AuthContext';
-import Layout from 'components/layouts/Layout';
 import MiniText from 'components/MiniText';
 import RatingReportPanel from 'components/RatingReportPanel';
 import ReviewList from 'components/ReviewList';
+import { AuthContext } from 'components/auth/AuthContext';
+import Layout from 'components/layouts/Layout';
 import Consts from 'utils/Consts';
 
 import type { NextPage } from 'next';
@@ -81,7 +77,7 @@ const Review: NextPage = () => {
 
   const imageUrl = dataText.photo_id
     ? Consts.IMAGE_STORE_URL + dataText.photo_id + '.png'
-    : '/cover_default.png';
+    : '/cover-default.svg';
 
   return (
     <>

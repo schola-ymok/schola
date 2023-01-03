@@ -1,8 +1,4 @@
-
-import {
-    Box,
-    Button, Divider, InputBase, MenuItem, Select, Slider
-} from '@mui/material';
+import { Box, Button, Divider, InputBase, MenuItem, Select, Slider } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
@@ -16,10 +12,10 @@ import { getMyText } from 'api/getMyText';
 import { releaseText } from 'api/releaseText';
 import { setTextCoverPhotoId } from 'api/setTextCoverPhotoId';
 import { updateText } from 'api/updateText';
-import { AuthContext } from 'components/auth/AuthContext';
 import ChapterListMenuButton from 'components/ChaptarListMenuButton';
-import EditTextHeader from 'components/headers/EditTextHeader';
 import ImageCropDialog from 'components/ImageCropDialog';
+import { AuthContext } from 'components/auth/AuthContext';
+import EditTextHeader from 'components/headers/EditTextHeader';
 import EditTextLayout from 'components/layouts/EditTextLayout';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
@@ -140,7 +136,7 @@ const EditText = () => {
     const { error } = await releaseText(textId, release, authAxios);
   }
 
-  const [imageUrl, setImageUrl] = useState('/cover_default.png');
+  const [imageUrl, setImageUrl] = useState('/cover-default.svg');
 
   if (error) console.log(error);
   if (!data) return <h1>loading..</h1>;

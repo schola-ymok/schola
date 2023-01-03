@@ -12,8 +12,6 @@ namespace Consts {
     process.env.NEXT_PUBLIC_FIREBASE_STORAGEBUCKET +
     '/user_upload/';
 
-  export const AVATAR_IMAGE = '/avatar.png';
-
   export const COLOR = {
     Primary: '#008080',
     PrimaryDark: '#006060',

@@ -46,6 +46,7 @@ const SearchBox = ({ fullWidth }) => {
           ml: 1,
           flex: 1,
           width: 'calc(100% - 50px)',
+          height: '30px',
         }}
         id='query'
         inputRef={inputRef}

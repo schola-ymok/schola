@@ -34,7 +34,7 @@ const Footer = () => {
             sx={{ pl: { xs: 0, sm: 2 }, pt: 3 }}
             textAlign={{ xs: 'center', sm: 'left' }}
           >
-            <img src='/logo_s.png' />
+            <img src='/logo-s.svg' width='95px' />
             <Box sx={{ typography: 'subtitle2', color: '#aaaaaa', mt: 1 }}>
               知のプラットフォーム
             </Box>

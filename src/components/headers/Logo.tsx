@@ -5,9 +5,16 @@ const Logo = () => {
   return (
     <Link href='/'>
       <a>
-        <Box>
-          <img src='/logo.svg' width='110px' height='41px' />
-        </Box>
+        <Box
+          component='img'
+          display='flex'
+          sx={{
+            my: 'auto',
+            width: 100,
+            height: 25,
+          }}
+          src={'/logo-s.svg'}
+        />
       </a>
     </Link>
   );

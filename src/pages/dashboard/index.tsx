@@ -1,44 +1,17 @@
 import {
-  Card,
-  Box,
-  Pagination,
-  Checkbox,
-  Grid,
-  Snackbar,
-  CardContent,
-  Divider,
-  Link,
-  Button,
+    Box,
+    Pagination
 } from '@mui/material';
-import Container from '@mui/material/Container';
-import Stack from '@mui/material/Stack';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import TextField from '@mui/material/TextField';
-import { getAuth, sendEmailVerification } from 'firebase/auth';
-import error from 'next/error';
-import router, { useRouter } from 'next/router';
-import { useState, useContext, useEffect } from 'react';
-import * as React from 'react';
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 
 import { deleteText } from 'api/deleteText';
-import { getBriefUser } from 'api/getBriefUser';
-import { getMyAccount } from 'api/getMyAccount';
 import { getMyTextList } from 'api/getMyTextList';
-import { getUser } from 'api/getUser';
-import { getUserTexts } from 'api/getUserTexts';
-import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
-import { setNotifyOnReview } from 'api/setNotifyOnReview';
-import { updateProfile } from 'api/updateProfile';
-import DashboardTextListItem from 'components/DashboardTextListItem';
-import TextCard from 'components/TextCard';
 import { AuthContext } from 'components/auth/AuthContext';
+import DashboardTextListItem from 'components/DashboardTextListItem';
 import Layout from 'components/layouts/Layout';
 import DashboardMenuLeft from 'components/sidemenu/DashboardMenuLeft';
-import texts from 'pages/api/texts';
-import UserTexts from 'pages/users/[user_id]/texts';
-import { AppContext } from 'states/store';
 import { pagenation } from 'utils/pagenation';
 
 const DashboardTexts = () => {

@@ -1,34 +1,18 @@
 import {
-  Card,
-  Box,
-  Button,
-  Checkbox,
-  Snackbar,
-  CardContent,
-  Stack,
-  Link,
-  Grid,
-  Rating,
-  TextField,
-  Typography,
-  InputBase,
+    Box,
+    Button, InputBase, Rating
 } from '@mui/material';
-import error from 'next/error';
-import router, { useRouter } from 'next/router';
-import { useState, useContext, useEffect, useLayoutEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useContext, useLayoutEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import { getBriefText } from 'api/getBriefText';
 import { getMyReview } from 'api/getMyReview';
 import { upsertReview } from 'api/upsertReview';
-import HomeTextList from 'components/HomeTextList';
-import MiniText from 'components/MiniText';
-import TextCard from 'components/TextCard';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
-import RootCategory from 'components/sidemenu/RootCategory';
+import MiniText from 'components/MiniText';
 import Consts from 'utils/Consts';
-import { pagenation } from 'utils/pagenation';
 
 import type { NextPage } from 'next';
 

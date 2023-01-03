@@ -5,26 +5,11 @@ import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import UpdateIcon from '@mui/icons-material/Update';
 import {
-  Card,
-  Button,
-  Checkbox,
-  Snackbar,
-  CardContent,
-  Link,
-  Grid,
-  Rating,
-  Typography,
-  Divider,
-  Avatar,
-  useMediaQuery,
-  Stack,
-  Box,
+    Box, Grid,
+    Rating, Stack, useMediaQuery
 } from '@mui/material';
-import { fontWeight } from '@mui/system';
-import { ref } from 'firebase/storage';
-import error from 'next/error';
-import router, { useRouter } from 'next/router';
-import { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import { useRouter } from 'next/router';
+import { useCallback, useContext, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 
 import { getChapterList } from 'api/getChapterList';
@@ -34,24 +19,16 @@ import { getText } from 'api/getText';
 import { getUser } from 'api/getUser';
 import { getUserTexts } from 'api/getUserTexts';
 import { purchaseText } from 'api/purchaseText';
+import { AuthContext } from 'components/auth/AuthContext';
 import AuthorTexts from 'components/AuthorTexts';
 import AvatarButton from 'components/AvatarButton';
-import HomeTextList from 'components/HomeTextList';
+import ViewTextAbstractLayout from 'components/layouts/ViewTextAbstractLayout';
 import RatingReportPanel from 'components/RatingReportPanel';
 import ReadMoreText from 'components/ReadMoreText';
 import Review from 'components/ReviewItem';
 import ShowMore from 'components/ShowMore';
-import TextCard from 'components/TextCard';
-import TextListItem from 'components/TextListItem';
-import { AuthContext } from 'components/auth/AuthContext';
-import Layout from 'components/layouts/Layout';
-import ViewTextAbstractLayout from 'components/layouts/ViewTextAbstractLayout';
-import RootCategory from 'components/sidemenu/RootCategory';
-import texts from 'pages/api/texts';
 import Consts from 'utils/Consts';
-import { pagenation } from 'utils/pagenation';
 
-import reviews from './reviews';
 
 import type { NextPage } from 'next';
 

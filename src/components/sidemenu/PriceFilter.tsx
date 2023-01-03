@@ -1,6 +1,6 @@
-import { Checkbox, FormControlLabel, FormControl, FormLabel, Box, Rating } from '@mui/material';
+import { Box, Checkbox, FormControl, FormControlLabel } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const PriceFilter = ({ onChange }) => {
   const router = useRouter();

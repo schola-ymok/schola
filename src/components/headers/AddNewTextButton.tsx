@@ -1,9 +1,5 @@
-import { Box, IconButton, Button, Dialog, DialogActions, DialogContent } from '@mui/material';
-import InputBase from '@mui/material/InputBase';
-import { FirebaseSignInForm } from 'components/auth/FirebaseSignInForm';
+import { Button } from '@mui/material';
 import router from 'next/router';
-import { useState, useContext } from 'react';
-import Consts from 'utils/Consts';
 
 const AddNewTextButton = () => {
   const handleNewText = () => {

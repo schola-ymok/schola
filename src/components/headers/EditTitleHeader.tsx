@@ -1,43 +1,13 @@
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import SearchIcon from '@mui/icons-material/Search';
 import {
-  AppBar,
-  Typography,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  Button,
-  Toolbar,
-  IconButton,
-  Menu,
-  MenuItem,
-  Stack,
-  styled,
-  alpha,
-  TextField,
-  Avatar,
-  useMediaQuery,
-  Divider,
-  Box,
+    Box
 } from '@mui/material';
-import InputBase from '@mui/material/InputBase';
-import { getAuth, signOut } from 'firebase/auth';
-import Link from 'next/link';
-import router from 'next/router';
-import { useState, useContext } from 'react';
+import { useContext } from 'react';
 
-import { FirebaseSignInForm } from 'components/auth/FirebaseSignInForm';
 import { AppContext } from 'states/store';
-import Consts from 'utils/Consts';
 
-import AddNewTextButton from './AddNewTextButton';
-import AvatarIcon from './HeaderAvatarButton';
 import BackButton from './BackButton';
+import AvatarIcon from './HeaderAvatarButton';
 import LoginButton from './LoginButton';
-import Logo from './Logo';
-import NotificationIcon from './NotificationIcon';
-import SearchBox from './SearchBox';
 
 const EditTitleHeader = () => {
   const { state, dispatch } = useContext(AppContext);

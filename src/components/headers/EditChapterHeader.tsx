@@ -1,45 +1,12 @@
 import {
-  AppBar,
-  Typography,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  Button,
-  Toolbar,
-  IconButton,
-  Menu,
-  MenuItem,
-  Stack,
-  styled,
-  alpha,
-  TextField,
-  Avatar,
-  useMediaQuery,
-  Divider,
-  Box,
-  Switch,
-  ToggleButton,
-  ToggleButtonGroup,
+    Box, Button, useMediaQuery
 } from '@mui/material';
 import InputBase from '@mui/material/InputBase';
-import { getAuth, signOut } from 'firebase/auth';
-import Link from 'next/link';
-import router from 'next/router';
-import { useState, useContext } from 'react';
+import { useContext, useState } from 'react';
 
-import { FirebaseSignInForm } from 'components/auth/FirebaseSignInForm';
 import { AppContext } from 'states/store';
-import Consts from 'utils/Consts';
 
-import AddNewTextButton from './AddNewTextButton';
 import BackButton from './BackButton';
-import EditorButtonImage from './EditorButtonImage';
-import EditorButtonList from './EditorButtonList';
-import AvatarIcon from './HeaderAvatarButton';
-import LoginButton from './LoginButton';
-import Logo from './Logo';
-import NotificationIcon from './NotificationIcon';
-import SearchBox from './SearchBox';
 
 const EditChapterHeader = ({ handleSaveClick, handleTitleChange, title }) => {
   const { state, dispatch } = useContext(AppContext);

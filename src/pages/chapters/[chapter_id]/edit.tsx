@@ -1,59 +1,27 @@
 import {
-  Card,
-  Box,
-  Button,
-  Checkbox,
-  Snackbar,
-  CardContent,
-  Link,
-  Slider,
-  IconButton,
-  Grid,
-  TextField,
-  Divider,
-  Select,
-  MenuItem,
-  Stack,
-  Rating,
-  Typography,
-  InputBase,
-  useMediaQuery,
-  AppBar,
-  Fab,
+    Box, Fab, IconButton, InputBase,
+    useMediaQuery
 } from '@mui/material';
 import 'katex/dist/katex.min.css';
 
 import InsertPhotoIcon from '@mui/icons-material/InsertPhotoOutlined';
-import AddIcon from '@mui/icons-material/Add';
-import Drawer from '@mui/material/Drawer';
 import { ref, uploadBytes } from 'firebase/storage';
-import router, { useRouter } from 'next/router';
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useRouter } from 'next/router';
+import { useContext, useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { ReactSortable } from 'react-sortablejs';
 import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import useSWR, { useSWRConfig } from 'swr';
 
-import { createNewChapter } from 'api/createNewChapter';
 import { getChapter } from 'api/getChapter';
-import { getChapterList } from 'api/getChapterList';
-import { getMyText } from 'api/getMyText';
-import { releaseText } from 'api/releaseText';
 import { updateChapter } from 'api/updateChapter';
-import { updateText } from 'api/updateText';
-import HomeTextList from 'components/HomeTextList';
-import TextCard from 'components/TextCard';
 import { AuthContext } from 'components/auth/AuthContext';
 import EditChapterHeader from 'components/headers/EditChapterHeader';
 import EditChapterLayout from 'components/layouts/EditChapterLayout';
-import RootCategory from 'components/sidemenu/RootCategory';
 import { storage } from 'libs/firebase/firebase';
-import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
-import { pagenation } from 'utils/pagenation';
 
 import type { NextPage } from 'next';
 

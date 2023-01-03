@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import Link from 'next/link';
-import router, { useRouter } from 'next/router';
+import router from 'next/router';
 
 const BackButton = () => {
   return (

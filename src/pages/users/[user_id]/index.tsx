@@ -1,47 +1,20 @@
-import { More } from '@mui/icons-material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkIcon from '@mui/icons-material/Link';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import {
-  Card,
-  Button,
-  Checkbox,
-  Grid,
-  Snackbar,
-  CardContent,
-  Link,
-  useMediaQuery,
-  Box,
+    Box, useMediaQuery
 } from '@mui/material';
-import Container from '@mui/material/Container';
-import Stack from '@mui/material/Stack';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import TextField from '@mui/material/TextField';
-import { display } from '@mui/system';
-import { getAuth, sendEmailVerification } from 'firebase/auth';
-import router, { useRouter } from 'next/router';
-import { useState, useContext, useEffect } from 'react';
-import * as React from 'react';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-import { getMyAccount } from 'api/getMyAccount';
 import { getUser } from 'api/getUser';
 import { getUserTexts } from 'api/getUserTexts';
-import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
-import { setNotifyOnReview } from 'api/setNotifyOnReview';
-import { updateProfile } from 'api/updateProfile';
 import AuthorTexts from 'components/AuthorTexts';
 import AvatarButton from 'components/AvatarButton';
-import ReadMoreText from 'components/ReadMoreText';
-import TextCard from 'components/TextCard';
-import TextListItem from 'components/TextListItem';
-import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
-import { AppContext } from 'states/store';
+import ReadMoreText from 'components/ReadMoreText';
 import Consts from 'utils/Consts';
 
-import Texts from './texts';
 
 const User = () => {
   const router = useRouter();

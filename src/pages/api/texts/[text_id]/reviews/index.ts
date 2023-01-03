@@ -2,7 +2,6 @@ import escape from 'sql-template-strings';
 
 import dbQuery from 'libs/db';
 import { verifyFirebaseToken } from 'libs/firebase/verifyFirebaseToken';
-import reviews from 'pages/api/dashboard/reviews';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
 import { isEmptyString } from 'utils/isEmptyString';

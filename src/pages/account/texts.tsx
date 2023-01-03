@@ -1,26 +1,12 @@
-import { Card, Box, Pagination, Checkbox, Grid, Snackbar, CardContent, Link } from '@mui/material';
-import Container from '@mui/material/Container';
-import Stack from '@mui/material/Stack';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import TextField from '@mui/material/TextField';
-import { getAuth, sendEmailVerification } from 'firebase/auth';
-import error from 'next/error';
-import router, { useRouter } from 'next/router';
-import { useState, useContext, useEffect } from 'react';
-import * as React from 'react';
+import { Box, Pagination } from '@mui/material';
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import useSWR from 'swr';
 
 import { getPurchasedTextList } from 'api/getPurchasedTextList';
-import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
-import { setNotifyOnReview } from 'api/setNotifyOnReview';
-import { updateProfile } from 'api/updateProfile';
-import TextCard from 'components/TextCard';
-import TextListItem from 'components/TextListItem';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
-import texts from 'pages/api/texts';
-import { AppContext } from 'states/store';
+import TextListItem from 'components/TextListItem';
 import { pagenation } from 'utils/pagenation';
 
 const PurchasedTexts = () => {

@@ -1,53 +1,20 @@
 import {
-  Card,
-  Box,
-  Pagination,
-  Checkbox,
-  Grid,
-  Snackbar,
-  CardContent,
-  Link,
-  Divider,
-  Rating,
-  styled,
+    Box, Link, styled
 } from '@mui/material';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import Tab from '@mui/material/Tab';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Tabs from '@mui/material/Tabs';
-import TextField from '@mui/material/TextField';
-import { getAuth, sendEmailVerification } from 'firebase/auth';
-import error from 'next/error';
-import router, { useRouter } from 'next/router';
-import { useState, useContext, useEffect } from 'react';
-import * as React from 'react';
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import useSWR from 'swr';
 
-import { getBriefUser } from 'api/getBriefUser';
-import { getMyAccount } from 'api/getMyAccount';
 import { getPerformance } from 'api/getPerformance';
-import { getReviewListForMyText } from 'api/getReviewListForMyText';
-import { getUser } from 'api/getUser';
-import { getUserTexts } from 'api/getUserTexts';
-import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
-import { setNotifyOnReview } from 'api/setNotifyOnReview';
-import { updateProfile } from 'api/updateProfile';
-import TextCard from 'components/TextCard';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
-import DashboardMenu from 'components/sidemenu/DashboardMenuLeft';
 import DashboardMenuLeft from 'components/sidemenu/DashboardMenuLeft';
-import texts from 'pages/api/texts';
-import UserTexts from 'pages/users/[user_id]/texts';
-import { AppContext } from 'states/store';
-import { pagenation } from 'utils/pagenation';
 
 const DashboardPerformance = () => {
   const router = useRouter();

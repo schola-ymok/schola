@@ -1,22 +1,11 @@
-import { profile } from 'console';
-import { type } from 'os';
-import { title } from 'process';
 
 import { Button, Checkbox, InputBase, Snackbar } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import Stack from '@mui/material/Stack';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import TextField from '@mui/material/TextField';
-import { height } from '@mui/system';
 import { getAuth, sendEmailVerification } from 'firebase/auth';
-import { ref, uploadBytes } from 'firebase/storage';
-import { centerAspectCrop } from 'libs/imagecrop/centerAspectCrop';
-import { useState, useContext, useEffect, useCallback } from 'react';
-import * as React from 'react';
-import Cropper, { Area } from 'react-easy-crop';
-import ReactCrop, { Crop, PixelCrop } from 'react-image-crop';
+import { useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import { getMyAccount } from 'api/getMyAccount';
@@ -24,16 +13,13 @@ import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
 import { setNotifyOnReview } from 'api/setNotifyOnReview';
 import { setProfilePhotoId } from 'api/setProfilePhotoId';
 import { updateProfile } from 'api/updateProfile';
+import { AuthContext } from 'components/auth/AuthContext';
 import AvatarButton from 'components/AvatarButton';
 import ImageCropDialog from 'components/ImageCropDialog';
-import { ImageCropModal } from 'components/ImageCropDialog';
-import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
-import firebaseApp, { storage } from 'libs/firebase/firebase';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
-import getCroppedImage from 'utils/getCroppedImage';
 import useCropImage from 'utils/useCropImage';
 
 const Account = () => {

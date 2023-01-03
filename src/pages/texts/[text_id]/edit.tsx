@@ -1,56 +1,28 @@
-import { release, title } from 'process';
 
 import {
-  Card,
-  Box,
-  Button,
-  Checkbox,
-  Snackbar,
-  CardContent,
-  Link,
-  Slider,
-  Grid,
-  TextField,
-  List,
-  ListItem,
-  ListItemButton,
-  Divider,
-  Select,
-  MenuItem,
-  Stack,
-  Rating,
-  Typography,
-  InputBase,
-  Container,
-  FormControl,
-  IconButton,
+    Box,
+    Button, Divider, InputBase, MenuItem, Select, Slider
 } from '@mui/material';
-import router, { useRouter } from 'next/router';
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useRouter } from 'next/router';
+import { useContext, useEffect, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 import { WithContext as ReactTags } from 'react-tag-input';
-import useSWR, { mutate, useSWRConfig } from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 
 import { createNewChapter } from 'api/createNewChapter';
 import { deleteChapter } from 'api/deleteChapter';
-import { deleteText } from 'api/deleteText';
 import { getChapterList } from 'api/getChapterList';
 import { getMyText } from 'api/getMyText';
 import { releaseText } from 'api/releaseText';
-import { setPhotoUploaded } from 'api/setProfilePhotoId';
 import { setTextCoverPhotoId } from 'api/setTextCoverPhotoId';
 import { updateText } from 'api/updateText';
-import ChapterListMenuButton from 'components/ChaptarListMenuButton';
-import ImageCropDialog from 'components/ImageCropDialog';
-import TextCard from 'components/TextCard';
 import { AuthContext } from 'components/auth/AuthContext';
+import ChapterListMenuButton from 'components/ChaptarListMenuButton';
 import EditTextHeader from 'components/headers/EditTextHeader';
+import ImageCropDialog from 'components/ImageCropDialog';
 import EditTextLayout from 'components/layouts/EditTextLayout';
-import RootCategory from 'components/sidemenu/RootCategory';
-import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
-import { pagenation } from 'utils/pagenation';
 import useCropImage from 'utils/useCropImage';
 
 const EditText = () => {

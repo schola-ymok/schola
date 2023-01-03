@@ -1,7 +1,5 @@
-import { Box, Stack, Typography } from '@mui/material';
-import Link from 'next/link';
+import { Box } from '@mui/material';
 
-import Consts from 'utils/Consts';
 
 import PriceFilter from './PriceFilter';
 import RateFilter from './RateFilter';

@@ -1,6 +1,5 @@
 import dbQuery from 'libs/db';
 import { verifyFirebaseToken } from 'libs/firebase/verifyFirebaseToken';
-import error from 'next/error';
 import escape from 'sql-template-strings';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';

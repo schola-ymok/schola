@@ -1,9 +1,8 @@
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, IconButton } from '@mui/material';
 import InputBase from '@mui/material/InputBase';
-import router, { useRouter } from 'next/router';
-import { useState, useRef, useEffect } from 'react';
-import useLocationChange from 'utils/useLocationChange';
+import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
 
 import Consts from 'utils/Consts';
 

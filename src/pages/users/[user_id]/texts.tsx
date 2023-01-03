@@ -1,39 +1,15 @@
 import {
-  Card,
-  Box,
-  Pagination,
-  Checkbox,
-  Grid,
-  Snackbar,
-  CardContent,
-  Link,
-  useMediaQuery,
+    Box,
+    Pagination, useMediaQuery
 } from '@mui/material';
-import Container from '@mui/material/Container';
-import Stack from '@mui/material/Stack';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import TextField from '@mui/material/TextField';
-import { getAuth, sendEmailVerification } from 'firebase/auth';
-import { list } from 'firebase/storage';
-import error from 'next/error';
-import router, { useRouter } from 'next/router';
-import { useState, useContext, useEffect } from 'react';
-import * as React from 'react';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 import { getBriefUser } from 'api/getBriefUser';
-import { getMyAccount } from 'api/getMyAccount';
-import { getUser } from 'api/getUser';
 import { getUserTexts } from 'api/getUserTexts';
-import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
-import { setNotifyOnReview } from 'api/setNotifyOnReview';
-import { updateProfile } from 'api/updateProfile';
+import Layout from 'components/layouts/Layout';
 import TextCard from 'components/TextCard';
 import TextListItem from 'components/TextListItem';
-import Layout from 'components/layouts/Layout';
-import texts from 'pages/api/texts';
-import { AppContext } from 'states/store';
 import { pagenation } from 'utils/pagenation';
 
 const UserTexts = () => {

@@ -1,33 +1,14 @@
 import {
-  Card,
-  Box,
-  Button,
-  Checkbox,
-  Snackbar,
-  CardContent,
-  Stack,
-  Link,
-  Grid,
-  Rating,
-  TextField,
-  Typography,
-  InputBase,
-  CircularProgress,
+    Box,
+    Button, CircularProgress, InputBase
 } from '@mui/material';
-import error from 'next/error';
-import router, { useRouter } from 'next/router';
-import { useState, useContext, useEffect } from 'react';
-import useSWR from 'swr';
+import { useRouter } from 'next/router';
+import { useContext, useState } from 'react';
 
 import { createNewText } from 'api/createNewText';
-import HomeTextList from 'components/HomeTextList';
-import TextCard from 'components/TextCard';
 import { AuthContext } from 'components/auth/AuthContext';
 import EditTitleLayout from 'components/layouts/EditTitleLayout';
-import Layout from 'components/layouts/Layout';
-import RootCategory from 'components/sidemenu/RootCategory';
 import Consts from 'utils/Consts';
-import { pagenation } from 'utils/pagenation';
 
 import type { NextPage } from 'next';
 

@@ -1,27 +1,13 @@
-import { title } from 'process';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import {
-  Card,
-  Box,
-  Button,
-  Checkbox,
-  Snackbar,
-  CardContent,
-  Fab,
-  Link,
-  Grid,
-  Rating,
-  Stack,
-  Typography,
-  IconButton,
+    Box,
+    Button, IconButton
 } from '@mui/material';
-import GithubSlugger, { slug } from 'github-slugger';
-import { toString, Node } from 'hast-util-to-string';
-import error from 'next/error';
-import router, { useRouter } from 'next/router';
-import { useState, useEffect, useContext, useRef } from 'react';
+import { slug } from 'github-slugger';
+import { Node, toString } from 'hast-util-to-string';
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import rehypeSlug from 'rehype-slug';
@@ -33,16 +19,9 @@ import { visit } from 'unist-util-visit';
 
 import { getPurchasedInfo } from 'api/getPurchasedInfo';
 import { getViewText } from 'api/getViewText';
-import HomeTextList from 'components/HomeTextList';
-import TextCard from 'components/TextCard';
 import { AuthContext } from 'components/auth/AuthContext';
-import ViewTextHeader from 'components/headers/ViewTextHeader';
-import Layout from 'components/layouts/Layout';
-import RootCategory from 'components/sidemenu/RootCategory';
-import chapters from 'pages/api/texts/[text_id]/chapters';
-import Consts from 'utils/Consts';
-import { pagenation } from 'utils/pagenation';
 import 'katex/dist/katex.min.css';
+import Consts from 'utils/Consts';
 
 import type { NextPage } from 'next';
 

@@ -3,7 +3,6 @@ import escape from 'sql-template-strings';
 import dbQuery from 'libs/db';
 import { verifyFirebaseToken } from 'libs/firebase/verifyFirebaseToken';
 import Consts from 'utils/Consts';
-import { isEmptyString } from 'utils/isEmptyString';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 

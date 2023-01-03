@@ -1,29 +1,15 @@
 import {
-  Card,
-  Button,
-  Checkbox,
-  Snackbar,
-  CardContent,
-  Grid,
-  Typography,
-  Box,
+    Box
 } from '@mui/material';
 import { NextPage } from 'next';
-import Link from 'next/link';
-import router, { useRouter } from 'next/router';
-import { useState, useRef, useEffect } from 'react';
-import useSWR from 'swr';
+import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
 
-import { getTextList } from 'api/getTextList';
 import HomeTextList from 'components/HomeTextList';
-import TextCard from 'components/TextCard';
-import TextList from 'components/TextList';
 import Layout from 'components/layouts/Layout';
 import FilterMenu from 'components/sidemenu/FilterMenu';
-import PriceFilter from 'components/sidemenu/PriceFilter';
-import RateFilter from 'components/sidemenu/RateFilter';
-import SortType from 'components/sidemenu/SortType';
 import SubCategory from 'components/sidemenu/SubCategory';
+import TextList from 'components/TextList';
 import Consts from 'utils/Consts';
 
 const Home: NextPage = () => {

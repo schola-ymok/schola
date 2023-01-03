@@ -41,7 +41,7 @@ const MiniText = ({ text }) => {
 
   const imageUrl = text.photo_id
     ? Consts.IMAGE_STORE_URL + text.photo_id + '.png'
-    : '/cover_default.png';
+    : '/cover-default.svg';
 
   const handleTextClick = () => {
     router.push(`/texts/${text.id}`);

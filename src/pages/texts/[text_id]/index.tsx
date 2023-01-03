@@ -4,10 +4,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import UpdateIcon from '@mui/icons-material/Update';
-import {
-    Box, Grid,
-    Rating, Stack, useMediaQuery
-} from '@mui/material';
+import { Box, Grid, Rating, Stack, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useCallback, useContext, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
@@ -19,16 +16,15 @@ import { getText } from 'api/getText';
 import { getUser } from 'api/getUser';
 import { getUserTexts } from 'api/getUserTexts';
 import { purchaseText } from 'api/purchaseText';
-import { AuthContext } from 'components/auth/AuthContext';
 import AuthorTexts from 'components/AuthorTexts';
 import AvatarButton from 'components/AvatarButton';
-import ViewTextAbstractLayout from 'components/layouts/ViewTextAbstractLayout';
 import RatingReportPanel from 'components/RatingReportPanel';
 import ReadMoreText from 'components/ReadMoreText';
 import Review from 'components/ReviewItem';
 import ShowMore from 'components/ShowMore';
+import { AuthContext } from 'components/auth/AuthContext';
+import ViewTextAbstractLayout from 'components/layouts/ViewTextAbstractLayout';
 import Consts from 'utils/Consts';
-
 
 import type { NextPage } from 'next';
 
@@ -191,7 +187,7 @@ const Text: NextPage = () => {
 
   const imageUrl = data.photo_id
     ? Consts.IMAGE_STORE_URL + data.photo_id + '.png'
-    : '/cover_default.png';
+    : '/cover-default.svg';
 
   const bannerBackgroundHeight = bannerHeight + 60 + 'px';
 

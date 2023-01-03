@@ -41,28 +41,25 @@ import Consts from 'utils/Consts';
 import { pagenation } from 'utils/pagenation';
 
 const TextCard = ({ text }) => {
+  const imageUrl = text.photo_id
+    ? Consts.IMAGE_STORE_URL + text.photo_id + '.png'
+    : '/cover-default.svg';
+
   return (
     <Box sx={{ p: 1 }}>
       <Link href={`/texts/${text.id}`}>
         <a className='no-hover'>
           <Box sx={{ backgroundColor: '#ffffff', width: { xs: 150, sm: 200 } }}>
-            {text.photo_id != null ? (
-              <Box
-                component='img'
-                sx={{
-                  display: 'block',
-                  mb: 1,
-                  width: { xs: 150, sm: 200 },
-                  height: { xs: 84, sm: 112 },
-                }}
-                src={Consts.IMAGE_STORE_URL + text.photo_id + '.png'}
-              />
-            ) : (
-              <Skeleton
-                variant='rectangular'
-                sx={{ mb: 1, width: { xs: 150, sm: 200 }, height: { xs: 84, sm: 112 } }}
-              />
-            )}
+            <Box
+              component='img'
+              sx={{
+                display: 'block',
+                mb: 1,
+                width: { xs: 150, sm: 200 },
+                height: { xs: 84, sm: 112 },
+              }}
+              src={imageUrl}
+            />
 
             <Box sx={{ fontWeight: 'bold', fontSize: '1.0em' }}>
               {text.title?.substring(0, 23)}

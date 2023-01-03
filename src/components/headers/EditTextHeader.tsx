@@ -1,4 +1,12 @@
-import { Box, Button, ToggleButton, ToggleButtonGroup, useMediaQuery } from '@mui/material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import {
+  Box,
+  Button,
+  IconButton,
+  ToggleButton,
+  ToggleButtonGroup,
+  useMediaQuery,
+} from '@mui/material';
 import Link from 'next/link';
 import router from 'next/router';
 import { useContext, useState } from 'react';
@@ -6,8 +14,7 @@ import { useContext, useState } from 'react';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 
-const EditTextHeader = ({ handleSaveClick, release, handleReleaseToggle }) => {
-  const { state, dispatch } = useContext(AppContext);
+const EditTextHeader = ({ textId, handleSaveClick, release, handleReleaseToggle }) => {
   const [toggleReleaseValue, setToggleReleaseValue] = useState(release ? 'release' : 'draft');
   const [enableSave, setEnableSave] = useState(true);
 
@@ -43,7 +50,18 @@ const EditTextHeader = ({ handleSaveClick, release, handleReleaseToggle }) => {
             <Box
               sx={{ display: 'block', fontSize: '1.0em', fontWeight: 'bold', ml: { xs: 1, sm: 0 } }}
             >
-              {back}
+              <IconButton
+                type='button'
+                sx={{
+                  pr: 0,
+                  '&:hover': Consts.SX.IconButtonHover,
+                }}
+                onClick={() => {
+                  router.back();
+                }}
+              >
+                <ArrowBackIosIcon sx={{ my: 'auto' }} />
+              </IconButton>
             </Box>
           </a>
         </Link>
@@ -80,7 +98,9 @@ const EditTextHeader = ({ handleSaveClick, release, handleReleaseToggle }) => {
           <Button
             variant='contained'
             disabled={!enableSave}
-            onClick={handleSaveClick}
+            onClick={() => {
+              router.push(`/texts/${textId}`);
+            }}
             sx={{
               pr: 2,
               pl: 2,

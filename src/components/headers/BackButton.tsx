@@ -1,24 +1,23 @@
-import { Box } from '@mui/material';
-import Link from 'next/link';
+import { Edit } from '@mui/icons-material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { IconButton } from '@mui/material';
 import router from 'next/router';
+
+import Consts from 'utils/Consts';
 
 const BackButton = () => {
   return (
-    <Link href='#'>
-      <a onClick={() => router.back()}>
-        <Box
-          sx={{
-            display: 'block',
-            py: 0.3,
-            fontSize: '1.1em',
-            whiteSpace: 'nowrap',
-            fontWeight: 'bold',
-          }}
-        >
-          戻る
-        </Box>
-      </a>
-    </Link>
+    <IconButton
+      type='button'
+      sx={{
+        '&:hover': Consts.SX.IconButtonHover,
+      }}
+      onClick={() => {
+        router.back();
+      }}
+    >
+      <ArrowBackIosIcon sx={{ my: 'auto' }} />
+    </IconButton>
   );
 };
 

@@ -1,7 +1,4 @@
-import {
-    Box,
-    Button, CircularProgress, InputBase
-} from '@mui/material';
+import { Box, Button, CircularProgress, InputBase } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 
@@ -36,7 +33,7 @@ const AddText: NextPage = () => {
         sx={{
           mt: 5,
           p: 1,
-          width: 400,
+          width: 600,
           maxWidth: '90%',
           mx: 'auto',
           border: '2px solid ' + Consts.COLOR.Grey,
@@ -47,7 +44,7 @@ const AddText: NextPage = () => {
       >
         <InputBase
           placeholder='タイトルを入力'
-          rows={4}
+          rows={2}
           multiline
           fullWidth
           sx={{ fontSize: '1.3em', fontWeight: 'bold' }}

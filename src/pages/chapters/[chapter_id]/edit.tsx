@@ -1,4 +1,4 @@
-import { Box, Fab, IconButton, InputBase, useMediaQuery } from '@mui/material';
+import { Box, Fab, IconButton, InputBase } from '@mui/material';
 import 'katex/dist/katex.min.css';
 
 import InsertPhotoIcon from '@mui/icons-material/InsertPhotoOutlined';
@@ -22,6 +22,7 @@ import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
 
 import type { NextPage } from 'next';
+import 'github-markdown-css/github-markdown.css';
 
 const EditChapter: NextPage = () => {
   const router = useRouter();
@@ -35,8 +36,6 @@ const EditChapter: NextPage = () => {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
 
   const { mutate } = useSWRConfig();
-
-  const mq = useMediaQuery('(min-width:600px)');
 
   const { data, error } = useSWR(`chapters/${chapterId}`, () => getChapter(chapterId, authAxios), {
     revalidateOnFocus: false,
@@ -111,26 +110,6 @@ const EditChapter: NextPage = () => {
       percentage * (event.currentTarget.scrollHeight - event.currentTarget.offsetHeight),
     );
   };
-  /*
-      <EditChapterHeader />
-
-      <Box
-        sx={{
-          width: { xs: '98%', md: '100%' },
-          mx: 'auto',
-          display: 'flex',
-          flexWrap: 'wrap',
-          p: { xs: 0.4, sm: 1 },
-          '&:-webkit-scrollbar': {
-            width: '10px',
-            cursor: 'pointer',
-          },
-          '&:-webkit-scrollbar-thumb': {
-            backgroundColor: '#008080',
-          },
-        }}
-      >
-      */
 
   return (
     <>
@@ -138,6 +117,8 @@ const EditChapter: NextPage = () => {
         handleSaveClick={handleSaveClick}
         handleTitleChange={handleTitleChange}
         title={title}
+        textId={data.text_id}
+        chapterId={chapterId}
       />
       <Box
         sx={{
@@ -168,6 +149,7 @@ const EditChapter: NextPage = () => {
             p: 1,
           }}
         >
+          <Box sx={{ fontWeight: 'bold', fontSize: '2.1em', mb: 1 }}>{title}</Box>
           <ReactMarkdown
             className='markdown-body p-3'
             remarkPlugins={[remarkGfm, remarkMath]}

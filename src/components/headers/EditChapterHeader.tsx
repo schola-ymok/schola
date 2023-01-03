@@ -1,17 +1,20 @@
-import { Box, Button, useMediaQuery } from '@mui/material';
-import InputBase from '@mui/material/InputBase';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import { Box, Button, useMediaQuery, IconButton, InputBase } from '@mui/material';
+import router, { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 
 import { AppContext } from 'states/store';
+import Consts from 'utils/Consts';
 
 import BackButton from './BackButton';
 
-const EditChapterHeader = ({ handleSaveClick, handleTitleChange, title }) => {
+const EditChapterHeader = ({ handleSaveClick, handleTitleChange, title, textId, chapterId }) => {
   const { state, dispatch } = useContext(AppContext);
   const [toggleViewModeValue, setToggleViewModeValue] = useState('both');
   const [enableSave, setEnableSave] = useState(true);
 
   const mq = useMediaQuery('(min-width:600px)');
+  const router = useRouter();
 
   return (
     <Box
@@ -24,10 +27,11 @@ const EditChapterHeader = ({ handleSaveClick, handleTitleChange, title }) => {
     >
       <BackButton />
 
-      <Box sx={{ fontSize: '1.0em', ml: 2, py: 0.5, width: '100%', my: 'auto' }}>
+      <Box sx={{ width: '100%', my: 'auto', py: 0.5 }}>
         <InputBase
           placeholder='チャプターのタイトルを入力'
           value={title}
+          sx={{ fontSize: '0.9em', my: 'auto' }}
           variant='outlined'
           fullWidth
           onChange={handleTitleChange}
@@ -56,6 +60,18 @@ const EditChapterHeader = ({ handleSaveClick, handleTitleChange, title }) => {
         >
           保存
         </Button>
+
+        <IconButton
+          type='button'
+          sx={{
+            '&:hover': Consts.SX.IconButtonHover,
+          }}
+          onClick={() => {
+            router.push(`/texts/${textId}/view?cid=${chapterId}`);
+          }}
+        >
+          <RemoveRedEyeIcon sx={{ my: 'auto' }} />
+        </IconButton>
       </Box>
     </Box>
   );

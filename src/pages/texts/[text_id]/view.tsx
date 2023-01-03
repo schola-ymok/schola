@@ -1,5 +1,6 @@
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { Box, Button, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import { Box, IconButton, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -23,11 +24,14 @@ import type { NextPage } from 'next';
 
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 
+import Edit from '@mui/icons-material/Edit';
+
 const TextView: NextPage = () => {
   const router = useRouter();
   const { authAxios } = useContext(AuthContext);
 
   const textId = router.query.text_id;
+  const mq = useMediaQuery('(min-width:1000px)');
 
   const { data, error } = useSWR(`texts/${textId}/view`, () => getViewText(textId), {
     revalidateOnFocus: false,
@@ -50,16 +54,29 @@ const TextView: NextPage = () => {
     tocs[id] = toc;
   });
 
-  return (
-    <Box sx={{ display: 'flex' }}>
-      <Box sx={{ width: '350px' }}>
-        <Toc chapters={data.chapters} tocs={tocs} title={data.title} />
+  if (mq) {
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <Box sx={{ width: '350px' }}>
+          <Toc chapters={data.chapters} tocs={tocs} left={true} />
+        </Box>
+        <Box sx={{ width: '700px' }}>
+          <ChapterContent data={data} />
+        </Box>
       </Box>
-      <Box sx={{ width: '600px' }}>
-        <ChapterContent data={data} />
+    );
+  } else {
+    return (
+      <Box sx={{ display: 'flex', flexFlow: 'column' }}>
+        <Box sx={{ width: '100%' }}>
+          <Toc chapters={data.chapters} tocs={tocs} left={false} />
+        </Box>
+        <Box sx={{ width: '100%' }}>
+          <ChapterContent data={data} />
+        </Box>
       </Box>
-    </Box>
-  );
+    );
+  }
 };
 
 const ChapterContent = ({ data }) => {
@@ -78,35 +95,39 @@ const ChapterContent = ({ data }) => {
     }
   }
 
-  console.log(data.chapters[chapterId].content);
   return (
-    <Box sx={{ mt: 2 }}>
-      <ReactMarkdown
-        className='markdown-body p-3'
-        remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={[rehypeKatex, rehypeSlug]}
+    <Box>
+      <IconButton
+        type='button'
+        sx={{
+          position: 'fixed',
+          right: '10px',
+          top: '10px',
+          '&:hover': Consts.SX.IconButtonHover,
+        }}
+        onClick={() => {
+          router.push(`/chapters/${chapterId}/edit`);
+        }}
       >
-        {data.chapters[chapterId].content}
-      </ReactMarkdown>
+        <Edit sx={{ my: 'auto' }} />
+      </IconButton>
+      <Box sx={{ mt: 1, p: 1 }}>
+        <Box sx={{ fontWeight: 'bold', fontSize: '2.1em', mb: 1 }}>
+          {data.chapters[chapterId].title}
+        </Box>
+        <ReactMarkdown
+          className='markdown-body p-3'
+          remarkPlugins={[remarkGfm, remarkMath]}
+          rehypePlugins={[rehypeKatex, rehypeSlug]}
+        >
+          {data.chapters[chapterId].content}
+        </ReactMarkdown>
+      </Box>
     </Box>
   );
-  //  const markdown = data.chapters.
-
-  /*
-  const { authAxios } = useContext(AuthContext);
-  const { data, error } = useSWR(`/chapters/${chapterId}`, () => getChapter(chapterId, authAxios), {
-    revalidateOnFocus: false,
-  });
-
-  if (error) console.log(error);
-  if (!data) return <h1>loading..</h1>;
-
-  console.log(data);
-  return <Box>{data.content}</Box>;
-  */
 };
 
-const Toc = ({ chapters, tocs, title }) => {
+const Toc = ({ chapters, tocs, left }) => {
   const router = useRouter();
   const textId = router.query.text_id;
   const cid = router.query.cid;
@@ -139,20 +160,26 @@ const Toc = ({ chapters, tocs, title }) => {
     );
   };
 
+  const sx = left
+    ? {
+        p: 1,
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        right: 0,
+        overflowY: 'auto',
+        width: '350px',
+      }
+    : {
+        p: 1,
+        pb: 0,
+        width: '100%',
+      };
+
   return (
     <>
-      <Box
-        sx={{
-          p: 1,
-          position: 'fixed',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          right: 0,
-          overflowY: 'auto',
-          width: '350px',
-        }}
-      >
+      <Box sx={sx}>
         <Box sx={{ display: 'flex' }}>
           <IconButton
             type='button'

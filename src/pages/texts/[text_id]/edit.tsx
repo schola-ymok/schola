@@ -145,6 +145,7 @@ const EditText = () => {
   return (
     <>
       <EditTextHeader
+        textId={textId}
         handleSaveClick={handleSaveClick}
         handleReleaseToggle={handleReleaseToggle}
         release={data.is_released}
@@ -521,7 +522,7 @@ const ChapterList = () => {
   async function handleAddChapterClick() {
     setIsChapterAdding(true);
 
-    const { chapterId, error } = await createNewChapter(textId, authAxios);
+    const { chapterId, error } = await createNewChapter(textId, authAxios, '新しいチャプター');
 
     if (error) {
       console.log(error);

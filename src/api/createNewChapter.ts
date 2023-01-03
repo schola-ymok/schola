@@ -1,6 +1,4 @@
-import { title } from 'process';
-
-export const createNewChapter = async (textId, authAxios) => {
+export const createNewChapter = async (textId, authAxios, title) => {
   try {
     const res = await authAxios.post('/api/texts/' + textId + '/chapters/', {
       title: title,

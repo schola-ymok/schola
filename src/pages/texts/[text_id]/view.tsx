@@ -1,9 +1,5 @@
-
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import {
-    Box,
-    Button, IconButton
-} from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
 import { slug } from 'github-slugger';
 import { Node, toString } from 'hast-util-to-string';
 import { useRouter } from 'next/router';

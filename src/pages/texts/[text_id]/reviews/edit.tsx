@@ -1,7 +1,4 @@
-import {
-    Box,
-    Button, InputBase, Rating
-} from '@mui/material';
+import { Box, Button, InputBase, Rating } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext, useLayoutEffect, useState } from 'react';
 import useSWR from 'swr';
@@ -9,9 +6,9 @@ import useSWR from 'swr';
 import { getBriefText } from 'api/getBriefText';
 import { getMyReview } from 'api/getMyReview';
 import { upsertReview } from 'api/upsertReview';
+import MiniText from 'components/MiniText';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
-import MiniText from 'components/MiniText';
 import Consts from 'utils/Consts';
 
 import type { NextPage } from 'next';

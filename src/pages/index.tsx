@@ -1,21 +1,7 @@
-import {
-  Card,
-  Box,
-  Button,
-  Checkbox,
-  Snackbar,
-  CardContent,
-  Link,
-  Grid,
-  Typography,
-} from '@mui/material';
-import error from 'next/error';
-import router, { useRouter } from 'next/router';
-import useSWR from 'swr';
+import { Box } from '@mui/material';
+import { useRouter } from 'next/router';
 
-import { getTextList } from 'api/getTextList';
 import HomeTextList from 'components/HomeTextList';
-import TextCard from 'components/TextCard';
 import TextList from 'components/TextList';
 import Layout from 'components/layouts/Layout';
 import RootCategory from 'components/sidemenu/RootCategory';

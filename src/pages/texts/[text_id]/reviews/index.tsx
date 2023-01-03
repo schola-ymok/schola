@@ -5,6 +5,7 @@ import useSWR from 'swr';
 
 import { getBriefText } from 'api/getBriefText';
 import { getReviews } from 'api/getReviews';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import MiniText from 'components/MiniText';
 import RatingReportPanel from 'components/RatingReportPanel';
 import ReviewList from 'components/ReviewList';
@@ -61,7 +62,7 @@ const Review: NextPage = () => {
   if (errorText) console.log(errorText);
   if (errorReviews) console.log(errorReviews);
 
-  if (!dataText || !dataReviews) return <h1>loading..</h1>;
+  if (!dataText || !dataReviews) return <CenterLoadingSpinner />;
 
   const handleWriteReviewClick = () => {
     router.push(`/texts/${textId}/reviews/edit`);

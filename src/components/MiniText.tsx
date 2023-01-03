@@ -1,40 +1,7 @@
-import {
-  Card,
-  Button,
-  Checkbox,
-  Snackbar,
-  CardContent,
-  Stack,
-  Link,
-  Divider,
-  Grid,
-  Rating,
-  TextField,
-  Typography,
-  Pagination,
-  LinearProgress,
-  linearProgressClasses,
-  Box,
-} from '@mui/material';
-import error from 'next/error';
-import router, { useRouter } from 'next/router';
-import { useState, useContext, useEffect, useLayoutEffect } from 'react';
-import useSWR from 'swr';
+import { Box } from '@mui/material';
+import { useRouter } from 'next/router';
 
-import { getBriefText } from 'api/getBriefText';
-import { getReviews } from 'api/getReviews';
-import { upsertReview } from 'api/upsertReview';
-import HomeTextList from 'components/HomeTextList';
-import TextCard from 'components/TextCard';
-import { AuthContext } from 'components/auth/AuthContext';
-import Layout from 'components/layouts/Layout';
-import RootCategory from 'components/sidemenu/RootCategory';
 import Consts from 'utils/Consts';
-import { pagenation } from 'utils/pagenation';
-
-import theme from './mui/theme';
-
-import type { NextPage } from 'next';
 
 const MiniText = ({ text }) => {
   const router = useRouter();

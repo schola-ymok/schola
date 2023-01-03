@@ -1,23 +1,7 @@
-import {
-  Card,
-  Button,
-  Checkbox,
-  Snackbar,
-  CardContent,
-  Link,
-  Grid,
-  Rating,
-  Typography,
-  Divider,
-  Avatar,
-  useMediaQuery,
-  Stack,
-  Box,
-} from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 import router from 'next/router';
 
 import ShowMore from 'components/ShowMore';
-import Consts from 'utils/Consts';
 
 import TextCard from './TextCard';
 import TextListItem from './TextListItem';

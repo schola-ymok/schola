@@ -1,7 +1,7 @@
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Box } from '@mui/material';
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import Consts from 'utils/Consts';
 

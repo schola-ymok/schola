@@ -1,14 +1,10 @@
-import {
-    Box, Button, ToggleButton,
-    ToggleButtonGroup, useMediaQuery
-} from '@mui/material';
+import { Box, Button, ToggleButton, ToggleButtonGroup, useMediaQuery } from '@mui/material';
 import Link from 'next/link';
 import router from 'next/router';
 import { useContext, useState } from 'react';
 
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
-
 
 const EditTextHeader = ({ handleSaveClick, release, handleReleaseToggle }) => {
   const { state, dispatch } = useContext(AppContext);

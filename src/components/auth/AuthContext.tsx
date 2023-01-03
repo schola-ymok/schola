@@ -1,18 +1,9 @@
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
-import { auth } from 'firebase-admin';
-import {
-  getAuth,
-  signOut,
-  sendEmailVerification,
-  updateProfile,
-  getIdToken,
-  checkActionCode,
-  onAuthStateChanged,
-} from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { useRouter } from 'next/router';
-import { createContext, useEffect, useState, useContext, memo } from 'react';
+import { createContext, memo, useContext, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { getMyBriefAccount } from 'api/getMyBriefAccount';

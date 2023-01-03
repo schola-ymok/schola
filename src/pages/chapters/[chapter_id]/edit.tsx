@@ -1,7 +1,4 @@
-import {
-    Box, Fab, IconButton, InputBase,
-    useMediaQuery
-} from '@mui/material';
+import { Box, Fab, IconButton, InputBase, useMediaQuery } from '@mui/material';
 import 'katex/dist/katex.min.css';
 
 import InsertPhotoIcon from '@mui/icons-material/InsertPhotoOutlined';
@@ -16,6 +13,7 @@ import useSWR, { useSWRConfig } from 'swr';
 
 import { getChapter } from 'api/getChapter';
 import { updateChapter } from 'api/updateChapter';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
 import EditChapterHeader from 'components/headers/EditChapterHeader';
 import EditChapterLayout from 'components/layouts/EditChapterLayout';
@@ -62,16 +60,10 @@ const EditChapter: NextPage = () => {
       try {
         const type = e.target.files[0].type;
         const names = e.target.files[0].name.split('.');
-        const imageRef = ref(
-          storage,
-          'images/chapters/' + chapterId + '-' + genid(8) + '.' + names[1],
-        );
+        const fileName = chapterId + '-' + genid(8) + '.' + names[1];
+        const imageRef = ref(storage, 'user_upload/' + fileName);
         uploadBytes(imageRef, e.target.files[0], { contentType: type }).then((snapshot) => {
-          insertText(
-            '![](https://storage.googleapis.com/texttest-162b6.appspot.com/' +
-              snapshot.metadata.fullPath +
-              ')',
-          );
+          insertText('![](' + Consts.IMAGE_STORE_URL + fileName + ')');
         });
       } catch (e) {
         console.log(e);
@@ -107,15 +99,8 @@ const EditChapter: NextPage = () => {
   }
 
   if (error) console.log(error);
-  if (!data) return <h1>loading..</h1>;
+  if (!data) return <CenterLoadingSpinner />;
 
-  /*
-      <EditChapterHeader
-        backPath={`/texts/${data.text_id}/edit`}
-        release={data.is_released == 1 ? true : false}
-        handleSaveClick={handleSaveClick}
-      />
-      */
   const handleScroll = (event) => {
     console.log(event.currentTarget.scrollTop);
     const percentage =

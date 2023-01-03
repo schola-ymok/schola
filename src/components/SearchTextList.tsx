@@ -1,6 +1,5 @@
-import { Pagination, Grid, Box, useMediaQuery } from '@mui/material';
+import { Box, Pagination, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
-import * as React from 'react';
 import useSWR from 'swr';
 
 import { getTextList } from 'api/getTextList';

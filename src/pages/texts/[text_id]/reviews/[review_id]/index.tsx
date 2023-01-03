@@ -1,7 +1,4 @@
-import {
-    Box,
-    Button, Stack
-} from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import useSWR from 'swr';
@@ -9,12 +6,13 @@ import useSWR from 'swr';
 import { deleteReview } from 'api/deleteReview';
 import { getBriefText } from 'api/getBriefText';
 import { getReview } from 'api/getReview';
-import { AuthContext } from 'components/auth/AuthContext';
-import Layout from 'components/layouts/Layout';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import MiniText from 'components/MiniText';
 import RatingReportPanel from 'components/RatingReportPanel';
 import ReviewItem from 'components/ReviewItem';
 import ShowMore from 'components/ShowMore';
+import { AuthContext } from 'components/auth/AuthContext';
+import Layout from 'components/layouts/Layout';
 import { AppContext } from 'states/store';
 
 import type { NextPage } from 'next';
@@ -62,9 +60,8 @@ const Review: NextPage = () => {
   }
 
   if (errorText) console.log(errorText);
-  if (!dataText) return <h1>loading..</h1>;
   if (errorReview) console.log(errorReview);
-  if (!dataReview) return <h1>loading..</h1>;
+  if (!dataText || !dataReview) return <CenterLoadingSpinner />;
 
   return (
     <>

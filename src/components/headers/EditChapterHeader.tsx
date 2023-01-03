@@ -1,6 +1,4 @@
-import {
-    Box, Button, useMediaQuery
-} from '@mui/material';
+import { Box, Button, useMediaQuery } from '@mui/material';
 import InputBase from '@mui/material/InputBase';
 import { useContext, useState } from 'react';
 

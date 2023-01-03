@@ -1,5 +1,3 @@
-import { Box } from '@mui/material';
-
 import Footer from 'components/Footer';
 import Header from 'components/headers/Header';
 

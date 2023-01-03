@@ -1,46 +1,11 @@
-import { count } from 'console';
-import { type } from 'os';
-import { title } from 'process';
-
-import {
-  Card,
-  Box,
-  Pagination,
-  Checkbox,
-  Grid,
-  Snackbar,
-  CardContent,
-  Typography,
-  Stack,
-  useMediaQuery,
-} from '@mui/material';
-import Container from '@mui/material/Container';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import TextField from '@mui/material/TextField';
-import { getAuth, sendEmailVerification } from 'firebase/auth';
-import { list } from 'firebase/storage';
-import error from 'next/error';
-import Link from 'next/link';
-import router, { useRouter } from 'next/router';
-import * as React from 'react';
-import { useState, useContext, useEffect } from 'react';
+import { Box, Pagination, useMediaQuery } from '@mui/material';
+import router from 'next/router';
 import useSWR from 'swr';
 
-import { getBriefUser } from 'api/getBriefUser';
-import { getMyAccount } from 'api/getMyAccount';
 import { getTextList } from 'api/getTextList';
-import { getUser } from 'api/getUser';
-import { getUserTexts } from 'api/getUserTexts';
-import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
-import { setNotifyOnReview } from 'api/setNotifyOnReview';
-import { updateProfile } from 'api/updateProfile';
-import { AuthContext } from 'components/auth/AuthContext';
-import Layout from 'components/layouts/Layout';
-import texts from 'pages/api/texts';
-import { AppContext } from 'states/store';
 import { pagenation } from 'utils/pagenation';
 
+import CenterLoadingSpinner from './CenterLoadingSpinner';
 import TextCard from './TextCard';
 import TextListItem from './TextListItem';
 
@@ -91,45 +56,52 @@ const TextList = () => {
     console.log(error);
   }
 
-  if (!data) return <h1>loading..</h1>;
-  const { count, from, to } = pagenation(data.total, page, data.texts.length);
+  const DataContent = ({ data }) => {
+    if (!data) return <CenterLoadingSpinner />;
+
+    const { count, from, to } = pagenation(data.total, page, data.texts.length);
+
+    return (
+      <>
+        <Box>
+          {data.total}件のうち {from} - {to} 件
+        </Box>
+        {mq ? (
+          <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap' }}>
+            {data.texts.map((item) => {
+              return <TextCard text={item} />;
+            })}
+          </Box>
+        ) : (
+          <Box sx={{ width: '100%', mb: 2, display: 'flex', flexFlow: 'column' }}>
+            {data.texts.map((item) => {
+              return <TextListItem text={item} />;
+            })}
+          </Box>
+        )}
+
+        <Pagination
+          count={count}
+          color='primary'
+          onChange={(e, page) => {
+            delete params.category1;
+            delete params.category2;
+            router.push(
+              thisPath + '?more&' + new URLSearchParams({ ...params, page: page }).toString(),
+            );
+          }}
+          page={+page}
+        />
+      </>
+    );
+  };
 
   return (
-    <Box sx={{ display: 'flex', flexFlow: 'column' }}>
+    <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%' }}>
       <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
         {mq ? <h5>{title}</h5> : <h6>{title}</h6>}
       </Box>
-
-      <Box>
-        {data.total}件のうち {from} - {to} 件
-      </Box>
-
-      {mq ? (
-        <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap' }}>
-          {data.texts.map((item) => {
-            return <TextCard text={item} />;
-          })}
-        </Box>
-      ) : (
-        <Box sx={{ width: '100%', mb: 2, display: 'flex', flexFlow: 'column' }}>
-          {data.texts.map((item) => {
-            return <TextListItem text={item} />;
-          })}
-        </Box>
-      )}
-
-      <Pagination
-        count={count}
-        color='primary'
-        onChange={(e, page) => {
-          delete params.category1;
-          delete params.category2;
-          router.push(
-            thisPath + '?more&' + new URLSearchParams({ ...params, page: page }).toString(),
-          );
-        }}
-        page={+page}
-      />
+      <DataContent data={data} />
     </Box>
   );
 };

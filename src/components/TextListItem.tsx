@@ -1,43 +1,8 @@
 import StarIcon from '@mui/icons-material/Star';
-import {
-  Card,
-  Box,
-  Pagination,
-  Checkbox,
-  Grid,
-  Snackbar,
-  CardContent,
-  Typography,
-  Stack,
-  Skeleton,
-  Rating,
-} from '@mui/material';
-import Container from '@mui/material/Container';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import TextField from '@mui/material/TextField';
-import { width } from '@mui/system';
-import { getAuth, sendEmailVerification } from 'firebase/auth';
-import error from 'next/error';
+import { Box, Rating, Skeleton } from '@mui/material';
 import Link from 'next/link';
-import router, { useRouter } from 'next/router';
-import * as React from 'react';
-import { useState, useContext, useEffect } from 'react';
-import useSWR from 'swr';
 
-import { getBriefUser } from 'api/getBriefUser';
-import { getMyAccount } from 'api/getMyAccount';
-import { getUser } from 'api/getUser';
-import { getUserTexts } from 'api/getUserTexts';
-import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
-import { setNotifyOnReview } from 'api/setNotifyOnReview';
-import { updateProfile } from 'api/updateProfile';
-import { AuthContext } from 'components/auth/AuthContext';
-import Layout from 'components/layouts/Layout';
-import texts from 'pages/api/texts';
-import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
-import { pagenation } from 'utils/pagenation';
 
 const TextListItem = ({ text }) => {
   return (

@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
       const { data: dataTexts, error: errorTexts } = await dbQuery(escape`
         select id, title, number_of_reviews, number_of_sales
-        from texts where 
+        from texts where is_released = true and
         author_id = ${req.headers.user_id}
       `);
 
@@ -26,11 +26,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       let totalSalesCount = 0;
 
       for (let i = 0; i < dataTexts.length; i++) {
-        const { data: dataAccessCount, error: errorAccessCount } = await dbQuery(escape`
-          select count(*) as cnt from accesslogs where text_id=${dataTexts[i].id}
-        `);
-        if (errorAccessCount) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
-
         totalReviewCount += dataTexts[i].number_of_reviews;
         totalSalesCount += dataTexts[i].number_of_sales;
       }

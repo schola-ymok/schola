@@ -12,6 +12,7 @@ import { getMyText } from 'api/getMyText';
 import { releaseText } from 'api/releaseText';
 import { setTextCoverPhotoId } from 'api/setTextCoverPhotoId';
 import { updateText } from 'api/updateText';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import ChapterListMenuButton from 'components/ChaptarListMenuButton';
 import ImageCropDialog from 'components/ImageCropDialog';
 import { AuthContext } from 'components/auth/AuthContext';
@@ -139,7 +140,7 @@ const EditText = () => {
   const [imageUrl, setImageUrl] = useState('/cover-default.svg');
 
   if (error) console.log(error);
-  if (!data) return <h1>loading..</h1>;
+  if (!data) return <CenterLoadingSpinner />;
 
   return (
     <>
@@ -515,7 +516,7 @@ const ChapterList = () => {
   const [isChapterAdding, setIsChapterAdding] = useState(false);
 
   if (error) return <div>failed to load</div>;
-  if (!data) return <div>loading</div>;
+  if (!data) return <CenterLoadingSpinner />;
 
   async function handleAddChapterClick() {
     setIsChapterAdding(true);

@@ -1,24 +1,4 @@
-import {
-  AppBar,
-  Typography,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  Button,
-  Toolbar,
-  IconButton,
-  Menu,
-  MenuItem,
-  Stack,
-  styled,
-  alpha,
-  TextField,
-  Avatar,
-  useMediaQuery,
-  Divider,
-  Box,
-  Grid,
-} from '@mui/material';
+import { Box, Divider, Grid } from '@mui/material';
 import Link from 'next/link';
 
 const Footer = () => {

@@ -1,6 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
-import { FirebaseSignInForm } from 'components/auth/FirebaseSignInForm';
 import { useState } from 'react';
+
+import { FirebaseSignInForm } from 'components/auth/FirebaseSignInForm';
 
 const LoginButton = () => {
   const [open, setOpen] = useState(false);

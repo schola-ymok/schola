@@ -1,7 +1,4 @@
-import {
-  Box, Stack
-} from '@mui/material';
-
+import { Box, Stack } from '@mui/material';
 import { useContext } from 'react';
 
 import AddNewTextButton from 'components/headers/AddNewTextButton';

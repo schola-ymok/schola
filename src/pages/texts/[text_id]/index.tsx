@@ -4,7 +4,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import UpdateIcon from '@mui/icons-material/Update';
-import { Box, Grid, Rating, Stack, useMediaQuery } from '@mui/material';
+import { Box, colors, Grid, Rating, Stack, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useCallback, useContext, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
@@ -18,6 +18,7 @@ import { getUserTexts } from 'api/getUserTexts';
 import { purchaseText } from 'api/purchaseText';
 import AuthorTexts from 'components/AuthorTexts';
 import AvatarButton from 'components/AvatarButton';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import RatingReportPanel from 'components/RatingReportPanel';
 import ReadMoreText from 'components/ReadMoreText';
 import Review from 'components/ReviewItem';
@@ -84,8 +85,7 @@ const Text: NextPage = () => {
     return <>error</>;
   }
   if (errorPurchasedInfo) console.log(errorPurchasedInfo);
-  if (!data) return <h1>loading..</h1>;
-  if (!dataPurchasedInfo) return <h1>loading..</h1>;
+  if (!data || !dataPurchasedInfo) return <CenterLoadingSpinner />;
 
   const learningContents = data.learning_contents == null ? [] : JSON.parse(data.learning_contents);
   const learningRequirements =
@@ -195,7 +195,7 @@ const Text: NextPage = () => {
   const padding = ''.padStart(150 - abstract.length, '　');
 
   const Reviews = () => {
-    if (!dataReviews) return <>loading</>;
+    if (!dataReviews) return <CenterLoadingSpinner />;
 
     const reviews = JSON.parse(JSON.stringify(dataReviews.reviews)); // deep copy
     const displayNum = 5;
@@ -290,7 +290,7 @@ const Text: NextPage = () => {
   */
 
   const Author = () => {
-    if (!dataAuthor) return <>loading..</>;
+    if (!dataAuthor) return <CenterLoadingSpinner />;
 
     return (
       <>
@@ -529,7 +529,7 @@ const Text: NextPage = () => {
                 {dataAuthorTexts ? (
                   <AuthorTexts data={dataAuthorTexts} authorId={data.author_id} />
                 ) : (
-                  'loading'
+                  <CenterLoadingSpinner />
                 )}
               </Box>
             </Box>
@@ -899,7 +899,7 @@ const Text: NextPage = () => {
             {dataAuthorTexts ? (
               <AuthorTexts data={dataAuthorTexts} authorId={data.author_id} />
             ) : (
-              'loading'
+              <CenterLoadingSpinner />
             )}
           </Box>
         </Box>
@@ -916,7 +916,7 @@ const ChapterList = () => {
   });
 
   if (error) return <div>failed to load</div>;
-  if (!data) return <div>loading</div>;
+  if (!data) return <CenterLoadingSpinner />;
 
   function handleChapterClick(item) {
     router.push({

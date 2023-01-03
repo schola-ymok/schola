@@ -1,7 +1,6 @@
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import {
-    IconButton
-} from '@mui/material';
+import { IconButton } from '@mui/material';
+
 import Consts from 'utils/Consts';
 
 const NotificationIcon = ({ onClick }) => {

@@ -1,19 +1,4 @@
-import {
-  Card,
-  Button,
-  Checkbox,
-  Snackbar,
-  CardContent,
-  Link,
-  Grid,
-  Rating,
-  Typography,
-  Divider,
-  Avatar,
-  useMediaQuery,
-  Stack,
-  Box,
-} from '@mui/material';
+import { Box } from '@mui/material';
 
 import Consts from 'utils/Consts';
 

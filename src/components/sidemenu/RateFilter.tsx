@@ -1,12 +1,4 @@
-import {
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
-  Rating,
-  Box,
-} from '@mui/material';
+import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Rating } from '@mui/material';
 import router from 'next/router';
 
 const RateFilter = ({ onChange }) => {

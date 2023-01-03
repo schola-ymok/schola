@@ -1,15 +1,9 @@
-import {
-    Avatar, Box, Divider, IconButton,
-    Menu,
-    MenuItem,
-    Stack
-} from '@mui/material';
+import { Avatar, Box, Divider, IconButton, Menu, MenuItem, Stack } from '@mui/material';
 import router from 'next/router';
 import { useContext, useState } from 'react';
 
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
-
 
 const HeaderAvatarButton = () => {
   const { state, dispatch } = useContext(AppContext);

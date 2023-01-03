@@ -1,41 +1,11 @@
-import {
-  Card,
-  Box,
-  Pagination,
-  Checkbox,
-  Grid,
-  Snackbar,
-  CardContent,
-  Typography,
-  Stack,
-  useMediaQuery,
-} from '@mui/material';
-import Container from '@mui/material/Container';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import TextField from '@mui/material/TextField';
-import { getAuth, sendEmailVerification } from 'firebase/auth';
-import error from 'next/error';
+import { Box, useMediaQuery } from '@mui/material';
 import Link from 'next/link';
-import router, { useRouter } from 'next/router';
-import * as React from 'react';
-import { useState, useContext, useEffect } from 'react';
+import router from 'next/router';
 import useSWR from 'swr';
 
-import { getBriefUser } from 'api/getBriefUser';
-import { getMyAccount } from 'api/getMyAccount';
 import { getTextList } from 'api/getTextList';
-import { getUser } from 'api/getUser';
-import { getUserTexts } from 'api/getUserTexts';
-import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
-import { setNotifyOnReview } from 'api/setNotifyOnReview';
-import { updateProfile } from 'api/updateProfile';
-import { AuthContext } from 'components/auth/AuthContext';
-import Layout from 'components/layouts/Layout';
-import texts from 'pages/api/texts';
-import { AppContext } from 'states/store';
-import { pagenation } from 'utils/pagenation';
 
+import CenterLoadingSpinner from './CenterLoadingSpinner';
 import TextCard from './TextCard';
 import TextListItem from './TextListItem';
 
@@ -93,7 +63,8 @@ const HomeTextList = ({ rootCategory, category }) => {
     console.log(latestTextListError);
   }
 
-  if (!mostSoldTextList || !mostReviewedTextList || !latestTextList) return <h1>loading..</h1>;
+  if (!mostSoldTextList || !mostReviewedTextList || !latestTextList)
+    return <CenterLoadingSpinner />;
 
   const more = latestTextList.total > display_num_latest ? true : false;
 

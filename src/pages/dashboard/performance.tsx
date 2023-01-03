@@ -1,6 +1,4 @@
-import {
-    Box, Link, styled
-} from '@mui/material';
+import { Box, Link, styled } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -12,6 +10,7 @@ import { useContext } from 'react';
 import useSWR from 'swr';
 
 import { getPerformance } from 'api/getPerformance';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
 import DashboardMenuLeft from 'components/sidemenu/DashboardMenuLeft';
@@ -26,7 +25,6 @@ const DashboardPerformance = () => {
   });
 
   if (error) return <h1>error</h1>;
-  if (!data) return <h1>loading..</h1>;
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
@@ -45,11 +43,11 @@ const DashboardPerformance = () => {
     },
   }));
 
-  return (
-    <Box sx={{ display: 'flex' }}>
-      <DashboardMenuLeft />
+  const DataContent = ({ data }) => {
+    if (!data) return <CenterLoadingSpinner />;
 
-      <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%', maxWidth: '700px' }}>
+    return (
+      <>
         <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
           <Box sx={{ display: 'flex', flexFlow: 'column' }}>
             <Box>
@@ -83,26 +81,37 @@ const DashboardPerformance = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.texts.map((item) => (
-                <StyledTableRow
-                  key={item.id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell component='th' scope='row'>
-                    <Link
-                      href={`/texts/${item.id}`}
-                      sx={{ fontWeight: 'bold', textDecoration: 'none' }}
-                    >
-                      {item.title}
-                    </Link>
-                  </TableCell>
-                  <TableCell align='right'>{item.number_of_reviews}</TableCell>
-                  <TableCell align='right'>{item.number_of_sales}</TableCell>
-                </StyledTableRow>
-              ))}
+              {data.texts.map((item) => {
+                return (
+                  <StyledTableRow
+                    key={item.id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell component='th' scope='row'>
+                      <Link
+                        href={`/texts/${item.id}`}
+                        sx={{ fontWeight: 'bold', textDecoration: 'none' }}
+                      >
+                        {item.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell align='right'>{item.number_of_reviews}</TableCell>
+                    <TableCell align='right'>{item.number_of_sales}</TableCell>
+                  </StyledTableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
+      </>
+    );
+  };
+
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <DashboardMenuLeft />
+      <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%', maxWidth: '700px' }}>
+        <DataContent data={data} />
       </Box>
     </Box>
   );

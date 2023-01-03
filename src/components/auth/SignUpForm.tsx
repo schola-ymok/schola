@@ -3,13 +3,13 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { useRouter } from 'next/router';
+import { useContext, useState } from 'react';
 
 import { createNewAccount } from 'api/createNewAcount';
 import { AuthContext } from 'components/auth/AuthContext';
 import { AppContext } from 'states/store';
 
 import type { NextPage } from 'next';
-import { useContext, useState } from 'react';
 
 export const SignUpForm: NextPage = () => {
   const router = useRouter();

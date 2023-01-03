@@ -4,9 +4,9 @@ import { useContext } from 'react';
 import useSWR from 'swr';
 
 import { getPurchasedTextList } from 'api/getPurchasedTextList';
+import TextListItem from 'components/TextListItem';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
-import TextListItem from 'components/TextListItem';
 import { pagenation } from 'utils/pagenation';
 
 const PurchasedTexts = () => {

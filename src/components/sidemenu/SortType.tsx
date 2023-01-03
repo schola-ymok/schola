@@ -1,7 +1,5 @@
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Box } from '@mui/material';
-import router, { useRouter } from 'next/router';
-
-import Consts from 'utils/Consts';
+import { Box, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { useRouter } from 'next/router';
 
 const SortType = ({ setSortType }) => {
   const router = useRouter();

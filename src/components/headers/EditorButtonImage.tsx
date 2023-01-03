@@ -1,7 +1,6 @@
 import InsertPhotoIcon from '@mui/icons-material/InsertPhotoOutlined';
-import {
-    IconButton
-} from '@mui/material';
+import { IconButton } from '@mui/material';
+
 import Consts from 'utils/Consts';
 
 const EditorButtonImage = ({ handleSelectFile }) => {

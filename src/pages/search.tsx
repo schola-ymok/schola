@@ -1,30 +1,10 @@
-import {
-  Card,
-  Box,
-  Button,
-  Checkbox,
-  Snackbar,
-  CardContent,
-  Link,
-  Grid,
-  Typography,
-  Pagination,
-} from '@mui/material';
-import { ref } from 'firebase/storage';
-import router, { useRouter } from 'next/router';
-import { useState, useEffect, useRef } from 'react';
-import useSWR from 'swr';
+import { Box } from '@mui/material';
+import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
 
-import { getTextList } from 'api/getTextList';
 import SearchTextList from 'components/SearchTextList';
-import TextCard from 'components/TextCard';
 import Layout from 'components/layouts/Layout';
 import FilterMenu from 'components/sidemenu/FilterMenu';
-import PriceFilter from 'components/sidemenu/PriceFilter';
-import RateFilter from 'components/sidemenu/RateFilter';
-import SortType from 'components/sidemenu/SortType';
-import Consts from 'utils/Consts';
-import { pagenation } from 'utils/pagenation';
 
 import type { NextPage } from 'next';
 

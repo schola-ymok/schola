@@ -9,6 +9,7 @@ import { getUser } from 'api/getUser';
 import { getUserTexts } from 'api/getUserTexts';
 import AuthorTexts from 'components/AuthorTexts';
 import AvatarButton from 'components/AvatarButton';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import ReadMoreText from 'components/ReadMoreText';
 import Layout from 'components/layouts/Layout';
 import Consts from 'utils/Consts';
@@ -35,7 +36,7 @@ const User = () => {
 
   const mq = useMediaQuery('(min-width:1000px)');
 
-  if (!data || !userTextsData) return <h1>loading..</h1>;
+  if (!data || !userTextsData) return <CenterLoadingSpinner />;
 
   const NumberBox = ({ label, value }) => (
     <Box sx={{ display: 'flex', flexFlow: 'column', mr: 3 }}>

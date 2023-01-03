@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
 
-
 import PriceFilter from './PriceFilter';
 import RateFilter from './RateFilter';
 import SortType from './SortType';

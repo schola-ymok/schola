@@ -1,6 +1,4 @@
-import {
-    Box
-} from '@mui/material';
+import { Box } from '@mui/material';
 import { useContext } from 'react';
 
 import { AppContext } from 'states/store';

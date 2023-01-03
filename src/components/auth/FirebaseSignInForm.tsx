@@ -1,12 +1,10 @@
 import {
-  getAuth,
   EmailAuthProvider,
-  GoogleAuthProvider,
   FacebookAuthProvider,
-  // TwitterAuthProvider,
+  getAuth,
+  GoogleAuthProvider,
 } from 'firebase/auth';
 import { auth } from 'firebaseui';
-import { useState, useEffect } from 'react';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 import 'libs/firebase/firebase'; // Initialize FirebaseApp

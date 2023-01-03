@@ -1,7 +1,6 @@
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import {
-    IconButton
-} from '@mui/material';
+import { IconButton } from '@mui/material';
+
 import Consts from 'utils/Consts';
 
 const EditorButtonList = ({ onClick }) => {

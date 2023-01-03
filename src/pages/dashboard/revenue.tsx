@@ -1,6 +1,4 @@
-import {
-    Box, Divider, Grid, Link, Pagination, Rating
-} from '@mui/material';
+import { Box, Divider, Grid, Link, Pagination, Rating } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
@@ -10,6 +8,7 @@ import { getReviewListForMyText } from 'api/getReviewListForMyText';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
 import DashboardMenu from 'components/sidemenu/DashboardMenuLeft';
+import DashboardMenuLeft from 'components/sidemenu/DashboardMenuLeft';
 import { pagenation } from 'utils/pagenation';
 
 const DashboardReviews = () => {
@@ -18,57 +17,15 @@ const DashboardReviews = () => {
   const page = router.query.page ?? 1;
   const { authAxios } = useContext(AuthContext);
 
-  const { data, error } = useSWR(
-    `/dashboard/reviews?page=${page}`,
-    () => getReviewListForMyText(authAxios, page - 1),
-    {
-      revalidateOnFocus: false,
-    },
-  );
-
-  if (error) return <h1>error</h1>;
-  if (!data) return <h1>loading..</h1>;
-
-  console.log(data);
-
-  const { count, from, to } = pagenation(data.total, page, data.reviews.length);
-
   return (
-    <Grid container>
-      <Grid item xs={2}>
-        <DashboardMenu />
-      </Grid>
-      <Grid item xs={10}>
-        <h2>
-          レビュー一覧：{data.total}件 （{from} - {to} を表示）
-        </h2>
-        <Stack>
-          {data.reviews.map((item) => {
-            return (
-              <Box key={item.id}>
-                <Link href={`/texts/${item.text_id}/reviews/${item.id}/`}>
-                  <h4>
-                    <Rating value={item.rate} size='small' />
-                    {item.title}
-                  </h4>
-                  <Box>{item.comment}</Box>
-                  <span>{item.user_display_name}</span>
-                </Link>
-                <Divider />
-              </Box>
-            );
-          })}
-        </Stack>
+    <Box sx={{ display: 'flex' }}>
+      <DashboardMenuLeft />
+      <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%', maxWidth: '700px' }}>
         <Box>
-          <Pagination
-            count={count}
-            color='primary'
-            onChange={(e, page) => router.replace(`/dashboard/reviews?page=${page}`)}
-            page={+page}
-          />
+          <Box sx={{ fontSize: '1.2em', fontWeight: 'bold', mb: 1 }}>未実装：登録口座への送金</Box>
         </Box>
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   );
 };
 

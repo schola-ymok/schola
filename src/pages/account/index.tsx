@@ -1,4 +1,3 @@
-
 import { Button, Checkbox, InputBase, Snackbar } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -13,9 +12,9 @@ import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
 import { setNotifyOnReview } from 'api/setNotifyOnReview';
 import { setProfilePhotoId } from 'api/setProfilePhotoId';
 import { updateProfile } from 'api/updateProfile';
-import { AuthContext } from 'components/auth/AuthContext';
 import AvatarButton from 'components/AvatarButton';
 import ImageCropDialog from 'components/ImageCropDialog';
+import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';

@@ -1,9 +1,7 @@
 import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkIcon from '@mui/icons-material/Link';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import {
-    Box, useMediaQuery
-} from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -11,10 +9,9 @@ import { getUser } from 'api/getUser';
 import { getUserTexts } from 'api/getUserTexts';
 import AuthorTexts from 'components/AuthorTexts';
 import AvatarButton from 'components/AvatarButton';
-import Layout from 'components/layouts/Layout';
 import ReadMoreText from 'components/ReadMoreText';
+import Layout from 'components/layouts/Layout';
 import Consts from 'utils/Consts';
-
 
 const User = () => {
   const router = useRouter();
@@ -106,7 +103,7 @@ const User = () => {
     <AvatarButton
       photoId={data.photo_id}
       onClick={() => {
-        router.push(`users/` + data.id);
+        router.push(`/users/` + data.id);
       }}
       size={100}
     />

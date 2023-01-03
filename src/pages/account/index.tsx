@@ -13,6 +13,7 @@ import { setNotifyOnReview } from 'api/setNotifyOnReview';
 import { setProfilePhotoId } from 'api/setProfilePhotoId';
 import { updateProfile } from 'api/updateProfile';
 import AvatarButton from 'components/AvatarButton';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import ImageCropDialog from 'components/ImageCropDialog';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
@@ -59,7 +60,7 @@ const Account = () => {
     console.log(error);
   }
 
-  if (!data) return <h1>loading..</h1>;
+  if (!data) return <CenterLoadingSpinner />;
 
   const handleNotifyOnPurchaseChange = (event) => {
     setNotifyOnPurchaseCheck(event.target.checked);

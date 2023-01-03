@@ -1,7 +1,5 @@
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Box, Button, IconButton } from '@mui/material';
-import { slug } from 'github-slugger';
-import { Node, toString } from 'hast-util-to-string';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -11,7 +9,6 @@ import { remark } from 'remark';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import useSWR from 'swr';
-import { visit } from 'unist-util-visit';
 
 import { getPurchasedInfo } from 'api/getPurchasedInfo';
 import { getViewText } from 'api/getViewText';
@@ -20,8 +17,11 @@ import 'katex/dist/katex.min.css';
 import 'github-markdown-css/github-markdown.css';
 
 import Consts from 'utils/Consts';
+import { extractToc } from 'utils/extractToc';
 
 import type { NextPage } from 'next';
+
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 
 const TextView: NextPage = () => {
   const router = useRouter();
@@ -41,34 +41,8 @@ const TextView: NextPage = () => {
     },
   );
 
-  const handleWriteReviewClick = () => {
-    router.push(`/texts/${textId}/reviews/edit`);
-  };
-
   if (error || errorPurchasedInfo) console.log('error');
-  if (!data || !dataPurchasedInfo) return <h1>loading..</h1>;
-
-  console.log(data);
-
-  const extractToc = (body) => {
-    var result = [];
-
-    if (body === null) return result;
-    const ast = remark().parse(body);
-
-    visit(ast, 'heading', (child) => {
-      const text = toString(child as unknown as Node);
-      const id = slug(text);
-      const depth = child.depth;
-      result.push({
-        text,
-        id,
-        depth,
-      });
-    });
-
-    return result;
-  };
+  if (!data || !dataPurchasedInfo) return <CenterLoadingSpinner />;
 
   var tocs = {};
   Object.keys(data.chapters).map((id) => {
@@ -195,7 +169,6 @@ const Toc = ({ chapters, tocs, title }) => {
         </Box>
         <Box sx={{ display: 'flex', flexFlow: 'column', p: 0.5 }}>
           {Object.keys(chapters).map((id) => {
-            const fontWeight = cid == id ? 'bold' : 'normal';
             return (
               <>
                 <Box
@@ -203,7 +176,6 @@ const Toc = ({ chapters, tocs, title }) => {
                   sx={{
                     cursor: 'pointer',
                     fontSize: '0.9em',
-                    fontWeight: fontWeight,
                     '&:hover': {
                       color: Consts.COLOR.VIEW.Primary,
                       textDecoration: 'underline',

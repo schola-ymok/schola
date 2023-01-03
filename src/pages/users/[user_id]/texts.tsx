@@ -4,6 +4,7 @@ import useSWR from 'swr';
 
 import { getBriefUser } from 'api/getBriefUser';
 import { getUserTexts } from 'api/getUserTexts';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import TextCard from 'components/TextCard';
 import TextListItem from 'components/TextListItem';
 import Layout from 'components/layouts/Layout';
@@ -36,9 +37,37 @@ const UserTexts = () => {
     console.log(userTextsError);
   }
 
-  if (!briefUserData || !userTextsData) return <h1>loading..</h1>;
+  if (!briefUserData) return <CenterLoadingSpinner />;
 
-  const { count, from, to } = pagenation(userTextsData.total, page, userTextsData.texts.length);
+  const DataContent = ({ data }) => {
+    if (!data) return <CenterLoadingSpinner />;
+    const { count, from, to } = pagenation(data.total, page, data.texts.length);
+
+    return (
+      <Box>
+        {data.total}件 （{from} - {to} を表示）
+        {mq ? (
+          <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap' }}>
+            {data.texts.map((item) => {
+              return <TextCard text={item} />;
+            })}
+          </Box>
+        ) : (
+          <Box sx={{ width: '100%', mb: 2, display: 'flex', flexFlow: 'column' }}>
+            {data.texts.map((item) => {
+              return <TextListItem text={item} />;
+            })}
+          </Box>
+        )}
+        <Pagination
+          count={count}
+          color='primary'
+          onChange={(e, page) => router.replace(`/users/${userId}/texts?page=${page}`)}
+          page={+page}
+        />
+      </Box>
+    );
+  };
 
   return (
     <Box>
@@ -61,28 +90,7 @@ const UserTexts = () => {
         </Box>
         <Box sx={{ fontSize: '1.2em', mt: 1, ml: 0.5 }}>が執筆したテキスト一覧</Box>
       </Box>
-      <Box>
-        {userTextsData.total}件 （{from} - {to} を表示）
-        {mq ? (
-          <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap' }}>
-            {userTextsData.texts.map((item) => {
-              return <TextCard text={item} />;
-            })}
-          </Box>
-        ) : (
-          <Box sx={{ width: '100%', mb: 2, display: 'flex', flexFlow: 'column' }}>
-            {userTextsData.texts.map((item) => {
-              return <TextListItem text={item} />;
-            })}
-          </Box>
-        )}
-        <Pagination
-          count={count}
-          color='primary'
-          onChange={(e, page) => router.replace(`/users/${userId}/texts?page=${page}`)}
-          page={+page}
-        />
-      </Box>
+      <DataContent data={userTextsData} />
     </Box>
   );
 };

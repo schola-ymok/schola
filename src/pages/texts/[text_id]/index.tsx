@@ -15,6 +15,7 @@ import { getReviews } from 'api/getReviews';
 import { getText } from 'api/getText';
 import { getUser } from 'api/getUser';
 import { getUserTexts } from 'api/getUserTexts';
+import { getViewText } from 'api/getViewText';
 import { purchaseText } from 'api/purchaseText';
 import AuthorTexts from 'components/AuthorTexts';
 import AvatarButton from 'components/AvatarButton';
@@ -25,7 +26,9 @@ import Review from 'components/ReviewItem';
 import ShowMore from 'components/ShowMore';
 import { AuthContext } from 'components/auth/AuthContext';
 import ViewTextAbstractLayout from 'components/layouts/ViewTextAbstractLayout';
+import chapters from 'pages/api/texts/[text_id]/chapters';
 import Consts from 'utils/Consts';
+import { extractToc } from 'utils/extractToc';
 
 import type { NextPage } from 'next';
 
@@ -212,82 +215,6 @@ const Text: NextPage = () => {
       </Box>
     );
   };
-
-  /*
-  const More = ({ children, onClick }) => (
-    <>
-      <Divider sx={{ mb: 1 }} />
-      <Box
-        component='span'
-        onClick={onClick}
-        sx={{
-          fontWeight: 'bold',
-          color: Consts.COLOR.Primary,
-          cursor: 'pointer',
-          fontSize: '0.9em',
-          '&:hover': {
-            color: Consts.COLOR.PrimaryDark,
-            textDecoration: 'underline',
-          },
-        }}
-      >
-        {children}
-      </Box>
-    </>
-  );
-  */
-
-  /*
-  const AuthorTexts = ({ authorId }) => {
-    if (!dataAuthorTexts) return <>loading</>;
-
-    const _texts = JSON.parse(JSON.stringify(dataAuthorTexts.texts)); // deep copy
-
-    const texts = _texts.filter((item) => {
-      return item.id !== textId;
-    });
-
-    const displayNum = 6;
-    const more = dataAuthorTexts.texts.length > displayNum;
-
-    texts.splice(displayNum);
-
-    const showMore = () => {
-      if (!more) return null;
-      return (
-        <ShowMore
-          onClick={() => {
-            router.push(`/users/${authorId}/texts`);
-          }}
-        >
-          著者の全てのテキストを参照
-        </ShowMore>
-      );
-    };
-
-    if (mq) {
-      return (
-        <>
-          <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap' }}>
-            {texts.map((item) => {
-              return <TextCard text={item} />;
-            })}
-          </Box>
-          {showMore()}
-        </>
-      );
-    } else {
-      return (
-        <Box sx={{ width: '100%', mb: 2, display: 'flex', flexFlow: 'column' }}>
-          {texts.map((item) => {
-            return <TextListItem text={item} />;
-          })}
-          {showMore()}
-        </Box>
-      );
-    }
-  };
-  */
 
   const Author = () => {
     if (!dataAuthor) return <CenterLoadingSpinner />;
@@ -497,12 +424,14 @@ const Text: NextPage = () => {
               <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>解説</Box>
 
               <Box sx={{ pl: 1, py: 1 }}>
-                <ReadMoreText height='220'>{data.abstract}</ReadMoreText>
+                <ReadMoreText height='220' fontSize='0.9em'>
+                  {data.abstract}
+                </ReadMoreText>
               </Box>
             </Box>
 
             <Box sx={{ pl: 2 }}>
-              <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>Chapters</Box>
+              <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>目次</Box>
               <Box sx={{ pl: 1, py: 1 }}>
                 <ChapterList />
               </Box>
@@ -527,7 +456,7 @@ const Text: NextPage = () => {
               <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>著者によるその他のテキスト</Box>
               <Box sx={{ pl: 1, py: 1 }}>
                 {dataAuthorTexts ? (
-                  <AuthorTexts data={dataAuthorTexts} authorId={data.author_id} />
+                  <AuthorTexts data={dataAuthorTexts} authorId={data.author_id} textId={textId} />
                 ) : (
                   <CenterLoadingSpinner />
                 )}
@@ -562,13 +491,13 @@ const Text: NextPage = () => {
             />
             <Box sx={{ fontSize: '0.8em', fontWeight: 'bold', pl: 1 }}>{data.title}</Box>
             {!dataPurchasedInfo.purchased && (
-              <Box sx={{ fontSize: '2em', fontWeight: 'bold', pl: 1 }}>
+              <Box sx={{ fontSize: '2em', fontWeight: 'bold', pl: 1, height: '40px' }}>
                 &yen;{data.price.toLocaleString()}
               </Box>
             )}
             {dataPurchasedInfo.purchased || dataPurchasedInfo.yours ? (
               <PanelButton
-                mt={0}
+                mt={1}
                 onClick={handleReadTextClick}
                 colors={{
                   backGround: '#ffffff',
@@ -872,7 +801,7 @@ const Text: NextPage = () => {
         </Box>
 
         <Box sx={{ px: { xs: 1, sm: 4 }, mt: { xs: 0, sm: 1 } }}>
-          <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>Chapters</Box>
+          <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>目次</Box>
           <Box sx={{ pl: 1, py: { xs: 0.2, sm: 1 } }}>
             <ChapterList />
           </Box>
@@ -897,7 +826,7 @@ const Text: NextPage = () => {
           <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>著者によるその他のテキスト</Box>
           <Box sx={{ pl: 1, py: 0.5 }}>
             {dataAuthorTexts ? (
-              <AuthorTexts data={dataAuthorTexts} authorId={data.author_id} />
+              <AuthorTexts data={dataAuthorTexts} authorId={data.author_id} textId={textId} />
             ) : (
               <CenterLoadingSpinner />
             )}
@@ -911,12 +840,25 @@ const Text: NextPage = () => {
 const ChapterList = () => {
   const router = useRouter();
   const textId = router.query.text_id;
-  const { data, error } = useSWR(`/texts/${textId}/chapters/`, () => getChapterList(textId), {
+
+  const { data, error } = useSWR(`texts/${textId}/view`, () => getViewText(textId), {
     revalidateOnFocus: false,
   });
 
+  /*
+  const { data, error } = useSWR(`/texts/${textId}/chapters/`, () => getChapterList(textId), {
+    revalidateOnFocus: false,
+  });
+  */
+
   if (error) return <div>failed to load</div>;
   if (!data) return <CenterLoadingSpinner />;
+
+  var tocs = {};
+  Object.keys(data.chapters).map((id) => {
+    const toc = extractToc(data.chapters[id].content);
+    tocs[id] = toc;
+  });
 
   function handleChapterClick(item) {
     router.push({
@@ -925,20 +867,27 @@ const ChapterList = () => {
     });
   }
 
-  return (
-    <Box>
-      {data.length > 0 ? (
-        <Stack>
-          {data.map((item) => (
+  /*
+          {data.chapters.((item) => (
             <Box key={item.id} onClick={() => handleChapterClick(item)}>
               {item.title}-[{item.id}]
             </Box>
           ))}
-        </Stack>
-      ) : (
-        <span>チャプターはありません</span>
-      )}
-    </Box>
+          */
+
+  return (
+    <ReadMoreText height={200} id={textId} fontSize={'0.9em'}>
+      {Object.keys(data.chapters).map((id) => {
+        return (
+          <>
+            <Box>{data.chapters[id].title}</Box>
+            {tocs[id].map((item) => {
+              return <Box sx={{ ml: item.depth }}>{item.text}</Box>;
+            })}
+          </>
+        );
+      })}
+    </ReadMoreText>
   );
 };
 

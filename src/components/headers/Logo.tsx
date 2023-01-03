@@ -11,7 +11,7 @@ const Logo = () => {
           sx={{
             my: 'auto',
             width: 100,
-            height: 25,
+            py: 1.2,
           }}
           src={'/logo-s.svg'}
         />

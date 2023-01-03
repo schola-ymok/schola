@@ -168,7 +168,11 @@ const EditChapter: NextPage = () => {
             p: 1,
           }}
         >
-          <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>
+          <ReactMarkdown
+            className='markdown-body p-3'
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+          >
             {content}
           </ReactMarkdown>
         </Box>

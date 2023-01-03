@@ -6,6 +6,7 @@ import useSWR from 'swr';
 import { getBriefText } from 'api/getBriefText';
 import { getMyReview } from 'api/getMyReview';
 import { upsertReview } from 'api/upsertReview';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import MiniText from 'components/MiniText';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
@@ -60,9 +61,8 @@ const EditReview: NextPage = () => {
   }, [dataReview]);
 
   if (errorText) console.log(errorText);
-  if (!dataText) return <h1>loading..</h1>;
   if (errorReview) console.log(errorReview);
-  if (!dataReview) return <h1>loading..</h1>;
+  if (!dataText || !dataReview) return <CenterLoadingSpinner />;
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>

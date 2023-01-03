@@ -17,6 +17,8 @@ import { getPurchasedInfo } from 'api/getPurchasedInfo';
 import { getViewText } from 'api/getViewText';
 import { AuthContext } from 'components/auth/AuthContext';
 import 'katex/dist/katex.min.css';
+import 'github-markdown-css/github-markdown.css';
+
 import Consts from 'utils/Consts';
 
 import type { NextPage } from 'next';
@@ -74,17 +76,11 @@ const TextView: NextPage = () => {
     tocs[id] = toc;
   });
 
-  //<ViewTextHeader backPath={`/texts/${router.query.text_id}`} title={data.title} />
   return (
     <Box sx={{ display: 'flex' }}>
       <Box sx={{ width: '350px' }}>
         <Toc chapters={data.chapters} tocs={tocs} title={data.title} />
       </Box>
-      {dataPurchasedInfo.yours !== true && (
-        <Button variant='contained' size='small' onClick={handleWriteReviewClick}>
-          レビューを書く
-        </Button>
-      )}
       <Box sx={{ width: '600px' }}>
         <ChapterContent data={data} />
       </Box>
@@ -112,6 +108,7 @@ const ChapterContent = ({ data }) => {
   return (
     <Box sx={{ mt: 2 }}>
       <ReactMarkdown
+        className='markdown-body p-3'
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex, rehypeSlug]}
       >
@@ -195,7 +192,6 @@ const Toc = ({ chapters, tocs, title }) => {
           >
             <ArrowBackIosIcon sx={{ my: 'auto' }} />
           </IconButton>
-          <Box sx={{ fontSize: '1.0em', fontWeight: 'bold', my: 'auto' }}>{title}</Box>
         </Box>
         <Box sx={{ display: 'flex', flexFlow: 'column', p: 0.5 }}>
           {Object.keys(chapters).map((id) => {

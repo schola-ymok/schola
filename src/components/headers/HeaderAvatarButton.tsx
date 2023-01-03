@@ -16,6 +16,10 @@ const HeaderAvatarButton = () => {
     setAnchorEl(event.currentTarget);
   };
 
+  const imageUrl = state.photoId
+    ? Consts.IMAGE_STORE_URL + state.photoId + '.png'
+    : '/avatar-default.svg';
+
   return (
     <Box sx={{ display: 'flex' }}>
       <IconButton
@@ -26,14 +30,7 @@ const HeaderAvatarButton = () => {
         }}
         onClick={handleMenu}
       >
-        {state.photoId ? (
-          <Avatar
-            sx={{ width: 40, height: 40 }}
-            src={Consts.IMAGE_STORE_URL + state.photoId + '.png'}
-          />
-        ) : (
-          <Avatar sx={{ width: 40, height: 40 }}>{state.accountName.substring(0, 2)}</Avatar>
-        )}
+        <Avatar sx={{ width: 40, height: 40 }} src={imageUrl} />
       </IconButton>
 
       <Menu

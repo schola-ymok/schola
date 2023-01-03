@@ -1,0 +1,157 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 95%;
+}
+
+h1 {
+  font-size: 2.5em;
+}
+
+h2 {
+  font-size: 2.25em;
+}
+
+h3 {
+  font-size: 2rem;
+}
+
+h4 {
+  font-size: 1.75em;
+}
+
+h5 {
+  font-size: 1.5em;
+}
+
+h6 {
+  font-size: 1.25em;
+}
+
+ul.footer {
+  padding-top: 1em;
+}
+li.footer {
+  font-size: 0.8em;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+}
+
+ul.category {
+  list-style: none;
+}
+
+li.category {
+  list-style: none;
+  font-size: 0.8em;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+}
+
+a {
+  text-decoration: none;
+  color: #000000;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #005050;
+}
+
+a.no-hover:hover {
+  text-decoration: none;
+  color: #000000;
+}
+
+.ReactTags__tags {
+}
+
+.ReactTags__tagInput {
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.ReactTags__selected span.ReactTags__tag {
+  display: inline-block;
+  font-size: 1em;
+  color: #008080;
+  background-color: #e0eaea;
+  padding: 4px;
+  margin: 3px;
+  white-space: nowrap;
+}
+
+.ReactTags__tagInput input.ReactTags__tagInputField,
+.ReactTags__tagInput input.ReactTags__tagInputField:focus {
+  font-size: 1em;
+  border: 0px;
+  height: 60px;
+  width: 100%;
+  padding: 8px;
+  border: 2px solid grey;
+  outline: none;
+}
+.ReactTags__tagInput input.ReactTags__tagInputField:hover {
+  border: 2px solid #008080;
+}
+
+.ReactTags__editInput {
+}
+
+.ReactTags__editTagInput {
+  display: inline-flex;
+}
+
+.ReactTags__remove {
+  border: none;
+  cursor: pointer;
+  background: none;
+  margin-left: 8px;
+  margin-right: 4px;
+  font-weight: bold;
+  font-size: 0.9em;
+  color: grey;
+}
+.ReactTags__remove:hover {
+  color: black;
+}
+
+.mde {
+  width: 100%;
+  height: calc(100vh - 68px);
+  font-size: 100%;
+  font-family: inherit;
+  overflow-y: auto;
+  cursor: auto;
+  border: none;
+  resize: none;
+  padding: 8px;
+}
+.mde:focus {
+  outline: none;
+}
+.mde::-webkit-scrollbar-thumb {
+  background-color: #008080;
+}
+
+.learningRequirements {
+  padding-left: 30px;
+  list-style-type: disc;
+  list-style-position: outside;
+}
+
+.MuiRadio-root {
+  padding: 5px;
+}
+
+.PrivateSwitchBase-input {
+  padding: 0px;
+  margin: 0px;
+}

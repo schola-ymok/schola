@@ -11,7 +11,7 @@ const LoginButton = () => {
       <Button
         variant='contained'
         onClick={() => setOpen(true)}
-        sx={{ pr: 2, pl: 2, fontWeight: 'bold' }}
+        sx={{ pr: 3, pl: 3, fontWeight: 'bold', height: 40 }}
       >
         ログイン
       </Button>

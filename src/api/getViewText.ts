@@ -1,10 +1,8 @@
-import axios from 'axios';
-
-export const getViewText = async (textId) => {
+export const getViewText = async (textId, authAxios) => {
   //try {
   let url = '/api/texts/' + textId + '/view';
 
-  const res = await axios.get(url);
+  const res = await authAxios.get(url);
   return res.data;
   //} catch (error) {
   // return { error: error };

@@ -1,4 +1,4 @@
-import { Box, Stack } from '@mui/material';
+import { Box, Skeleton, Stack } from '@mui/material';
 import { useContext } from 'react';
 
 import AddNewTextButton from 'components/headers/AddNewTextButton';
@@ -9,7 +9,7 @@ import NotificationIcon from 'components/headers/NotificationIcon';
 import SearchBox from 'components/headers/SearchBox';
 import { AppContext } from 'states/store';
 
-const Header = ({}) => {
+const Header = ({ authLoading }) => {
   const { state, dispatch } = useContext(AppContext);
 
   return (
@@ -20,35 +20,59 @@ const Header = ({}) => {
             display: 'flex',
             alignItems: 'center',
             width: '100%',
+            height: '54px',
             px: { xs: 0.4, sm: 2 },
           }}
         >
           <Logo />
 
-          <Box
-            sx={{
-              display: { xs: 'none', sm: 'block' },
-              ml: 2,
-            }}
-          >
-            <SearchBox />
-          </Box>
+          {!authLoading && (
+            <>
+              <Box
+                sx={{
+                  display: { xs: 'none', sm: 'block' },
+                  ml: 2,
+                }}
+              >
+                <SearchBox />
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  marginLeft: 'auto',
+                  alignItems: 'center',
+                }}
+              >
+                {state.isLoggedin ? (
+                  <>
+                    <NotificationIcon /> <HeaderAvatarButton /> <AddNewTextButton />
+                  </>
+                ) : (
+                  <LoginButton />
+                )}
+              </Box>
+            </>
+          )}
 
-          <Box
-            sx={{
-              display: 'flex',
-              marginLeft: 'auto',
-              alignItems: 'center',
-            }}
-          >
-            {state.isLoggedin ? (
-              <>
-                <NotificationIcon /> <HeaderAvatarButton /> <AddNewTextButton />
-              </>
-            ) : (
-              <LoginButton />
-            )}
-          </Box>
+          {authLoading && (
+            <>
+              <Box
+                sx={{
+                  display: 'flex',
+                  marginLeft: 'auto',
+                  alignItems: 'center',
+                }}
+              >
+                <NotificationIcon />{' '}
+                <Box sx={{ p: '7px' }}>
+                  <Skeleton variant='circular' width={40} height={40} />
+                </Box>
+                <Box sx={{ ml: 1 }}>
+                  <Skeleton variant='rectangular' width={76} height={40} />
+                </Box>
+              </Box>
+            </>
+          )}
         </Box>
         <Box
           sx={{

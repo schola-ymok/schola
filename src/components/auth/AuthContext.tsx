@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
 import { useRouter } from 'next/router';
@@ -7,7 +6,9 @@ import { createContext, memo, useContext, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { getMyBriefAccount } from 'api/getMyBriefAccount';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { SignUpForm } from 'components/auth/SignUpForm';
+import Header from 'components/headers/Header';
 import { AppContext } from 'states/store';
 
 const authAxios = axios.create();
@@ -37,11 +38,13 @@ const Root = memo((props) => {
   }
 
   function CLoading() {
-    console.log('##loading');
     return (
-      <Box sx={{ display: 'flex' }}>
-        <CircularProgress />
-      </Box>
+      <>
+        <Header authLoading />
+        <Box sx={{ width: '100%', height: '100vh' }}>
+          <CenterLoadingSpinner />
+        </Box>
+      </>
     );
   }
 

@@ -33,7 +33,7 @@ const TextView: NextPage = () => {
   const textId = router.query.text_id;
   const mq = useMediaQuery('(min-width:1000px)');
 
-  const { data, error } = useSWR(`texts/${textId}/view`, () => getViewText(textId), {
+  const { data, error } = useSWR(`texts/${textId}/view`, () => getViewText(textId, authAxios), {
     revalidateOnFocus: false,
   });
 

@@ -17,6 +17,7 @@ export const SignUpForm: NextPage = () => {
   const [result, setResult] = useState(null);
   const { authAxios } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
+  const [buttonEnable, setButtonEnable] = useState(true);
 
   const onDisplayNameChange = (value) => {
     setDisplayName(value);
@@ -29,6 +30,7 @@ export const SignUpForm: NextPage = () => {
   async function save() {
     setResult(null);
     setIsLoading(true);
+    setButtonEnable(false);
     const { userId, duplicate, error } = await createNewAccount(
       accountName,
       displayName,
@@ -38,10 +40,12 @@ export const SignUpForm: NextPage = () => {
     if (error) {
       setResult('error');
       setIsLoading(false);
+      setButtonEnable(true);
       return;
     } else if (duplicate) {
       setResult('duplicate');
       setIsLoading(false);
+      setButtonEnable(true);
       return;
     } else if (userId) {
       setResult('complete');
@@ -164,6 +168,7 @@ export const SignUpForm: NextPage = () => {
       )}
 
       <Button
+        disabled={!buttonEnable}
         variant='contained'
         sx={{ fontWeight: 'bold', fontSize: '1.1em', width: 100, mx: 'auto', mt: 2 }}
         onClick={() => save()}

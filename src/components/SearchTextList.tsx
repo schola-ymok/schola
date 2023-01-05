@@ -5,6 +5,7 @@ import useSWR from 'swr';
 import { getTextList } from 'api/getTextList';
 import { pagenation } from 'utils/pagenation';
 
+import CenterLoadingSpinner from './CenterLoadingSpinner';
 import TextCard from './TextCard';
 import TextListItem from './TextListItem';
 
@@ -33,7 +34,7 @@ const SearchTextList = () => {
   );
 
   if (error) console.log(error);
-  if (!data) return <h1>loading..</h1>;
+  if (!data) return <CenterLoadingSpinner />;
   const { count, from, to } = pagenation(data.total, page, data.texts.length);
 
   return (

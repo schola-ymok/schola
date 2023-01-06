@@ -29,6 +29,7 @@ const EditText = () => {
   const textId = router.query.text_id;
   const [price, setPrice] = useState(100);
   const [abstract, setAbstract] = useState('');
+  const [changed, setChanged] = useState(false);
   const [explanation, setExplanation] = useState('');
   const [title, setTitle] = useState('');
   const [category1, setCategory1] = useState('nul');
@@ -156,6 +157,7 @@ const EditText = () => {
         handleSaveClick={handleSaveClick}
         handleReleaseToggle={handleReleaseToggle}
         release={data.is_released}
+        enableSave={changed}
       />
 
       <Box
@@ -231,7 +233,10 @@ const EditText = () => {
               sx={{ fontSize: '1.3em', fontWeight: 'bold' }}
               variant='outlined'
               fullWidth
-              onChange={onTitleChange}
+              onChange={(e) => {
+                onTitleChange(e);
+                setChanged(true);
+              }}
             />
           </Box>
 

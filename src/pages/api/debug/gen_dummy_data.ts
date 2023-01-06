@@ -597,10 +597,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
       if (!description) description = '概要なし';
 
+      /*
       const AUTHOR_ID =
-        Math.random() > 0.1
+        Math.random() > 0.95
           ? REP_AUTHOR_ID
           : 'uid-' + ('0000' + Math.floor(Math.random() * USER_NUM)).slice(-4);
+          */
+      const AUTHOR_ID = 'uid-' + ('0000' + Math.floor(Math.random() * USER_NUM)).slice(-4);
 
       const price = Math.floor(Math.random() * 10 + 1) * 100;
 

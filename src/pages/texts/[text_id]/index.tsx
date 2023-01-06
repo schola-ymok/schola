@@ -840,8 +840,9 @@ const Text: NextPage = () => {
 const ChapterList = () => {
   const router = useRouter();
   const textId = router.query.text_id;
+  const { authAxios } = useContext(AuthContext);
 
-  const { data, error } = useSWR(`texts/${textId}/view`, () => getViewText(textId), {
+  const { data, error } = useSWR(`texts/${textId}/view`, () => getViewText(textId, authAxios), {
     revalidateOnFocus: false,
   });
 
@@ -851,6 +852,7 @@ const ChapterList = () => {
   });
   */
 
+  console.log(error);
   if (error) return <div>failed to load</div>;
   if (!data) return <CenterLoadingSpinner />;
 

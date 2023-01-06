@@ -14,9 +14,8 @@ import { useContext, useState } from 'react';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 
-const EditTextHeader = ({ textId, handleSaveClick, release, handleReleaseToggle }) => {
+const EditTextHeader = ({ textId, handleSaveClick, release, handleReleaseToggle, enableSave }) => {
   const [toggleReleaseValue, setToggleReleaseValue] = useState(release ? 'release' : 'draft');
-  const [enableSave, setEnableSave] = useState(true);
 
   const mq = useMediaQuery('(min-width:600px)');
   const back = mq ? <>&lt; 執筆テキスト一覧</> : <>&lt;</>;
@@ -43,10 +42,7 @@ const EditTextHeader = ({ textId, handleSaveClick, release, handleReleaseToggle 
         }}
       >
         <Link href='#'>
-          <a
-            onClick={() => router.push('/dashboard')}
-            style={{ display: 'block', fontSize: '1.0em', fontWeight: 'bold' }}
-          >
+          <a style={{ display: 'block', fontSize: '1.0em', fontWeight: 'bold' }}>
             <Box
               sx={{ display: 'block', fontSize: '1.0em', fontWeight: 'bold', ml: { xs: 1, sm: 0 } }}
             >

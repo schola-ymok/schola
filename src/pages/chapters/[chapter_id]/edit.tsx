@@ -120,7 +120,7 @@ const EditChapter: NextPage = () => {
         title={title}
         textId={data.text_id}
         chapterId={chapterId}
-        isSaving={}
+        isSaving={isSaving}
       />
       <Box
         sx={{

@@ -149,6 +149,7 @@ const EditText = () => {
     if (error) console.log(error);
 
     mutate(`texts/${textId}`);
+
     setHeaderState('saved');
     setChanged(false);
   }
@@ -587,13 +588,13 @@ const ChapterList = () => {
   });
 
   const [chapterOrder, setChapterOrder] = useState([]);
-  const [isChapterAdding, setIsChapterAdding] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   if (error) return <div>failed to load</div>;
   if (!data) return <CenterLoadingSpinner />;
 
   async function handleAddChapterClick() {
-    setIsChapterAdding(true);
+    setIsLoading(true);
 
     const { chapterId, error } = await createNewChapter(textId, authAxios, '新しいチャプター');
 
@@ -602,11 +603,12 @@ const ChapterList = () => {
       return;
     }
 
-    setIsChapterAdding(false);
     mutate(`/texts/${textId}/chapters/`);
+    setIsLoading(false);
   }
 
   async function handleDeleteChapterClick(item) {
+    setIsLoading(true);
     const { error } = await deleteChapter(item.id, authAxios);
 
     if (error) {
@@ -615,6 +617,7 @@ const ChapterList = () => {
     }
 
     mutate(`/texts/${textId}/chapters/`);
+    setIsLoading(false);
   }
 
   function handleChapterClick(item) {
@@ -672,7 +675,7 @@ const ChapterList = () => {
             variant='contained'
             onClick={() => handleAddChapterClick()}
           >
-            {isChapterAdding ? (
+            {isLoading ? (
               <CircularProgress size={28} sx={{ color: Consts.COLOR.Primary }} />
             ) : (
               <>チャプターを追加</>

@@ -1,4 +1,13 @@
-import { Box, Button, Divider, InputBase, MenuItem, Select, Slider } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  InputBase,
+  MenuItem,
+  Select,
+  Slider,
+} from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
@@ -36,6 +45,8 @@ const EditText = () => {
   const [category2, setCategory2] = useState('nul');
   const [learningContents, setLearningContents] = useState([]);
   const [learningRequirements, setLearningRequirements] = useState([]);
+
+  const [headerState, setHeaderState] = useState(null);
   const { mutate } = useSWRConfig();
 
   const photoId = genid(8);
@@ -121,6 +132,7 @@ const EditText = () => {
   }, [data]);
 
   async function handleSaveClick() {
+    setHeaderState('saving');
     const { error } = await updateText(
       textId,
       title,
@@ -133,10 +145,10 @@ const EditText = () => {
       JSON.stringify(learningRequirements),
       authAxios,
     );
+    setHeaderState('saved');
+    setChanged(false);
 
-    if (error) {
-      console.log(error);
-    }
+    if (error) console.log(error);
 
     mutate(`texts/${textId}`);
   }
@@ -158,6 +170,7 @@ const EditText = () => {
         handleReleaseToggle={handleReleaseToggle}
         release={data.is_released}
         enableSave={changed}
+        state={headerState}
       />
 
       <Box
@@ -258,7 +271,10 @@ const EditText = () => {
               fullWidth
               rows={4}
               multiline
-              onChange={onAbstractChange}
+              onChange={(e) => {
+                onAbstractChange(e);
+                setChanged(true);
+              }}
             />
           </Box>
         </Box>
@@ -283,7 +299,10 @@ const EditText = () => {
               fullWidth
               rows={8}
               multiline
-              onChange={onExplanationChange}
+              onChange={(e) => {
+                onExplanationChange(e);
+                setChanged(true);
+              }}
             />
           </Box>
         </Box>
@@ -326,7 +345,10 @@ const EditText = () => {
               <Slider
                 aria-label='円'
                 value={price}
-                onChange={onPriceChange}
+                onChange={(e) => {
+                  onPriceChange(e);
+                  setChanged(true);
+                }}
                 valueLabelDisplay='auto'
                 marks={[
                   {
@@ -372,7 +394,10 @@ const EditText = () => {
               labelId='category1'
               id='category1'
               value={category1}
-              onChange={onCategory1Change}
+              onChange={(e) => {
+                onCategory1Change(e);
+                setChanged(true);
+              }}
               sx={{
                 m: 1,
                 mx: { xs: 'auto', md: 'unset' },
@@ -414,7 +439,10 @@ const EditText = () => {
               labelId='category2'
               id='category2'
               value={category2}
-              onChange={onCategory2Change}
+              onChange={(e) => {
+                onCategory2Change(e);
+                setChanged(true);
+              }}
               sx={{
                 m: { xs: 0, md: 1 },
                 mx: { xs: 'auto', md: 1 },
@@ -478,10 +506,14 @@ const EditText = () => {
                 tags={learningContents}
                 autofocus={false}
                 allowDragDrop={false}
-                handleAddition={(tag) => setLearningContents([...learningContents, tag])}
-                handleDelete={(index) =>
-                  setLearningContents(learningContents.filter((tag, i) => i !== index))
-                }
+                handleAddition={(tag) => {
+                  setLearningContents([...learningContents, tag]);
+                  setChanged(true);
+                }}
+                handleDelete={(index) => {
+                  setLearningContents(learningContents.filter((tag, i) => i !== index));
+                  setChanged(true);
+                }}
                 inputFieldPosition='top'
               />
             </Box>
@@ -518,10 +550,14 @@ const EditText = () => {
                 tags={learningRequirements}
                 autofocus={false}
                 allowDragDrop={false}
-                handleAddition={(tag) => setLearningRequirements([...learningRequirements, tag])}
-                handleDelete={(index) =>
-                  setLearningRequirements(learningRequirements.filter((tag, i) => i !== index))
-                }
+                handleAddition={(tag) => {
+                  setLearningRequirements([...learningRequirements, tag]);
+                  setChanged(true);
+                }}
+                handleDelete={(index) => {
+                  setLearningRequirements(learningRequirements.filter((tag, i) => i !== index));
+                  setChanged(true);
+                }}
                 inputFieldPosition='top'
               />
             </Box>
@@ -566,6 +602,7 @@ const ChapterList = () => {
       return;
     }
 
+    setIsChapterAdding(false);
     mutate(`/texts/${textId}/chapters/`);
   }
 
@@ -635,7 +672,11 @@ const ChapterList = () => {
             variant='contained'
             onClick={() => handleAddChapterClick()}
           >
-            チャプターを追加
+            {isChapterAdding ? (
+              <CircularProgress size={28} sx={{ color: Consts.COLOR.Primary }} />
+            ) : (
+              <>チャプターを追加</>
+            )}
           </Button>
         </Box>
       </Box>

@@ -1,5 +1,5 @@
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Box, Button, useMediaQuery, IconButton, InputBase } from '@mui/material';
+import { Box, Button, useMediaQuery, IconButton, InputBase, CircularProgress } from '@mui/material';
 import router, { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 
@@ -8,7 +8,14 @@ import Consts from 'utils/Consts';
 
 import BackButton from './BackButton';
 
-const EditChapterHeader = ({ handleSaveClick, handleTitleChange, title, textId, chapterId }) => {
+const EditChapterHeader = ({
+  handleSaveClick,
+  handleTitleChange,
+  title,
+  textId,
+  chapterId,
+  isSaving,
+}) => {
   const { state, dispatch } = useContext(AppContext);
   const [toggleViewModeValue, setToggleViewModeValue] = useState('both');
   const [enableSave, setEnableSave] = useState(true);
@@ -58,7 +65,7 @@ const EditChapterHeader = ({ handleSaveClick, handleTitleChange, title, textId, 
             fontWeight: 'bold',
           }}
         >
-          保存
+          {isSaving ? <CircularProgress size={28} sx={{ color: 'white' }} /> : <>保存</>}
         </Button>
 
         <IconButton

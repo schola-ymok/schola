@@ -1,7 +1,9 @@
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import CheckIcon from '@mui/icons-material/Check';
 import {
   Box,
   Button,
+  CircularProgress,
   IconButton,
   ToggleButton,
   ToggleButtonGroup,
@@ -14,7 +16,14 @@ import { useContext, useState } from 'react';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 
-const EditTextHeader = ({ textId, handleSaveClick, release, handleReleaseToggle, enableSave }) => {
+const EditTextHeader = ({
+  textId,
+  handleSaveClick,
+  release,
+  handleReleaseToggle,
+  enableSave,
+  state,
+}) => {
   const [toggleReleaseValue, setToggleReleaseValue] = useState(release ? 'release' : 'draft');
 
   const mq = useMediaQuery('(min-width:600px)');
@@ -28,6 +37,16 @@ const EditTextHeader = ({ textId, handleSaveClick, release, handleReleaseToggle,
     ...Consts.SX.ToggleButton,
     borderWidth: '2px 2px 2px 0px',
   };
+
+  let saveButtonContent;
+
+  if (state === 'saving') {
+    saveButtonContent = <CircularProgress size={28} sx={{ color: 'white' }} />;
+  } else if (state === 'saved' && !enableSave) {
+    saveButtonContent = <CheckIcon sx={{ color: 'black' }} />;
+  } else {
+    saveButtonContent = <>保存</>;
+  }
 
   return (
     <>
@@ -93,7 +112,6 @@ const EditTextHeader = ({ textId, handleSaveClick, release, handleReleaseToggle,
           </ToggleButtonGroup>
           <Button
             variant='contained'
-            disabled={!enableSave}
             onClick={() => {
               router.push(`/texts/${textId}`);
             }}
@@ -117,7 +135,9 @@ const EditTextHeader = ({ textId, handleSaveClick, release, handleReleaseToggle,
           <Button
             variant='contained'
             disabled={!enableSave}
-            onClick={handleSaveClick}
+            onClick={() => {
+              if (state !== 'saving') handleSaveClick();
+            }}
             sx={{
               ml: 1,
               pr: 3,
@@ -127,7 +147,7 @@ const EditTextHeader = ({ textId, handleSaveClick, release, handleReleaseToggle,
               fontWeight: 'bold',
             }}
           >
-            保存
+            {saveButtonContent}
           </Button>
         </Box>
       </Box>

@@ -33,7 +33,7 @@ const EditChapter: NextPage = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
-  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const { mutate } = useSWRConfig();
 
@@ -86,6 +86,7 @@ const EditChapter: NextPage = () => {
   }, [data]);
 
   async function handleSaveClick() {
+    setIsSaving(true);
     const { error } = await updateChapter(chapterId, title, content, authAxios);
 
     if (error) {
@@ -93,8 +94,9 @@ const EditChapter: NextPage = () => {
       return;
     }
 
+    setIsSaving(false);
+
     mutate(`chapters/${chapterId}`);
-    setSnackBarOpen(true);
   }
 
   if (error) console.log(error);
@@ -119,6 +121,7 @@ const EditChapter: NextPage = () => {
         title={title}
         textId={data.text_id}
         chapterId={chapterId}
+        isSaving={isSaving}
       />
       <Box
         sx={{

@@ -603,7 +603,7 @@ const ChapterList = () => {
       return;
     }
 
-    mutate(`/texts/${textId}/chapters/`);
+    await mutate(`/texts/${textId}/chapters/`);
     setIsLoading(false);
   }
 

@@ -145,12 +145,12 @@ const EditText = () => {
       JSON.stringify(learningRequirements),
       authAxios,
     );
-    setHeaderState('saved');
-    setChanged(false);
 
     if (error) console.log(error);
 
     mutate(`texts/${textId}`);
+    setHeaderState('saved');
+    setChanged(false);
   }
 
   async function handleReleaseToggle(release) {

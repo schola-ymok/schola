@@ -94,9 +94,8 @@ const EditChapter: NextPage = () => {
       return;
     }
 
-    setIsSaving(false);
-
     mutate(`chapters/${chapterId}`);
+    setIsSaving(false);
   }
 
   if (error) console.log(error);
@@ -121,7 +120,7 @@ const EditChapter: NextPage = () => {
         title={title}
         textId={data.text_id}
         chapterId={chapterId}
-        isSaving={isSaving}
+        isSaving={}
       />
       <Box
         sx={{

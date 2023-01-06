@@ -188,7 +188,7 @@ const Toc = ({ chapters, tocs, left }) => {
               '&:hover': Consts.SX.IconButtonHover,
             }}
             onClick={() => {
-              router.push(`/texts/${textId}`);
+              router.back();
             }}
           >
             <ArrowBackIosIcon sx={{ my: 'auto' }} />

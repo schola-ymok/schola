@@ -45,7 +45,7 @@ create table texts(
   rate_ratio_3 tinyint, 
   rate_ratio_4 tinyint, 
   rate_ratio_5 tinyint, 
-  fulltext (title,abstract,learning_contents) with parser ngram,
+  fulltext (title,abstract,learning_contents,learning_requirements) with parser ngram,
   constraint cst_texts_author_id
     foreign key (author_id)
     references users (id)

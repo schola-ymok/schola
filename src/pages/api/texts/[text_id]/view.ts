@@ -13,6 +13,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'GET': // get text
       if (!verify) return res.status(Consts.HTTP_BAD_REQUEST).end('not authorized');
 
+      console.log('get text');
+
       const getTextInfoQuery = escape`select texts.id, title, users.photo_id as author_photo_id, texts.photo_id as photo_id, substring(abstract,128) as abstract, author_id, users.display_name as author_display_name, price, chapter_order ,is_released from texts
           inner join users on texts.author_id = users.id
           where texts.id=${req.query.text_id}`;

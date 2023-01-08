@@ -852,7 +852,6 @@ const ChapterList = () => {
   });
   */
 
-  console.log(error);
   if (error) return <div>failed to load</div>;
   if (!data) return <CenterLoadingSpinner />;
 

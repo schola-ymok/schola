@@ -74,7 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
       if (!isEmptyString(req.query.keyword)) {
         wherePhrase = wherePhrase.append(escape` and 
-        ( match(texts.title,abstract,learning_contents) against(${req.query.keyword}) or
+        ( match(texts.title,abstract,learning_contents,learning_requirements) against(${req.query.keyword}) or
           match(users.display_name,profile_message,majors) against(${req.query.keyword}) or
           match(chapters.title,content) against(${req.query.keyword}) )
         `);

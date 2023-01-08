@@ -42,8 +42,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'PUT': // update text
       if (!verify) return res.status(Consts.HTTP_BAD_REQUEST).end('not authorized');
 
-      console.log(req.query);
-
       if (req.query.release) {
         const release = req.query.release == 1 ? true : false;
         const { data: dataRelease, error: errorRelease } = await dbQuery(escape`

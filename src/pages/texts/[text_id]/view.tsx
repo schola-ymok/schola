@@ -1,15 +1,15 @@
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, IconButton, useMediaQuery } from '@mui/material';
+import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useEffect, useLayoutEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import rehypeSlug from 'rehype-slug';
 import { remark } from 'remark';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
-import useSWR from 'swr';
 
 import { getPurchasedInfo } from 'api/getPurchasedInfo';
 import { getViewText } from 'api/getViewText';
@@ -22,6 +22,8 @@ import { extractToc } from 'utils/extractToc';
 
 import type { NextPage } from 'next';
 
+import useSWR, { useSWRConfig } from 'swr';
+
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 
 import Edit from '@mui/icons-material/Edit';
@@ -32,6 +34,7 @@ const TextView: NextPage = () => {
 
   const textId = router.query.text_id;
   const mq = useMediaQuery('(min-width:1000px)');
+  const { mutate } = useSWRConfig();
 
   const { data, error } = useSWR(`texts/${textId}/view`, () => getViewText(textId, authAxios), {
     revalidateOnFocus: false,
@@ -113,14 +116,14 @@ const ChapterContent = ({ data }) => {
       </IconButton>
       <Box sx={{ mt: 1, p: 1 }}>
         <Box sx={{ fontWeight: 'bold', fontSize: '2.1em', mb: 1 }}>
-          {data.chapters[chapterId].title}
+          {data.chapters[chapterId]?.title}
         </Box>
         <ReactMarkdown
           className='markdown-body p-3'
           remarkPlugins={[remarkGfm, remarkMath]}
           rehypePlugins={[rehypeKatex, rehypeSlug]}
         >
-          {data.chapters[chapterId].content}
+          {data.chapters[chapterId]?.content}
         </ReactMarkdown>
       </Box>
     </Box>

@@ -67,8 +67,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       select chapter_order from
       texts where id =${req.query.text_id}`);
 
-      console.log(dataChapterOrder[0]);
-
       return res.status(Consts.HTTP_OK).json({
         status: 'ok',
         chapter_id: chapterId,

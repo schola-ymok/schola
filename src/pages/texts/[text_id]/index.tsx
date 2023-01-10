@@ -4,7 +4,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import UpdateIcon from '@mui/icons-material/Update';
-import { Box, colors, Grid, Rating, Stack, useMediaQuery } from '@mui/material';
+import { Box, CircularProgress, colors, Grid, Rating, Stack, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useCallback, useContext, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
@@ -36,6 +36,8 @@ const Text: NextPage = () => {
   const { authAxios } = useContext(AuthContext);
   const { mutate } = useSWRConfig();
   const [bannerHeight, setBannerHeight] = useState();
+
+  const [isPurchaseProcessing, setPurchaseProcessing] = useState(false);
 
   const router = useRouter();
   const textId = router.query.text_id;
@@ -103,15 +105,17 @@ const Text: NextPage = () => {
   };
 
   const handlePurchaseClick = async () => {
+    setPurchaseProcessing(true);
     const { status, error } = await purchaseText(textId, authAxios);
 
     if (error) {
       console.log(error);
-      return;
     } else if (status == 'ok') {
       mutate(`texts/${textId}/purchase`);
-      return;
     }
+    setPurchaseProcessing(false);
+
+    return;
   };
 
   const handleWriteReviewClick = () => {
@@ -126,7 +130,7 @@ const Text: NextPage = () => {
     router.push(`/users/${id}`);
   };
 
-  const PanelButtonThin = ({ ml, label, onClick, colors }) => {
+  const PanelButtonThin = ({ ml, onClick, colors, children }) => {
     return (
       <Box
         variant='contained'
@@ -150,12 +154,12 @@ const Text: NextPage = () => {
           },
         }}
       >
-        {label}
+        {children}
       </Box>
     );
   };
 
-  const PanelButton = ({ mt, label, onClick, colors }) => {
+  const PanelButton = ({ mt, onClick, colors, children }) => {
     return (
       <Box
         variant='contained'
@@ -179,7 +183,7 @@ const Text: NextPage = () => {
           },
         }}
       >
-        {label}
+        {children}
       </Box>
     );
   };
@@ -506,8 +510,9 @@ const Text: NextPage = () => {
                   hoverBackground: Consts.COLOR.LightPrimarySelected,
                   hoverBorder: Consts.COLOR.PrimarySelected,
                 }}
-                label='テキストを読む'
-              />
+              >
+                テキストを読む
+              </PanelButton>
             ) : (
               <PanelButton
                 onClick={handlePurchaseClick}
@@ -518,8 +523,13 @@ const Text: NextPage = () => {
                   hoverBackground: Consts.COLOR.PrimaryDark,
                   hoverBorder: Consts.COLOR.PrimaryDark,
                 }}
-                label='テキストを購入'
-              />
+              >
+                {isPurchaseProcessing ? (
+                  <CircularProgress size={20} sx={{ color: 'white', p: 0, m: 0 }} />
+                ) : (
+                  <>テキストを購入</>
+                )}
+              </PanelButton>
             )}
 
             {dataPurchasedInfo.purchased && !dataPurchasedInfo.yours && (
@@ -533,8 +543,9 @@ const Text: NextPage = () => {
                   hoverBackground: Consts.COLOR.PrimaryDark,
                   hoverBorder: Consts.COLOR.PrimaryDark,
                 }}
-                label='レビューを書く'
-              />
+              >
+                レビューを書く
+              </PanelButton>
             )}
 
             {dataPurchasedInfo.yours && (
@@ -550,8 +561,9 @@ const Text: NextPage = () => {
                   hoverBackground: Consts.COLOR.PrimaryDark,
                   hoverBorder: Consts.COLOR.PrimaryDark,
                 }}
-                label='編集'
-              />
+              >
+                編集
+              </PanelButton>
             )}
 
             <Box sx={{ p: 0.5, mt: 1 }}>
@@ -705,8 +717,9 @@ const Text: NextPage = () => {
                   hoverBackground: Consts.COLOR.LightPrimarySelected,
                   hoverBorder: Consts.COLOR.PrimarySelected,
                 }}
-                label='テキストを読む'
-              />
+              >
+                テキストを読む
+              </PanelButtonThin>
             ) : (
               <PanelButtonThin
                 onClick={handlePurchaseClick}
@@ -718,8 +731,9 @@ const Text: NextPage = () => {
                   hoverBackground: Consts.COLOR.PrimaryDark,
                   hoverBorder: Consts.COLOR.PrimaryDark,
                 }}
-                label='テキストを購入'
-              />
+              >
+                テキストを購入
+              </PanelButtonThin>
             )}
 
             {dataPurchasedInfo.purchased && !dataPurchasedInfo.yours && (
@@ -733,8 +747,9 @@ const Text: NextPage = () => {
                   hoverBackground: Consts.COLOR.PrimaryDark,
                   hoverBorder: Consts.COLOR.PrimaryDark,
                 }}
-                label='レビューを書く'
-              />
+              >
+                レビューを書く
+              </PanelButtonThin>
             )}
 
             {dataPurchasedInfo.yours && (
@@ -750,8 +765,9 @@ const Text: NextPage = () => {
                   hoverBackground: Consts.COLOR.PrimaryDark,
                   hoverBorder: Consts.COLOR.PrimaryDark,
                 }}
-                label='編集'
-              />
+              >
+                編集
+              </PanelButtonThin>
             )}
           </Box>
         </Box>

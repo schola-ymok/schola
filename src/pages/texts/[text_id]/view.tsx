@@ -60,7 +60,7 @@ const TextView: NextPage = () => {
   if (mq) {
     return (
       <Box sx={{ display: 'flex' }}>
-        <Box sx={{ width: '350px' }}>
+        <Box sx={{ width: '{LEFT_COL_SIZE}px' }}>
           <Toc chapters={data.chapters} tocs={tocs} left={true} />
         </Box>
         <Box sx={{ width: '700px' }}>
@@ -172,7 +172,7 @@ const Toc = ({ chapters, tocs, left }) => {
         bottom: 0,
         right: 0,
         overflowY: 'auto',
-        width: '350px',
+        width: '{LEFT_COL_SIZE}px',
       }
     : {
         p: 1,

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 
 import { createNewText } from 'api/createNewText';
+import DefaultButton from 'components/DefaultButton';
 import { AuthContext } from 'components/auth/AuthContext';
 import EditTitleLayout from 'components/layouts/EditTitleLayout';
 import Consts from 'utils/Consts';
@@ -54,26 +55,15 @@ const AddText: NextPage = () => {
         />
       </Box>
 
-      <Button
-        variant='contained'
-        size='small'
-        sx={{
-          width: 200,
-          height: 40,
-          mx: 'auto',
-          fontSize: '1.1em',
-          fontWeight: 'bold',
-          mt: 3,
-          mb: 20,
-        }}
-        onClick={handleAddText}
-      >
-        {isLoading ? (
-          <CircularProgress size={28} sx={{ color: 'white' }} />
-        ) : (
-          <>テキストを作成する</>
-        )}
-      </Button>
+      <Box sx={{ mx: 'auto', mt: 3 }}>
+        <DefaultButton onClick={handleAddText} width='200px'>
+          {isLoading ? (
+            <CircularProgress size={28} sx={{ color: 'white' }} />
+          ) : (
+            <>テキストを作成する</>
+          )}
+        </DefaultButton>
+      </Box>
     </Box>
   );
 };

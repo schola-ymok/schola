@@ -3,6 +3,7 @@ import { Box, Button, useMediaQuery, IconButton, InputBase, CircularProgress } f
 import router, { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 
+import DefaultButton from 'components/DefaultButton';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 
@@ -52,21 +53,9 @@ const EditChapterHeader = ({
           alignItems: 'center',
         }}
       >
-        <Button
-          variant='contained'
-          disabled={!enableSave}
-          onClick={handleSaveClick}
-          sx={{
-            ml: 1,
-            pr: 3,
-            pl: 3,
-            height: 30,
-            whiteSpace: 'nowrap',
-            fontWeight: 'bold',
-          }}
-        >
+        <DefaultButton disabled={!enableSave} onClick={handleSaveClick} exSx={{ height: '30px' }}>
           {isSaving ? <CircularProgress size={28} sx={{ color: 'white' }} /> : <>保存</>}
-        </Button>
+        </DefaultButton>
 
         <IconButton
           type='button'

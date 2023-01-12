@@ -1,3 +1,3 @@
-const EditTextLayout = ({ children }) => <>{children};</>;
+const EditTextLayout = ({ children }) => <>{children}</>;
 
 export default EditTextLayout;

@@ -163,6 +163,7 @@ const EditText = () => {
   if (error) console.log(error);
   if (!data) return <CenterLoadingSpinner />;
 
+  const LEFT_COL_SIZE = 300;
   return (
     <>
       <EditTextHeader
@@ -182,135 +183,203 @@ const EditText = () => {
           display: 'flex',
           flexWrap: 'wrap',
           p: { xs: 0.4, sm: 2 },
-          mt: 2,
         }}
       >
-        <Box
-          sx={{
-            width: { xs: '100%', md: 256 },
-          }}
-        >
-          <Box sx={{ mx: 'auto', width: 256 }}>
-            <label
-              style={{
-                cursor: 'pointer',
-                display: 'block',
-                width: 256,
+        {/* image */}
+        <Box sx={{ mt: { xs: 1, md: 1.5 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
+          <Box sx={{ pr: 2, width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
+            <Box
+              sx={{
+                ml: 'auto',
+                fontWeight: 'bold',
+                my: 'auto',
+                mr: { xs: 'auto', md: 'unset' },
               }}
             >
-              <input
-                type='file'
-                accept='image/*'
-                onChange={handleSelectFile}
-                style={{ display: 'none' }}
+              カバー画像
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
+              display: 'flex',
+            }}
+          >
+            <Box sx={{ mr: 'auto', ml: { xs: 'auto', md: 'unset' }, width: 256 }}>
+              <label
+                style={{
+                  cursor: 'pointer',
+                  display: 'block',
+                  width: 256,
+                }}
+              >
+                <input
+                  type='file'
+                  accept='image/*'
+                  onChange={handleSelectFile}
+                  style={{ display: 'none' }}
+                />
+                <img src={imageUrl} width='256' height='144' />
+              </label>
+              <ImageCropDialog
+                open={openImageCropDialog}
+                setOpen={setOpenImageCropDialog}
+                image={imageSrc}
+                crop={crop}
+                zoom={zoom}
+                onCropChange={setCrop}
+                onCropComplete={onCropComplete}
+                onZoomChange={setZoom}
+                showCroppedImage={showCroppedImage}
+                cropShape={'rect'}
+                cropSize={{ width: 256, height: 144 }}
               />
-              <img src={imageUrl} width='256' height='144' />
-              <Box sx={{ textAlign: 'center', width: '100%', mb: 1 }}>
-                <a>画像を変更</a>
-              </Box>
-            </label>
-            <ImageCropDialog
-              open={openImageCropDialog}
-              setOpen={setOpenImageCropDialog}
-              image={imageSrc}
-              crop={crop}
-              zoom={zoom}
-              onCropChange={setCrop}
-              onCropComplete={onCropComplete}
-              onZoomChange={setZoom}
-              showCroppedImage={showCroppedImage}
-              cropShape={'rect'}
-              cropSize={{ width: 256, height: 144 }}
-            />
+            </Box>
           </Box>
         </Box>
-        <Box
-          sx={{
-            pl: { xs: 0, md: 1 },
-            width: { xs: '100%', md: 'calc(100% - 256px)' },
-          }}
-        >
-          <Box
-            sx={{
-              p: 1,
-              width: '100%',
-              maxWidth: 800,
-              border: '2px solid ' + Consts.COLOR.Grey,
-              '&:hover': {
-                border: '2px solid ' + Consts.COLOR.Primary,
-              },
-            }}
-          >
-            <InputBase
-              placeholder='タイトル'
-              value={title}
-              sx={{ fontSize: '1.3em', fontWeight: 'bold' }}
-              variant='outlined'
-              fullWidth
-              onChange={(e) => {
-                onTitleChange(e);
-                setChanged(true);
-              }}
-            />
-          </Box>
 
+        {/* title */}
+        <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
+          <Box sx={{ pr: 2, width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
+            <Box
+              sx={{
+                ml: 'auto',
+                fontWeight: 'bold',
+                my: 'auto',
+                mr: { xs: 'auto', md: 'unset' },
+              }}
+            >
+              テキストのタイトル
+            </Box>
+          </Box>
           <Box
             sx={{
-              p: 1,
-              mt: 1,
-              width: '100%',
-              maxWidth: 800,
-              border: '2px solid ' + Consts.COLOR.Grey,
-              '&:hover': {
-                border: '2px solid ' + Consts.COLOR.Primary,
-              },
+              width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
+              display: 'flex',
             }}
           >
-            <InputBase
-              placeholder='テキストの概要'
-              value={abstract}
-              fullWidth
-              rows={4}
-              multiline
-              onChange={(e) => {
-                onAbstractChange(e);
-                setChanged(true);
+            <Box
+              sx={{
+                p: 1,
+                width: '100%',
+                maxWidth: 800,
+                border: '2px solid ' + Consts.COLOR.Grey,
+                '&:hover': {
+                  border: '2px solid ' + Consts.COLOR.Primary,
+                },
               }}
-            />
+            >
+              <InputBase
+                placeholder='タイトル'
+                value={title}
+                variant='outlined'
+                fullWidth
+                onChange={(e) => {
+                  onTitleChange(e);
+                  setChanged(true);
+                }}
+              />
+            </Box>
+          </Box>
+        </Box>
+
+        {/* abstract */}
+        <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
+          <Box sx={{ pr: 2, width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
+            <Box
+              sx={{
+                ml: 'auto',
+                fontWeight: 'bold',
+                my: 'auto',
+                mr: { xs: 'auto', md: 'unset' },
+              }}
+            >
+              テキストの概要
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
+              display: 'flex',
+            }}
+          >
+            <Box
+              sx={{
+                p: 1,
+                my: 1,
+                width: '100%',
+                maxWidth: 800,
+                border: '2px solid ' + Consts.COLOR.Grey,
+                '&:hover': {
+                  border: '2px solid ' + Consts.COLOR.Primary,
+                },
+              }}
+            >
+              <InputBase
+                placeholder='テキストの概要'
+                value={abstract}
+                fullWidth
+                rows={4}
+                multiline
+                onChange={(e) => {
+                  onAbstractChange(e);
+                  setChanged(true);
+                }}
+              />
+            </Box>
           </Box>
         </Box>
 
         {/* explanation */}
-        <Box sx={{ mt: { xs: 1, md: 2 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
+        <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
+          <Box sx={{ pr: 2, width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
+            <Box
+              sx={{
+                ml: 'auto',
+                fontWeight: 'bold',
+                my: 'auto',
+                mr: { xs: 'auto', md: 'unset' },
+              }}
+            >
+              テキストの詳細な解説
+            </Box>
+          </Box>
           <Box
             sx={{
-              p: 1,
-              mx: 'auto',
-              width: '100%',
-              maxWidth: 800,
-              border: '2px solid ' + Consts.COLOR.Grey,
-              '&:hover': {
-                border: '2px solid ' + Consts.COLOR.Primary,
-              },
+              width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
+              display: 'flex',
             }}
           >
-            <InputBase
-              placeholder='テキストの詳細な解説'
-              value={explanation}
-              fullWidth
-              rows={8}
-              multiline
-              onChange={(e) => {
-                onExplanationChange(e);
-                setChanged(true);
+            <Box
+              sx={{
+                p: 1,
+                mx: 'auto',
+                width: '100%',
+                maxWidth: 800,
+                border: '2px solid ' + Consts.COLOR.Grey,
+                '&:hover': {
+                  border: '2px solid ' + Consts.COLOR.Primary,
+                },
               }}
-            />
+            >
+              <InputBase
+                placeholder='テキストの詳細な解説'
+                value={explanation}
+                fullWidth
+                rows={8}
+                multiline
+                onChange={(e) => {
+                  onExplanationChange(e);
+                  setChanged(true);
+                }}
+              />
+            </Box>
           </Box>
         </Box>
 
         {/* Price */}
         <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-          <Box sx={{ pr: 2, width: { xs: '100%', md: 350 }, display: 'flex' }}>
+          <Box sx={{ pr: 2, width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
             <Box
               sx={{
                 ml: 'auto',
@@ -324,7 +393,7 @@ const EditText = () => {
           </Box>
           <Box
             sx={{
-              width: { xs: '100%', md: 'calc(100% - 350px)' },
+              width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
               px: 1,
               display: 'flex',
             }}
@@ -371,7 +440,7 @@ const EditText = () => {
 
         {/* Category */}
         <Box sx={{ mt: { xs: 1, md: 2 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-          <Box sx={{ width: { xs: '100%', md: 350 }, display: 'flex' }}>
+          <Box sx={{ width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
             <Box
               sx={{
                 pr: 2,
@@ -479,7 +548,7 @@ const EditText = () => {
 
         {/* LearningContents */}
         <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-          <Box sx={{ width: { xs: '100%', md: 350 }, display: 'flex' }}>
+          <Box sx={{ width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
             <Box
               sx={{
                 pr: 1.5,
@@ -496,7 +565,7 @@ const EditText = () => {
 
           <Box
             sx={{
-              width: { xs: '100%', md: 'calc(100% - 350px)' },
+              width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
               display: 'flex',
               flexWrap: 'wrap',
             }}
@@ -523,7 +592,7 @@ const EditText = () => {
 
         {/* LearningRequirements */}
         <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-          <Box sx={{ width: { xs: '100%', md: 350 }, display: 'flex' }}>
+          <Box sx={{ width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
             <Box
               sx={{
                 pr: 1.5,
@@ -540,7 +609,7 @@ const EditText = () => {
 
           <Box
             sx={{
-              width: { xs: '100%', md: 'calc(100% - 350px)' },
+              width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
               display: 'flex',
               flexWrap: 'wrap',
             }}
@@ -568,7 +637,7 @@ const EditText = () => {
         <Box sx={{ mt: 3, width: '100%' }}>
           <Divider />
           <Box sx={{ display: 'flex' }}>
-            <Box sx={{ mt: 2, mx: { xs: 'auto', md: 'unset' } }}>
+            <Box sx={{ mt: 2.5, mx: { xs: 'auto', md: 'unset' } }}>
               <h5>Chapters</h5>
             </Box>
           </Box>
@@ -662,15 +731,20 @@ const ChapterList = () => {
           )}
         </Box>
         <Box sx={{ pt: 3, display: 'flex' }}>
-          <Button
+          <Box
             sx={{
               width: '70%',
               mx: 'auto',
               backgroundColor: Consts.COLOR.LightPrimary,
               color: Consts.COLOR.Primary,
+              height: '48px',
               fontWeight: 'bold',
               border: '2px dashed grey',
               '&:hover': { backgroundColor: Consts.COLOR.LightPrimarySelected },
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
             }}
             variant='contained'
             onClick={() => handleAddChapterClick()}
@@ -680,7 +754,7 @@ const ChapterList = () => {
             ) : (
               <>チャプターを追加</>
             )}
-          </Button>
+          </Box>
         </Box>
       </Box>
     </>

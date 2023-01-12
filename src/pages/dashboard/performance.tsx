@@ -51,13 +51,15 @@ const DashboardPerformance = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
           <Box sx={{ display: 'flex', flexFlow: 'column' }}>
             <Box>
-              <Box sx={{ fontSize: '2.0em', fontWeight: 'bold' }}>{data.number_of_total_texts}</Box>
-              <Box sx={{ mx: 'auto', width: 'fit-content' }}>テキスト数</Box>
+              <Box sx={{ mx: 'auto', fontSize: '2.0em', fontWeight: 'bold', width: 'fit-content' }}>
+                {data.number_of_total_texts}
+              </Box>
+              <Box sx={{ mx: 'auto', width: 'fit-content' }}>公開テキスト数</Box>
             </Box>
           </Box>
           <Box sx={{ display: 'flex', flexFlow: 'column' }}>
             <Box>
-              <Box sx={{ fontSize: '2.0em', fontWeight: 'bold' }}>
+              <Box sx={{ mx: 'auto', fontSize: '2.0em', fontWeight: 'bold', width: 'fit-content' }}>
                 {data.number_of_total_reviews}
               </Box>
               <Box sx={{ mx: 'auto', width: 'fit-content' }}>レビュー数</Box>
@@ -65,7 +67,9 @@ const DashboardPerformance = () => {
           </Box>
           <Box sx={{ display: 'flex', flexFlow: 'column' }}>
             <Box>
-              <Box sx={{ fontSize: '2.0em', fontWeight: 'bold' }}>{data.number_of_total_sales}</Box>
+              <Box sx={{ mx: 'auto', fontSize: '2.0em', fontWeight: 'bold', width: 'fit-content' }}>
+                {data.number_of_total_sales}
+              </Box>
               <Box sx={{ mx: 'auto', width: 'fit-content' }}>販売数</Box>
             </Box>
           </Box>
@@ -77,7 +81,7 @@ const DashboardPerformance = () => {
               <TableRow>
                 <StyledTableCell>タイトル</StyledTableCell>
                 <StyledTableCell align='right'>レビュー数</StyledTableCell>
-                <StyledTableCell align='right'>購入数</StyledTableCell>
+                <StyledTableCell align='right'>販売数</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>

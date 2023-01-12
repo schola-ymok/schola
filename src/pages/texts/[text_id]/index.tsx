@@ -369,8 +369,15 @@ const Text: NextPage = () => {
               </Box>
 
               <Box sx={{ display: 'flex', width: '100%', mt: 1 }}>
-                <Box sx={{ my: 'auto', color: COLOR_BANNER_TEXT, fontSize: '0.9em' }}>
-                  <UpdateIcon sx={{ transform: 'scale(0.9)' }} />
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: COLOR_BANNER_TEXT,
+                    fontSize: '0.9em',
+                  }}
+                >
+                  <UpdateIcon sx={{ my: 'auto', transform: 'scale(0.9)' }} />
                 </Box>
                 <Box
                   sx={{
@@ -378,10 +385,13 @@ const Text: NextPage = () => {
                     ml: 0.4,
                     color: '#fefefe',
                     fontSize: '0.9em',
+                    alignItems: 'center',
                   }}
                 >
                   {data.updated_at !== null && (
-                    <>最終更新日：{new Date(data.updated_at).toLocaleString('jp')}</>
+                    <span style={{ verticalAlign: 'middle' }}>
+                      最終更新日：{new Date(data.updated_at).toLocaleString('jp')}
+                    </span>
                   )}
                 </Box>
               </Box>
@@ -493,7 +503,7 @@ const Text: NextPage = () => {
               }}
               src={imageUrl}
             />
-            <Box sx={{ fontSize: '0.8em', fontWeight: 'bold', pl: 1 }}>{data.title}</Box>
+            <Box sx={{ fontSize: '0.8em', fontWeight: 'bold', px: 0.5 }}>{data.title}</Box>
             {!dataPurchasedInfo.purchased && (
               <Box sx={{ fontSize: '2em', fontWeight: 'bold', pl: 1, height: '40px' }}>
                 &yen;{data.price.toLocaleString()}
@@ -660,7 +670,14 @@ const Text: NextPage = () => {
           </Box>
 
           <Box sx={{ display: 'flex', width: '100%', mt: 1 }}>
-            <Box sx={{ my: 'auto', color: COLOR_BANNER_TEXT, fontSize: '0.9em' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                color: COLOR_BANNER_TEXT,
+                fontSize: '0.9em',
+              }}
+            >
               <UpdateIcon sx={{ transform: 'scale(0.9)' }} />
             </Box>
             <Box
@@ -669,10 +686,13 @@ const Text: NextPage = () => {
                 ml: 0.4,
                 color: '#fefefe',
                 fontSize: '0.9em',
+                alignItems: 'center',
               }}
             >
               {data.updated_at !== null && (
-                <>最終更新日：{new Date(data.updated_at).toLocaleString('jp')}</>
+                <span style={{ verticalAlign: 'middle' }}>
+                  最終更新日：{new Date(data.updated_at).toLocaleString('jp')}
+                </span>
               )}
             </Box>
           </Box>

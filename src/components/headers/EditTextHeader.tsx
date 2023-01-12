@@ -1,20 +1,13 @@
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CheckIcon from '@mui/icons-material/Check';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  IconButton,
-  ToggleButton,
-  ToggleButtonGroup,
-  useMediaQuery,
-} from '@mui/material';
-import Link from 'next/link';
+import { Box, CircularProgress, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import router from 'next/router';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 
-import { AppContext } from 'states/store';
+import DefaultButton from 'components/DefaultButton';
 import Consts from 'utils/Consts';
+
+import Logo from './Logo';
 
 const EditTextHeader = ({
   textId,
@@ -25,9 +18,6 @@ const EditTextHeader = ({
   state,
 }) => {
   const [toggleReleaseValue, setToggleReleaseValue] = useState(release ? 'release' : 'draft');
-
-  const mq = useMediaQuery('(min-width:600px)');
-  const back = mq ? <>&lt; 執筆テキスト一覧</> : <>&lt;</>;
 
   const ToggleButtonSxL = {
     ...Consts.SX.ToggleButton,
@@ -52,34 +42,18 @@ const EditTextHeader = ({
     <>
       <Box
         sx={{
+          pt: { xs: 0, sm: 1 },
+          pb: { xs: 0, sm: 1 },
           display: 'flex',
           alignItems: 'center',
           width: '100%',
+          height: '54px',
           whiteSpace: 'nowrap',
           px: { xs: 0.4, sm: 2 },
           my: { xs: 0.4, sm: 1 },
         }}
       >
-        <Link href='#'>
-          <a style={{ display: 'block', fontSize: '1.0em', fontWeight: 'bold' }}>
-            <Box
-              sx={{ display: 'block', fontSize: '1.0em', fontWeight: 'bold', ml: { xs: 1, sm: 0 } }}
-            >
-              <IconButton
-                type='button'
-                sx={{
-                  pr: 0,
-                  '&:hover': Consts.SX.IconButtonHover,
-                }}
-                onClick={() => {
-                  router.back();
-                }}
-              >
-                <ArrowBackIosIcon sx={{ my: 'auto' }} />
-              </IconButton>
-            </Box>
-          </a>
-        </Link>
+        <Logo />
 
         <Box
           sx={{
@@ -110,7 +84,7 @@ const EditTextHeader = ({
               公開
             </ToggleButton>
           </ToggleButtonGroup>
-          <Button
+          <Box
             variant='contained'
             onClick={() => {
               router.push(`/texts/${textId}`);
@@ -120,6 +94,10 @@ const EditTextHeader = ({
               pl: 2,
               ml: 1,
               height: 40,
+              display: 'flex',
+              cursor: 'pointer',
+              alignItems: 'center',
+              justifyContent: 'center',
               color: Consts.COLOR.Primary,
               backgroundColor: 'white',
               whiteSpace: 'nowrap',
@@ -131,24 +109,16 @@ const EditTextHeader = ({
             }}
           >
             プレビュー
-          </Button>
-          <Button
-            variant='contained'
+          </Box>
+          <DefaultButton
+            exSx={{ ml: 1 }}
             disabled={!enableSave}
             onClick={() => {
               if (state !== 'saving') handleSaveClick();
             }}
-            sx={{
-              ml: 1,
-              pr: 3,
-              pl: 3,
-              height: 40,
-              whiteSpace: 'nowrap',
-              fontWeight: 'bold',
-            }}
           >
             {saveButtonContent}
-          </Button>
+          </DefaultButton>
         </Box>
       </Box>
     </>

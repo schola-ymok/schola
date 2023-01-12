@@ -1,5 +1,8 @@
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import router from 'next/router';
+
+import DefaultButton from 'components/DefaultButton';
+import Consts from 'utils/Consts';
 
 const AddNewTextButton = () => {
   const handleNewText = () => {
@@ -7,20 +10,9 @@ const AddNewTextButton = () => {
   };
 
   return (
-    <Button
-      variant='contained'
-      onClick={handleNewText}
-      sx={{
-        ml: 1,
-        pr: 3,
-        pl: 3,
-        height: 40,
-        whiteSpace: 'nowrap',
-        fontWeight: 'bold',
-      }}
-    >
+    <DefaultButton onClick={handleNewText} exSx={{ ml: 1 }}>
       作成
-    </Button>
+    </DefaultButton>
   );
 };
 

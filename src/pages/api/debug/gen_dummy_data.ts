@@ -538,6 +538,75 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     `);
   }
 
+  async function writeReview(textId) {
+    let numOfReviews = 0;
+    let numOfSales = 0;
+    let avgRate = 0;
+
+    for (var i = 0; i < USER_NUM; i++) {
+      if (Math.random() > 0.7) {
+        const uid = 'uid-' + ('0000' + i).slice(-4);
+        const { error: error3 } = await dbQuery(escape`
+            insert into purchases (
+                user_id,
+                text_id
+              )values(
+                ${uid},
+                ${textId}
+            )`);
+
+        numOfSales++;
+        if (error3) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+
+        if (Math.random() > 0.5) {
+          const rate = Math.floor(Math.random() * 5) + 1;
+          const title = randomReview(true);
+          const comment = randomReview(false);
+          const rid = genid();
+          avgRate += rate;
+          numOfReviews++;
+
+          const { error: error2 } = await dbQuery(escape`
+            insert into reviews (
+                id,
+                text_id,
+                user_id,
+                title,
+                comment,
+                rate
+              )values(
+                ${rid},
+                ${textId},
+                ${uid},
+                ${title},
+                ${comment},
+                ${rate}
+            )`);
+          if (error2) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+        }
+      }
+    }
+    if (numOfReviews != 0) {
+      avgRate = Math.floor(avgRate / numOfReviews);
+    }
+    const { error: error4 } = await dbQuery(escape`
+          update texts
+          set
+          number_of_reviews = ${numOfReviews},
+          number_of_sales = ${numOfSales},
+          rate = ${avgRate}
+          where id = ${textId}`);
+
+    updateReviewStastics(textId);
+  }
+
+  if (req.query.id) {
+    writeReview(req.query.id);
+    return res.status(Consts.HTTP_OK).json({
+      status: 'ok',
+    });
+  }
+
   const jsonPath = path.resolve('./src/pages/api/debug/', 'books.json');
   const booksJson = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 

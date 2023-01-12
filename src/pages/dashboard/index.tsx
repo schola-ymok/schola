@@ -57,8 +57,8 @@ const DashboardTexts = () => {
           return (
             <DashboardTextListItem
               text={item}
-              handleDeleteText={handleDeleteText}
-              handleEditText={handleEditText}
+              handleDeleteText={() => handleDeleteText(item.id)}
+              handleEditText={() => handleEditText(item.id)}
             />
           );
         })}

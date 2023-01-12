@@ -95,7 +95,18 @@ const HeaderAvatarButton = () => {
             handleClose();
           }}
         >
-          ダッシュボード
+          <Box
+            component='span'
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              verticalAlign: 'middle',
+              my: 'auto',
+            }}
+          >
+            ダッシュボード
+          </Box>
         </MenuItem>
         <MenuItem
           sx={{

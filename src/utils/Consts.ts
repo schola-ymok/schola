@@ -34,8 +34,8 @@ namespace Consts {
       fontSize: '0.8em',
       fontWeight: 'bold',
       borderStyle: 'solid',
-      borderColor: Consts.COLOR.Grey,
-      p: 0.85,
+      borderColor: Consts.COLOR.Primary,
+      p: 0.9,
       '&.Mui-selected': {
         color: Consts.COLOR.Primary,
         backgroundColor: Consts.COLOR.LightPrimary,

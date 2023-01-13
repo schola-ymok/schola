@@ -10,10 +10,10 @@ const SLogo = () => {
           display='flex'
           sx={{
             my: 'auto',
-            width: 28,
-            py: 1.2,
+            width: 32,
+            ml: 0.5,
           }}
-          src={'/slogo.svg'}
+          src={'/logo-icon.svg'}
         />
       </a>
     </Link>

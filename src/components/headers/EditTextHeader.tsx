@@ -1,29 +1,13 @@
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import CheckIcon from '@mui/icons-material/Check';
-import {
-  Box,
-  CircularProgress,
-  ToggleButton,
-  ToggleButtonGroup,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, ToggleButton, ToggleButtonGroup, useMediaQuery } from '@mui/material';
 import router from 'next/router';
 import { useState } from 'react';
 
-import DefaultButton from 'components/DefaultButton';
 import Consts from 'utils/Consts';
 
 import Logo from './Logo';
 import SLogo from './SLogo';
 
-const EditTextHeader = ({
-  textId,
-  handleSaveClick,
-  release,
-  handleReleaseToggle,
-  enableSave,
-  state,
-}) => {
+const EditTextHeader = ({ textId, release, handleReleaseToggle }) => {
   const [toggleReleaseValue, setToggleReleaseValue] = useState(release ? 'release' : 'draft');
 
   const ToggleButtonSxL = {
@@ -34,16 +18,6 @@ const EditTextHeader = ({
     ...Consts.SX.ToggleButton,
     borderWidth: '2px 2px 2px 0px',
   };
-
-  let saveButtonContent;
-
-  if (state === 'saving') {
-    saveButtonContent = <CircularProgress size={28} sx={{ color: 'white' }} />;
-  } else if (state === 'saved' && !enableSave) {
-    saveButtonContent = <CheckIcon sx={{ color: 'black' }} />;
-  } else {
-    saveButtonContent = <>保存</>;
-  }
 
   const mq = useMediaQuery('(min-width:600px)');
 
@@ -119,15 +93,6 @@ const EditTextHeader = ({
           >
             プレビュー
           </Box>
-          <DefaultButton
-            exSx={{ ml: 1, width: '80px' }}
-            disabled={!enableSave}
-            onClick={() => {
-              if (state !== 'saving') handleSaveClick();
-            }}
-          >
-            {saveButtonContent}
-          </DefaultButton>
         </Box>
       </Box>
     </>

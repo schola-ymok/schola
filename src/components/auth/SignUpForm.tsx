@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 
 import { createNewAccount } from 'api/createNewAcount';
+import DefaultButton from 'components/DefaultButton';
 import { AuthContext } from 'components/auth/AuthContext';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
@@ -167,14 +168,14 @@ export const SignUpForm: NextPage = () => {
         </Box>
       )}
 
-      <Button
+      <DefaultButton
         disabled={!buttonEnable}
         variant='contained'
-        sx={{ fontWeight: 'bold', fontSize: '1.1em', width: 100, mx: 'auto', mt: 2 }}
+        exSx={{ mx: 'auto', mt: 3, width: '100px' }}
         onClick={() => save()}
       >
         {isLoading ? <CircularProgress size={28} sx={{ color: 'white' }} /> : <>登録</>}
-      </Button>
+      </DefaultButton>
     </Box>
   );
 };

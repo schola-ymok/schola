@@ -7,6 +7,7 @@ import { deleteReview } from 'api/deleteReview';
 import { getBriefText } from 'api/getBriefText';
 import { getReview } from 'api/getReview';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import DefaultButton from 'components/DefaultButton';
 import MiniText from 'components/MiniText';
 import RatingReportPanel from 'components/RatingReportPanel';
 import ReviewItem from 'components/ReviewItem';
@@ -78,23 +79,20 @@ const Review: NextPage = () => {
             <ReviewItem review={dataReview} height='300' />
           </Box>
           {state.userId === dataReview.user_id && (
-            <Box sx={{ display: 'flx', mb: 2 }}>
-              <Button
-                sx={{ fontWeight: 'bold', width: '200px', mr: 1 }}
-                variant='contained'
-                size='small'
+            <Box sx={{ display: 'flex', mb: 2 }}>
+              <DefaultButton
+                exSx={{ fontWeight: 'bold', width: '150px', mr: 2 }}
                 onClick={handleWriteReviewClick}
               >
                 レビューを編集
-              </Button>
-              <Button
-                sx={{ fontWeight: 'bold', width: '200px' }}
-                variant='contained'
-                size='small'
+              </DefaultButton>
+
+              <DefaultButton
+                exSx={{ fontWeight: 'bold', width: '150px' }}
                 onClick={handleDeleteReviewClick}
               >
                 レビューを削除
-              </Button>
+              </DefaultButton>
             </Box>
           )}
         </Box>
@@ -103,14 +101,9 @@ const Review: NextPage = () => {
           <Stack>
             <MiniText text={dataText} />
             {state.userId !== dataReview.user_id && (
-              <Button
-                variant='contained'
-                sx={{ fontWeight: 'bold', fontSize: '0.9em', width: '150px', mb: 1 }}
-                size='small'
-                onClick={handleWriteReviewClick}
-              >
+              <DefaultButton exSx={{ width: '150px', mb: 1 }} onClick={handleWriteReviewClick}>
                 レビューを書く
-              </Button>
+              </DefaultButton>
             )}
             <RatingReportPanel text={dataText} />
             <ShowMore onClick={handleAllReviewListClick}>全てのレビューを参照</ShowMore>

@@ -39,8 +39,6 @@ const Account = () => {
   const firebaseUser = getAuth().currentUser;
   const emailVerified = firebaseUser.emailVerified;
 
-  const aspect = 1.0;
-
   useEffect(() => {
     if (data) {
       if (data.notifyOnPurchase) setNotifyOnPurchaseCheck(true);
@@ -143,9 +141,7 @@ const AccountSetting = ({
     <>確認済み</>
   ) : (
     <>
-      <Button variant='contained' onClick={handleSendEmailVerificationClick}>
-        確認メールを送信
-      </Button>
+      <DefaultButton onClick={handleSendEmailVerificationClick}>確認メールを送信</DefaultButton>
     </>
   );
 

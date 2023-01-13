@@ -14,6 +14,7 @@ import { setProfilePhotoId } from 'api/setProfilePhotoId';
 import { updateProfile } from 'api/updateProfile';
 import AvatarButton from 'components/AvatarButton';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import DefaultButton from 'components/DefaultButton';
 import ImageCropDialog from 'components/ImageCropDialog';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
@@ -560,15 +561,13 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
           </Box>
         </Box>
 
-        <Button
-          variant='contained'
+        <DefaultButton
           disabled={isLoading}
-          sx={{
-            fontWeight: 'bold',
+          exSx={{
             width: '150px',
             ml: { xs: 'auto', sm: 'auto', md: '200px' },
             mr: { xs: 'auto', sm: 'auto', md: 'unset' },
-            mt: 2,
+            mt: 3,
           }}
           onClick={() => {
             setIsLoading(true);
@@ -584,7 +583,7 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
           }}
         >
           更新
-        </Button>
+        </DefaultButton>
       </Box>
       <Snackbar
         open={snackBarOpen}

@@ -56,7 +56,7 @@ const AddText: NextPage = () => {
       </Box>
 
       <Box sx={{ mx: 'auto', mt: 3 }}>
-        <DefaultButton onClick={handleAddText} width='200px'>
+        <DefaultButton onClick={handleAddText} exSx={{ width: '200px' }}>
           {isLoading ? (
             <CircularProgress size={28} sx={{ color: 'white' }} />
           ) : (

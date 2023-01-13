@@ -7,6 +7,7 @@ import { getBriefText } from 'api/getBriefText';
 import { getMyReview } from 'api/getMyReview';
 import { upsertReview } from 'api/upsertReview';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import DefaultButton from 'components/DefaultButton';
 import MiniText from 'components/MiniText';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
@@ -124,14 +125,12 @@ const EditReview: NextPage = () => {
           />
         </Box>
 
-        <Button
-          variant='contained'
-          size='small'
-          sx={{ width: '30%', minWidth: '200px', fontSize: '1.0em', fontWeight: 'bold', mt: 1 }}
+        <DefaultButton
+          exSx={{ width: '30%', minWidth: '200px', fontSize: '1.0em', fontWeight: 'bold', mt: 3 }}
           onClick={handleEditReviewClick}
         >
           レビューを投稿する
-        </Button>
+        </DefaultButton>
       </Box>
     </Box>
   );

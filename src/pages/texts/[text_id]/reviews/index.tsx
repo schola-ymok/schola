@@ -6,6 +6,7 @@ import useSWR from 'swr';
 import { getBriefText } from 'api/getBriefText';
 import { getReviews } from 'api/getReviews';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import DefaultButton from 'components/DefaultButton';
 import MiniText from 'components/MiniText';
 import RatingReportPanel from 'components/RatingReportPanel';
 import ReviewList from 'components/ReviewList';
@@ -97,14 +98,12 @@ const Review: NextPage = () => {
         >
           <MiniText text={dataText} />
 
-          <Button
-            variant='contained'
-            sx={{ fontWeight: 'bold', fontSize: '0.9em', width: '150px' }}
-            size='small'
+          <DefaultButton
+            exSx={{ fontWeight: 'bold', fontSize: '0.9em', width: '150px' }}
             onClick={handleWriteReviewClick}
           >
             レビューを書く
-          </Button>
+          </DefaultButton>
         </Box>
       </Box>
 

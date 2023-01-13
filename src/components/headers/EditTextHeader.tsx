@@ -1,6 +1,12 @@
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CheckIcon from '@mui/icons-material/Check';
-import { Box, CircularProgress, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  ToggleButton,
+  ToggleButtonGroup,
+  useMediaQuery,
+} from '@mui/material';
 import router from 'next/router';
 import { useState } from 'react';
 
@@ -8,6 +14,7 @@ import DefaultButton from 'components/DefaultButton';
 import Consts from 'utils/Consts';
 
 import Logo from './Logo';
+import SLogo from './SLogo';
 
 const EditTextHeader = ({
   textId,
@@ -38,6 +45,8 @@ const EditTextHeader = ({
     saveButtonContent = <>保存</>;
   }
 
+  const mq = useMediaQuery('(min-width:600px)');
+
   return (
     <>
       <Box
@@ -53,7 +62,7 @@ const EditTextHeader = ({
           my: { xs: 0.4, sm: 1 },
         }}
       >
-        <Logo />
+        {mq ? <Logo /> : <SLogo />}
 
         <Box
           sx={{
@@ -111,7 +120,7 @@ const EditTextHeader = ({
             プレビュー
           </Box>
           <DefaultButton
-            exSx={{ ml: 1 }}
+            exSx={{ ml: 1, width: '80px' }}
             disabled={!enableSave}
             onClick={() => {
               if (state !== 'saving') handleSaveClick();

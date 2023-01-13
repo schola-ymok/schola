@@ -28,7 +28,7 @@ const MiniText = ({ text }) => {
           height: 56,
           cursor: 'pointer',
         }}
-        onClick={() => {}}
+        onClick={handleTextClick}
         src={imageUrl}
       />
       <Box sx={{ display: 'flex', flexFlow: 'column', py: 0.4, ml: 1 }}>

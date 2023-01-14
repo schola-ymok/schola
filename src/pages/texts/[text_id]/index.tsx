@@ -414,7 +414,7 @@ const Text: NextPage = () => {
                             ml: 0.4,
                           }}
                         >
-                          {item.text}
+                          {item}
                         </Box>
                       </Box>
                     </Grid>
@@ -428,7 +428,7 @@ const Text: NextPage = () => {
               <Box sx={{ pl: 1, py: 1 }}>
                 <ul className='learningRequirements'>
                   {learningRequirements?.map((item) => {
-                    return <li>{item.text}</li>;
+                    return <li>{item}</li>;
                   })}
                 </ul>
               </Box>

@@ -45,6 +45,17 @@ namespace Consts {
         backgroundColor: Consts.COLOR.LightPrimarySelected,
       },
     },
+    DashedButton: {
+      backgroundColor: Consts.COLOR.LightPrimary,
+      color: Consts.COLOR.Primary,
+      fontWeight: 'bold',
+      border: '2px dashed grey',
+      '&:hover': { backgroundColor: Consts.COLOR.LightPrimarySelected },
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+    },
   };
 
   export const EVENT = {

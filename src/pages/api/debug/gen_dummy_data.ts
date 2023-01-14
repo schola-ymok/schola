@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     for (var i = 0; i < Math.random() * 8; i++) {
       if (Math.random() > 0.5) {
         const item = Consts.CATEGORY[cat1].label + a[Math.floor(Math.random() * a.length)];
-        arr.push({ id: item, text: item });
+        arr.push(item);
       } else {
         var label = '';
         for (var h = 0; h < Consts.CATEGORY[cat1].items.length; h++) {
@@ -47,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         }
 
         const item = label + a[Math.floor(Math.random() * a.length)];
-        arr.push({ id: item, text: item });
+        arr.push(item);
       }
     }
 
@@ -89,7 +89,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     var arr = [];
     for (var i = 0; i < Math.random() * 8; i++) {
       const item = a[Math.floor(Math.random() * a.length)];
-      arr.push({ id: item, text: item });
+      arr.push(item);
     }
 
     return JSON.stringify(arr);

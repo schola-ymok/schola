@@ -1,9 +1,11 @@
 import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
 import {
   Box,
   Button,
   CircularProgress,
   Divider,
+  IconButton,
   InputBase,
   MenuItem,
   Select,
@@ -106,22 +108,6 @@ const EditText = () => {
     setTab(newNumber);
   };
 
-  const onLearningContentsChange = (id, e) => {
-    setLearningContents([
-      ...learningContents.slice(0, id),
-      e.target.value,
-      ...learningContents.slice(id + 1),
-    ]);
-  };
-
-  const onLearningRequirementsChange = (id, e) => {
-    setLearningRequirements([
-      ...learningRequirements.slice(0, id),
-      e.target.value,
-      ...learningRequirements.slice(id + 1),
-    ]);
-  };
-
   //  useOutsideClick(handleSaveClick, Consts.EVENT.SAVE);
 
   useEffect(() => {
@@ -132,16 +118,37 @@ const EditText = () => {
       setTitle(data.title);
       if (data.category1) setCategory1(data.category1);
       if (data.category2) setCategory2(data.category2);
-      if (data.learning_contents) setLearningContents(JSON.parse(data.learning_contents));
-      if (data.learning_requirements)
-        setLearningRequirements(JSON.parse(data.learning_requirements));
       if (data.chapter_order) setChapterOrder(JSON.parse(data.chapter_order));
       if (data.photo_id) setImageUrl(Consts.IMAGE_STORE_URL + data.photo_id + '.png');
+
+      if (data.learning_contents) {
+        const _learningContents = JSON.parse(data.learning_contents);
+        let len = 4 - _learningContents.length;
+        if (len < 0) len = 0;
+        setLearningContents([..._learningContents, ...Array(len)]);
+      } else {
+        setLearningContents([...Array(4)]);
+      }
+
+      if (data.learning_requirements) {
+        setLearningRequirements(JSON.parse(data.learning_requirements));
+      } else {
+        setLearningRequirements([...Array(1)]);
+      }
     }
   }, [data]);
 
   async function handleSaveClick() {
     setSavingState('saving');
+
+    const filteredLearningContents = learningContents.flatMap((item) =>
+      item === null || item === '' ? [] : [item],
+    );
+
+    const filteredLearningRequirements = learningRequirements.flatMap((item) =>
+      item === null || item === '' ? [] : [item],
+    );
+
     const { error } = await updateText(
       textId,
       title,
@@ -150,8 +157,8 @@ const EditText = () => {
       category1,
       category2,
       price,
-      JSON.stringify(learningContents),
-      JSON.stringify(learningRequirements),
+      JSON.stringify(filteredLearningContents),
+      JSON.stringify(filteredLearningRequirements),
       authAxios,
     );
 
@@ -193,7 +200,7 @@ const EditText = () => {
         release={data.is_released}
       />
 
-      <Container maxWidth='lg'>
+      <Container maxWidth='md'>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={tab} onChange={handleTabChange}>
             <Tab label={<Box sx={{ fontWeight: 'bold' }}>テキスト情報</Box>} {...a11yProps(0)} />
@@ -204,495 +211,362 @@ const EditText = () => {
           <Box
             sx={{
               width: { xs: '98%', md: '90%' },
-              maxWidth: 1000,
               mx: 'auto',
               display: 'flex',
-              flexWrap: 'wrap',
+              flexFlow: 'column',
               p: { xs: 0.4, sm: 2 },
             }}
           >
             {/* image */}
-            <Box sx={{ mt: { xs: 1, md: 1.5 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-              <Box sx={{ pr: 2, width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
-                <Box
-                  sx={{
-                    ml: 'auto',
-                    fontWeight: 'bold',
-                    my: 'auto',
-                    mr: { xs: 'auto', md: 'unset' },
-                  }}
-                >
-                  カバー画像
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
-                  display: 'flex',
+            <Box
+              sx={{
+                fontWeight: 'bold',
+              }}
+            >
+              カバー画像
+            </Box>
+
+            <Box sx={{ mt: 1 }}>
+              <label
+                style={{
+                  cursor: 'pointer',
+                  display: 'block',
+                  width: 256,
                 }}
               >
-                <Box sx={{ mr: 'auto', ml: { xs: 'auto', md: 'unset' }, width: 256 }}>
-                  <label
-                    style={{
-                      cursor: 'pointer',
-                      display: 'block',
-                      width: 256,
-                    }}
-                  >
-                    <input
-                      type='file'
-                      accept='image/*'
-                      onChange={handleSelectFile}
-                      style={{ display: 'none' }}
-                    />
-                    <img src={imageUrl} width='256' height='144' />
-                  </label>
-                  <ImageCropDialog
-                    open={openImageCropDialog}
-                    setOpen={setOpenImageCropDialog}
-                    image={imageSrc}
-                    crop={crop}
-                    zoom={zoom}
-                    onCropChange={setCrop}
-                    onCropComplete={onCropComplete}
-                    onZoomChange={setZoom}
-                    showCroppedImage={showCroppedImage}
-                    cropShape={'rect'}
-                    cropSize={{ width: 256, height: 144 }}
-                  />
+                <input
+                  type='file'
+                  accept='image/*'
+                  onChange={handleSelectFile}
+                  style={{ display: 'none' }}
+                />
+                <img src={imageUrl} width='256' height='144' />
+                <Box sx={{ textAlign: 'center', width: '100%', mx: 'auto' }}>
+                  <a>画像を変更</a>
                 </Box>
-              </Box>
+              </label>
+
+              <ImageCropDialog
+                open={openImageCropDialog}
+                setOpen={setOpenImageCropDialog}
+                image={imageSrc}
+                crop={crop}
+                zoom={zoom}
+                onCropChange={setCrop}
+                onCropComplete={onCropComplete}
+                onZoomChange={setZoom}
+                showCroppedImage={showCroppedImage}
+                cropShape={'rect'}
+                cropSize={{ width: 256, height: 144 }}
+              />
             </Box>
 
             {/* title */}
-            <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-              <Box sx={{ pr: 2, width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
-                <Box
-                  sx={{
-                    ml: 'auto',
-                    fontWeight: 'bold',
-                    my: 'auto',
-                    mr: { xs: 'auto', md: 'unset' },
-                  }}
-                >
-                  テキストのタイトル
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
-                  display: 'flex',
+            <Box
+              sx={{
+                fontWeight: 'bold',
+                mt: 3,
+              }}
+            >
+              テキストのタイトル
+            </Box>
+
+            <Box
+              sx={{
+                p: 1,
+                mt: 0.5,
+                width: '100%',
+                maxWidth: 800,
+                border: '2px solid ' + Consts.COLOR.Grey,
+                '&:hover': {
+                  border: '2px solid ' + Consts.COLOR.Primary,
+                },
+              }}
+            >
+              <InputBase
+                placeholder='タイトル'
+                value={title}
+                variant='outlined'
+                fullWidth
+                onChange={(e) => {
+                  onTitleChange(e);
+                  setChanged(true);
                 }}
-              >
-                <Box
-                  sx={{
-                    p: 1,
-                    width: '100%',
-                    maxWidth: 800,
-                    border: '2px solid ' + Consts.COLOR.Grey,
-                    '&:hover': {
-                      border: '2px solid ' + Consts.COLOR.Primary,
-                    },
-                  }}
-                >
-                  <InputBase
-                    placeholder='タイトル'
-                    value={title}
-                    variant='outlined'
-                    fullWidth
-                    onChange={(e) => {
-                      onTitleChange(e);
-                      setChanged(true);
-                    }}
-                  />
-                </Box>
-              </Box>
+              />
             </Box>
 
             {/* abstract */}
-            <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-              <Box sx={{ pr: 2, width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
-                <Box
-                  sx={{
-                    ml: 'auto',
-                    fontWeight: 'bold',
-                    my: 'auto',
-                    mr: { xs: 'auto', md: 'unset' },
-                  }}
-                >
-                  テキストの概要
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
-                  display: 'flex',
+            <Box
+              sx={{
+                fontWeight: 'bold',
+                mt: 2,
+              }}
+            >
+              テキストの概要
+            </Box>
+
+            <Box
+              sx={{
+                p: 1,
+                mt: 0.5,
+                width: '100%',
+                maxWidth: 800,
+                border: '2px solid ' + Consts.COLOR.Grey,
+                '&:hover': {
+                  border: '2px solid ' + Consts.COLOR.Primary,
+                },
+              }}
+            >
+              <InputBase
+                placeholder='テキストの概要'
+                value={abstract}
+                fullWidth
+                rows={4}
+                multiline
+                onChange={(e) => {
+                  onAbstractChange(e);
+                  setChanged(true);
                 }}
-              >
-                <Box
-                  sx={{
-                    p: 1,
-                    my: 1,
-                    width: '100%',
-                    maxWidth: 800,
-                    border: '2px solid ' + Consts.COLOR.Grey,
-                    '&:hover': {
-                      border: '2px solid ' + Consts.COLOR.Primary,
-                    },
-                  }}
-                >
-                  <InputBase
-                    placeholder='テキストの概要'
-                    value={abstract}
-                    fullWidth
-                    rows={4}
-                    multiline
-                    onChange={(e) => {
-                      onAbstractChange(e);
-                      setChanged(true);
-                    }}
-                  />
-                </Box>
-              </Box>
+              />
             </Box>
 
             {/* explanation */}
-            <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-              <Box sx={{ pr: 2, width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
-                <Box
-                  sx={{
-                    ml: 'auto',
-                    fontWeight: 'bold',
-                    my: 'auto',
-                    mr: { xs: 'auto', md: 'unset' },
-                  }}
-                >
-                  テキストの詳細な解説
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
-                  display: 'flex',
+            <Box
+              sx={{
+                fontWeight: 'bold',
+                mt: 2,
+              }}
+            >
+              テキストの詳細な解説
+            </Box>
+
+            <Box
+              sx={{
+                p: 1,
+                mt: 0.5,
+                mx: 'auto',
+                width: '100%',
+                maxWidth: 800,
+                border: '2px solid ' + Consts.COLOR.Grey,
+                '&:hover': {
+                  border: '2px solid ' + Consts.COLOR.Primary,
+                },
+              }}
+            >
+              <InputBase
+                placeholder='テキストの詳細な解説'
+                value={explanation}
+                fullWidth
+                rows={8}
+                multiline
+                onChange={(e) => {
+                  onExplanationChange(e);
+                  setChanged(true);
                 }}
-              >
-                <Box
-                  sx={{
-                    p: 1,
-                    mx: 'auto',
-                    width: '100%',
-                    maxWidth: 800,
-                    border: '2px solid ' + Consts.COLOR.Grey,
-                    '&:hover': {
-                      border: '2px solid ' + Consts.COLOR.Primary,
-                    },
-                  }}
-                >
-                  <InputBase
-                    placeholder='テキストの詳細な解説'
-                    value={explanation}
-                    fullWidth
-                    rows={8}
-                    multiline
-                    onChange={(e) => {
-                      onExplanationChange(e);
-                      setChanged(true);
-                    }}
-                  />
-                </Box>
-              </Box>
+              />
             </Box>
 
             {/* Price */}
-            <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-              <Box sx={{ pr: 2, width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
-                <Box
-                  sx={{
-                    ml: 'auto',
-                    fontWeight: 'bold',
-                    my: 'auto',
-                    mr: { xs: 'auto', md: 'unset' },
-                  }}
-                >
-                  テキストの販売価格
-                </Box>
-              </Box>
+            <Box
+              sx={{
+                fontWeight: 'bold',
+                mt: 2,
+              }}
+            >
+              テキストの販売価格
+            </Box>
+
+            <Box sx={{ display: 'flex' }}>
               <Box
                 sx={{
-                  width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
-                  px: 1,
+                  color: Consts.COLOR.Primary,
+                  width: 140,
+                  fontWeight: 'bold',
+                  fontSize: '1.4em',
+                  my: 'auto',
                   display: 'flex',
+                  justifyContent: 'center',
                 }}
               >
-                <Box
-                  sx={{
-                    color: Consts.COLOR.Primary,
-                    width: 80,
-                    ml: 'auto',
-                    fontWeight: 'bold',
-                    fontSize: '1.3em',
-                    my: 'auto',
-                  }}
-                >
-                  {price}円
-                </Box>
+                {price}円
+              </Box>
 
-                <Box sx={{ my: 'auto', mx: 'auto', p: 1, width: '75%' }}>
-                  <Slider
-                    aria-label='円'
-                    value={price}
-                    onChange={(e) => {
-                      onPriceChange(e);
-                      setChanged(true);
-                    }}
-                    valueLabelDisplay='auto'
-                    marks={[
-                      {
-                        value: 100,
-                        label: '100円',
-                      },
-                      {
-                        value: 5000,
-                        label: '5000円',
-                      },
-                    ]}
-                    step={100}
-                    min={100}
-                    max={5000}
-                  />
-                </Box>
+              <Box sx={{ my: 'auto', mr: 'auto', p: 1, width: '60%' }}>
+                <Slider
+                  aria-label='円'
+                  value={price}
+                  onChange={(e) => {
+                    onPriceChange(e);
+                    setChanged(true);
+                  }}
+                  valueLabelDisplay='auto'
+                  marks={[
+                    {
+                      value: 50,
+                      label: '50円',
+                    },
+                    {
+                      value: 5000,
+                      label: '5000円',
+                    },
+                  ]}
+                  step={50}
+                  min={50}
+                  max={5000}
+                />
               </Box>
             </Box>
 
             {/* Category */}
-            <Box sx={{ mt: { xs: 1, md: 2 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-              <Box sx={{ width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
-                <Box
-                  sx={{
-                    pr: 2,
-                    ml: 'auto',
-                    fontWeight: 'bold',
-                    my: 'auto',
-                    mr: { xs: 'auto', md: 'unset' },
-                  }}
-                >
-                  カテゴリの選択
-                </Box>
-              </Box>
+            <Box
+              sx={{
+                fontWeight: 'bold',
+                mt: 2,
+              }}
+            >
+              カテゴリの選択
+            </Box>
 
-              <Box
-                sx={{
-                  width: { xs: '100%', md: 'auto' },
-                  display: 'flex',
+            <Box
+              sx={{
+                display: 'flex',
+                flexFlow: { xs: 'column', md: 'unset' },
+              }}
+            >
+              <Select
+                labelId='category1'
+                id='category1'
+                value={category1}
+                onChange={(e) => {
+                  onCategory1Change(e);
+                  setChanged(true);
                 }}
-              >
-                <Select
-                  labelId='category1'
-                  id='category1'
-                  value={category1}
-                  onChange={(e) => {
-                    onCategory1Change(e);
-                    setChanged(true);
-                  }}
-                  sx={{
-                    m: 1,
-                    mx: { xs: 'auto', md: 'unset' },
-                  }}
-                  inputProps={{
+                sx={{
+                  mt: 0.5,
+                }}
+                inputProps={{
+                  sx: {
+                    border: '2px solid ' + Consts.COLOR.Grey,
+                    '&:hover': { border: '2px solid ' + Consts.COLOR.Primary },
+                  },
+                }}
+                MenuProps={{
+                  PaperProps: {
                     sx: {
                       border: '2px solid ' + Consts.COLOR.Grey,
-                      '&:hover': { border: '2px solid ' + Consts.COLOR.Primary },
                     },
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        border: '2px solid ' + Consts.COLOR.Grey,
-                      },
+                  },
+                }}
+              >
+                <MenuItem disabled value='nul'>
+                  --- カテゴリ ---
+                </MenuItem>
+                {Object.keys(Consts.CATEGORY).map((key) => {
+                  return (
+                    <MenuItem key={key} value={key}>
+                      {Consts.CATEGORY[key].label}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+
+              <Select
+                labelId='category2'
+                id='category2'
+                value={category2}
+                onChange={(e) => {
+                  onCategory2Change(e);
+                  setChanged(true);
+                }}
+                sx={{
+                  mt: 0.5,
+                  ml: { xs: 'unset', md: 1 },
+                }}
+                inputProps={{
+                  sx: {
+                    border: '2px solid ' + Consts.COLOR.Grey,
+                    '&:hover': { border: '2px solid ' + Consts.COLOR.Primary },
+                  },
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      border: '2px solid ' + Consts.COLOR.Grey,
                     },
-                  }}
-                >
-                  <MenuItem disabled value='nul'>
-                    --- カテゴリ ---
-                  </MenuItem>
-                  {Object.keys(Consts.CATEGORY).map((key) => {
+                  },
+                }}
+              >
+                <MenuItem disabled value='nul'>
+                  --- サブカテゴリ ---
+                </MenuItem>
+                {category1 != 'nul' &&
+                  Consts.CATEGORY[category1].items.map((item) => {
                     return (
-                      <MenuItem key={key} value={key}>
-                        {Consts.CATEGORY[key].label}
+                      <MenuItem key={item.key} value={item.key}>
+                        {item.label}
                       </MenuItem>
                     );
                   })}
-                </Select>
-              </Box>
-
-              <Box
-                sx={{
-                  width: { xs: '100%', md: 'auto' },
-                  display: 'flex',
-                }}
-              >
-                <Select
-                  labelId='category2'
-                  id='category2'
-                  value={category2}
-                  onChange={(e) => {
-                    onCategory2Change(e);
-                    setChanged(true);
-                  }}
-                  sx={{
-                    m: { xs: 0, md: 1 },
-                    mx: { xs: 'auto', md: 1 },
-                  }}
-                  inputProps={{
-                    sx: {
-                      border: '2px solid ' + Consts.COLOR.Grey,
-                      '&:hover': { border: '2px solid ' + Consts.COLOR.Primary },
-                    },
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        border: '2px solid ' + Consts.COLOR.Grey,
-                      },
-                    },
-                  }}
-                >
-                  <MenuItem disabled value='nul'>
-                    --- サブカテゴリ ---
-                  </MenuItem>
-                  {category1 != 'nul' &&
-                    Consts.CATEGORY[category1].items.map((item) => {
-                      return (
-                        <MenuItem key={item.key} value={item.key}>
-                          {item.label}
-                        </MenuItem>
-                      );
-                    })}
-                </Select>
-              </Box>
+              </Select>
             </Box>
 
             {/* LearningContents */}
-            <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-              <Box sx={{ width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
-                <Box
-                  sx={{
-                    pr: 1.5,
-                    ml: 'auto',
-                    fontWeight: 'bold',
-                    mt: 2,
-                    mb: 1,
-                    mr: { xs: 'auto', md: 'unset' },
-                  }}
-                >
-                  テキストで学習できることは何ですか？
-                </Box>
-              </Box>
-
-              <Box
-                sx={{
-                  width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                }}
-              >
-                <Box sx={{ width: '100%' }}>
-                  <ReactTags
-                    placeholder='学習内容を８個まで入力'
-                    tags={learningContents}
-                    autofocus={false}
-                    allowDragDrop={false}
-                    handleAddition={(tag) => {
-                      setLearningContents([...learningContents, tag]);
-                      setChanged(true);
-                    }}
-                    handleDelete={(index) => {
-                      setLearningContents(learningContents.filter((tag, i) => i !== index));
-                      setChanged(true);
-                    }}
-                    inputFieldPosition='top'
-                  />
-                </Box>
-              </Box>
+            <Box
+              sx={{
+                fontWeight: 'bold',
+                mt: 2,
+              }}
+            >
+              テキストで学習できることは何ですか？
             </Box>
+
+            <Box sx={{ width: '100%' }}>
+              <LearningContentsList
+                learningContents={learningContents}
+                setLearningContents={setLearningContents}
+                setChanged={setChanged}
+              />
+            </Box>
+
+            <ItemAddButton
+              onClick={() => {
+                setLearningContents([...learningContents, '']);
+              }}
+            />
 
             {/* LearningRequirements */}
-            <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-              <Box sx={{ width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
-                <Box
-                  sx={{
-                    pr: 1.5,
-                    ml: 'auto',
-                    fontWeight: 'bold',
-                    mt: 2,
-                    mb: 1,
-                    mr: { xs: 'auto', md: 'unset' },
-                  }}
-                >
-                  想定している読者や要件は何ですか？
-                </Box>
-              </Box>
-
-              <Box
-                sx={{
-                  width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                }}
-              >
-                <Box sx={{ width: '100%' }}>
-                  <ReactTags
-                    placeholder='学習条件を８個まで入力'
-                    tags={learningRequirements}
-                    autofocus={false}
-                    allowDragDrop={false}
-                    handleAddition={(tag) => {
-                      setLearningRequirements([...learningRequirements, tag]);
-                      setChanged(true);
-                    }}
-                    handleDelete={(index) => {
-                      setLearningRequirements(learningRequirements.filter((tag, i) => i !== index));
-                      setChanged(true);
-                    }}
-                    inputFieldPosition='top'
-                  />
-                </Box>
-              </Box>
+            <Box
+              sx={{
+                fontWeight: 'bold',
+                mt: 2,
+              }}
+            >
+              想定している読者や要件は何ですか？
             </Box>
 
-            <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-              <Box sx={{ width: { xs: '100%', md: LEFT_COL_SIZE }, display: 'flex' }}>
-                <Box
-                  sx={{
-                    pr: 1.5,
-                    ml: 'auto',
-                    fontWeight: 'bold',
-                    mt: 2,
-                    mb: 1,
-                    mr: { xs: 'auto', md: 'unset' },
-                  }}
-                ></Box>
-              </Box>
-              <Box
-                sx={{
-                  width: { xs: '100%', md: 'calc(100% - ' + LEFT_COL_SIZE + 'px)' },
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                }}
-              >
-                <Box sx={{ width: '100%' }}>
-                  <DefaultButton
-                    exSx={{ width: '180px', mt: { xs: 0, md: 2 }, mx: { xs: 'auto', md: 'unset' } }}
-                    disabled={!changed}
-                    onClick={() => {
-                      if (savingState !== 'saving') handleSaveClick();
-                    }}
-                  >
-                    {saveButtonContent}
-                  </DefaultButton>
-                </Box>
-              </Box>
+            <Box sx={{ width: '100%' }}>
+              <LearningRequirementsList
+                learningRequirements={learningRequirements}
+                setLearningRequirements={setLearningRequirements}
+                setChanged={setChanged}
+              />
             </Box>
+
+            <ItemAddButton
+              onClick={() => {
+                setLearningRequirements([...learningRequirements, '']);
+              }}
+            />
+
+            <DefaultButton
+              exSx={{ width: '180px', mt: { xs: 2, md: 4 }, mx: 'auto' }}
+              disabled={!changed}
+              onClick={() => {
+                if (savingState !== 'saving') handleSaveClick();
+              }}
+            >
+              {saveButtonContent}
+            </DefaultButton>
           </Box>
         </TabPanel>
         <TabPanel value={tab} index={1}>
@@ -707,6 +581,124 @@ const EditText = () => {
         </TabPanel>
       </Container>
     </>
+  );
+};
+
+const ItemAddButton = ({ onClick }) => {
+  return (
+    <Box
+      sx={{
+        ...Consts.SX.DashedButton,
+        width: '100%',
+        maxWidth: '650px',
+        height: '40px',
+        mt: 1,
+      }}
+      variant='contained'
+      onClick={onClick}
+    >
+      +
+    </Box>
+  );
+};
+
+const LearningContentsList = ({ learningContents, setLearningContents, setChanged }) => {
+  return (
+    <>
+      {learningContents.map((item, index) => {
+        return (
+          <ListItem
+            placeholder={'マーティングの基礎'}
+            value={item}
+            deleteEnable={learningContents.length > 4}
+            onChange={(value) => {
+              setLearningContents(
+                learningContents.map((_value, _index) => (index === _index ? value : _value)),
+              );
+              setChanged(true);
+            }}
+            onDelete={() => {
+              setLearningContents(learningContents.filter((_value, _index) => index !== _index));
+              setChanged(true);
+            }}
+          />
+        );
+      })}
+    </>
+  );
+};
+
+const LearningRequirementsList = ({
+  learningRequirements,
+  setLearningRequirements,
+  setChanged,
+}) => {
+  return (
+    <>
+      {learningRequirements.map((item, index) => {
+        return (
+          <ListItem
+            placeholder={'マーティングの基礎'}
+            value={item}
+            deleteEnable={learningRequirements.length > 1}
+            onChange={(value) => {
+              setLearningRequirements(
+                learningRequirements.map((_value, _index) => (index === _index ? value : _value)),
+              );
+              setChanged(true);
+            }}
+            onDelete={() => {
+              setLearningRequirements(
+                learningRequirements.filter((_value, _index) => index !== _index),
+              );
+              setChanged(true);
+            }}
+          />
+        );
+      })}
+    </>
+  );
+};
+
+const ListItem = ({ value, placeholder, onChange, deleteEnable, onDelete }) => {
+  return (
+    <Box
+      sx={{
+        p: 1,
+        mt: 0.7,
+        width: '100%',
+        maxWidth: '650px',
+        border: '2px solid ' + Consts.COLOR.Grey,
+        '&:hover': {
+          border: '2px solid ' + Consts.COLOR.Primary,
+        },
+      }}
+    >
+      <Box sx={{ display: 'flex' }}>
+        <InputBase
+          placeholder={placeholder}
+          value={value}
+          variant='outlined'
+          fullWidth
+          onChange={(e) => {
+            onChange(e.target.value);
+          }}
+        />
+        {deleteEnable && (
+          <IconButton
+            type='button'
+            sx={{
+              p: 0,
+              '&:hover': Consts.SX.IconButtonHover,
+              transform: 'scale(0.8)',
+            }}
+            onClick={onDelete}
+          >
+            <ClearIcon />
+          </IconButton>
+        )}
+      </Box>
+    </Box>
   );
 };
 

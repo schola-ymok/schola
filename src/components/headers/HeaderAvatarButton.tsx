@@ -2,6 +2,7 @@ import { Avatar, Box, Divider, IconButton, Menu, MenuItem, Stack } from '@mui/ma
 import router from 'next/router';
 import { useContext, useState } from 'react';
 
+import SMenuItem from 'components/SMenuItem';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 
@@ -56,16 +57,12 @@ const HeaderAvatarButton = () => {
           },
         }}
       >
-        <MenuItem
+        <SMenuItem
           onClick={() => {
             router.push('/account');
             handleClose();
           }}
-          sx={{
-            '&:hover': {
-              color: Consts.COLOR.Primary,
-            },
-          }}
+          height={'50px'}
         >
           <Stack>
             <Box
@@ -82,14 +79,9 @@ const HeaderAvatarButton = () => {
               {state.accountName}
             </Box>
           </Stack>
-        </MenuItem>
+        </SMenuItem>
         <Divider />
-        <MenuItem
-          sx={{
-            '&:hover': {
-              color: Consts.COLOR.Primary,
-            },
-          }}
+        <SMenuItem
           onClick={() => {
             router.push('/dashboard');
             handleClose();
@@ -107,33 +99,23 @@ const HeaderAvatarButton = () => {
           >
             ダッシュボード
           </Box>
-        </MenuItem>
-        <MenuItem
-          sx={{
-            '&:hover': {
-              color: Consts.COLOR.Primary,
-            },
-          }}
+        </SMenuItem>
+        <SMenuItem
           onClick={() => {
             router.push('/account/texts');
             handleClose();
           }}
         >
           購入済みテキスト
-        </MenuItem>
-        <MenuItem
-          sx={{
-            '&:hover': {
-              color: Consts.COLOR.Primary,
-            },
-          }}
+        </SMenuItem>
+        <SMenuItem
           onClick={() => {
             router.push('/signout');
             handleClose();
           }}
         >
           ログアウト
-        </MenuItem>
+        </SMenuItem>
       </Menu>
     </Box>
   );

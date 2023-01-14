@@ -5,6 +5,8 @@ import { useContext, useState } from 'react';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 
+import SMenuItem from './SMenuItem';
+
 const DashboardTextListMenuButton = ({ isReleased, handleDelete, handleEdit, handleView }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -52,21 +54,22 @@ const DashboardTextListMenuButton = ({ isReleased, handleDelete, handleEdit, han
         }}
       >
         {isReleased == 1 && (
-          <MenuItem
+          <SMenuItem
             onClick={() => {
               handleView();
               handleClose();
             }}
             sx={{
+              height: '30px',
               '&:hover': {
                 color: Consts.COLOR.Primary,
               },
             }}
           >
             プレビュー
-          </MenuItem>
+          </SMenuItem>
         )}
-        <MenuItem
+        <SMenuItem
           sx={{
             '&:hover': {
               color: Consts.COLOR.Primary,
@@ -78,8 +81,8 @@ const DashboardTextListMenuButton = ({ isReleased, handleDelete, handleEdit, han
           }}
         >
           編集
-        </MenuItem>
-        <MenuItem
+        </SMenuItem>
+        <SMenuItem
           sx={{
             '&:hover': {
               color: Consts.COLOR.Primary,
@@ -91,7 +94,7 @@ const DashboardTextListMenuButton = ({ isReleased, handleDelete, handleEdit, han
           }}
         >
           削除
-        </MenuItem>
+        </SMenuItem>
       </Menu>
     </Box>
   );

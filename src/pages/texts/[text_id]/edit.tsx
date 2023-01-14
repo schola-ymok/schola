@@ -2,14 +2,15 @@ import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import {
   Box,
-  Button,
   CircularProgress,
-  Divider,
   IconButton,
   InputBase,
   MenuItem,
   Select,
   Slider,
+  Dialog,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -26,11 +27,14 @@ import { getChapterList } from 'api/getChapterList';
 import { getMyText } from 'api/getMyText';
 import { releaseText } from 'api/releaseText';
 import { setTextCoverPhotoId } from 'api/setTextCoverPhotoId';
+import { updateChapterTitle } from 'api/updateChapterTitle';
 import { updateText } from 'api/updateText';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import ChapterListMenuButton from 'components/ChaptarListMenuButton';
+import ChapterTitleSettingDialog from 'components/ChapterTitleSettingDialog';
 import DefaultButton from 'components/DefaultButton';
 import ImageCropDialog from 'components/ImageCropDialog';
+import SMenuItem from 'components/SMenuItem';
 import { AuthContext } from 'components/auth/AuthContext';
 import EditTextHeader from 'components/headers/EditTextHeader';
 import EditTextLayout from 'components/layouts/EditTextLayout';
@@ -41,7 +45,8 @@ import useCropImage from 'utils/useCropImage';
 const EditText = () => {
   const router = useRouter();
   const { authAxios } = useContext(AuthContext);
-  const [tab, setTab] = useState(0);
+
+  const [tab, setTab] = useState(router.query.chp !== undefined ? 1 : 0);
 
   const textId = router.query.text_id;
   const [price, setPrice] = useState(100);
@@ -105,10 +110,13 @@ const EditText = () => {
   };
 
   const handleTabChange = (event, newNumber) => {
+    if (newNumber == 1) {
+      router.replace(`/texts/${textId}/edit?chp`);
+    } else {
+      router.replace(`/texts/${textId}/edit`);
+    }
     setTab(newNumber);
   };
-
-  //  useOutsideClick(handleSaveClick, Consts.EVENT.SAVE);
 
   useEffect(() => {
     if (data) {
@@ -178,8 +186,6 @@ const EditText = () => {
 
   if (error) console.log(error);
   if (!data) return <CenterLoadingSpinner />;
-
-  const LEFT_COL_SIZE = 300;
 
   let saveButtonContent;
 
@@ -376,7 +382,7 @@ const EditText = () => {
               テキストの販売価格
             </Box>
 
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex', flexFlow: { xs: 'column', sm: 'unset' } }}>
               <Box
                 sx={{
                   color: Consts.COLOR.Primary,
@@ -385,13 +391,13 @@ const EditText = () => {
                   fontSize: '1.4em',
                   my: 'auto',
                   display: 'flex',
-                  justifyContent: 'center',
+                  justifyContent: { xs: 'unset', sm: 'center' },
                 }}
               >
                 {price}円
               </Box>
 
-              <Box sx={{ my: 'auto', mr: 'auto', p: 1, width: '60%' }}>
+              <Box sx={{ my: 'auto', ml: 2, mr: { xs: 'unset', sm: 'auto' }, p: 1, width: '60%' }}>
                 <Slider
                   aria-label='円'
                   value={price}
@@ -458,14 +464,14 @@ const EditText = () => {
                   },
                 }}
               >
-                <MenuItem disabled value='nul'>
+                <SMenuItem disabled value='nul'>
                   --- カテゴリ ---
-                </MenuItem>
+                </SMenuItem>
                 {Object.keys(Consts.CATEGORY).map((key) => {
                   return (
-                    <MenuItem key={key} value={key}>
+                    <SMenuItem key={key} value={key}>
                       {Consts.CATEGORY[key].label}
-                    </MenuItem>
+                    </SMenuItem>
                   );
                 })}
               </Select>
@@ -496,15 +502,15 @@ const EditText = () => {
                   },
                 }}
               >
-                <MenuItem disabled value='nul'>
+                <SMenuItem disabled value='nul'>
                   --- サブカテゴリ ---
-                </MenuItem>
+                </SMenuItem>
                 {category1 != 'nul' &&
                   Consts.CATEGORY[category1].items.map((item) => {
                     return (
-                      <MenuItem key={item.key} value={item.key}>
+                      <SMenuItem key={item.key} value={item.key}>
                         {item.label}
-                      </MenuItem>
+                      </SMenuItem>
                     );
                   })}
               </Select>
@@ -575,7 +581,7 @@ const EditText = () => {
               <h5>Chapters</h5>
             </Box>
           </Box>
-          <Box sx={{ width: '100%', m: 1 }}>
+          <Box fullWidth sx={{ p: 1 }}>
             <ChapterList />
           </Box>
         </TabPanel>
@@ -714,13 +720,19 @@ const ChapterList = () => {
   const [chapterOrder, setChapterOrder] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [chapterNameSettingOpen, setChapterMenuSettingOpen] = useState(false);
+
   if (error) return <div>failed to load</div>;
   if (!data) return <CenterLoadingSpinner />;
 
-  async function handleAddChapterClick() {
+  const handleAddChapterClick = () => {
+    setChapterMenuSettingOpen(true);
+  };
+
+  async function handleChapterNameDecided(name) {
     setIsLoading(true);
 
-    const { chapterId, error } = await createNewChapter(textId, authAxios, '新しいチャプター');
+    const { chapterId, error } = await createNewChapter(textId, authAxios, name);
 
     if (error) {
       console.log(error);
@@ -750,22 +762,35 @@ const ChapterList = () => {
     });
   }
 
+  async function handleTitleChange(id, title) {
+    const { error } = await updateChapterTitle(id, title, authAxios);
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    mutate(`/texts/${textId}/chapters/`);
+  }
+
   return (
     <>
       <Box sx={{ minHeight: 400 }}>
-        <Box flexGrow={1} sx={{ p: { xs: 0, md: 2 } }}>
+        <Box sx={{ p: { xs: 0, md: 2 } }}>
           {data.length > 0 ? (
             <ReactSortable list={data} setList={setChapterOrder}>
               {data.map((item) => (
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Box
                     sx={{
-                      fontSize: '1.2em',
+                      fontSize: { xs: '1.0em', sm: '1.2em' },
                       fontWeight: 'bold',
                       p: { xs: 0, md: 1.5 },
                       width: '100%',
                       '&:hover': { color: Consts.COLOR.Primary },
                       cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
                     }}
                     onClick={() => {
                       handleChapterClick(item);
@@ -777,6 +802,9 @@ const ChapterList = () => {
                     item={item}
                     handleDelete={handleDeleteChapterClick}
                     handleEdit={handleChapterClick}
+                    handleTitleChange={(title) => {
+                      handleTitleChange(item.id, title);
+                    }}
                   />
                 </Box>
               ))}
@@ -812,6 +840,14 @@ const ChapterList = () => {
           </Box>
         </Box>
       </Box>
+      <ChapterTitleSettingDialog
+        title={''}
+        open={chapterNameSettingOpen}
+        onChange={handleChapterNameDecided}
+        onClose={() => {
+          setChapterMenuSettingOpen(false);
+        }}
+      />
     </>
   );
 };

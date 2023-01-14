@@ -799,6 +799,7 @@ const ChapterList = () => {
                     {item.title}
                   </Box>
                   <ChapterListMenuButton
+                    key={item.id}
                     item={item}
                     handleDelete={handleDeleteChapterClick}
                     handleEdit={handleChapterClick}
@@ -841,7 +842,8 @@ const ChapterList = () => {
         </Box>
       </Box>
       <ChapterTitleSettingDialog
-        title={''}
+        key={Math.random()}
+        title=''
         open={chapterNameSettingOpen}
         onChange={handleChapterNameDecided}
         onClose={() => {

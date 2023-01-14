@@ -1,9 +1,10 @@
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { Box, IconButton, Menu, MenuItem } from '@mui/material';
+import { Box, IconButton, Menu } from '@mui/material';
 import { useState } from 'react';
 
 import ChapterTitleSettingDialog from 'components/ChapterTitleSettingDialog';
 import Consts from 'utils/Consts';
+
 import SMenuItem from './SMenuItem';
 
 const ChapterListMenuButton = ({ item, handleDelete, handleEdit, handleTitleChange }) => {
@@ -58,11 +59,6 @@ const ChapterListMenuButton = ({ item, handleDelete, handleEdit, handleTitleChan
               setChapterMenuSettingOpen(true);
               handleClose();
             }}
-            sx={{
-              '&:hover': {
-                color: Consts.COLOR.Primary,
-              },
-            }}
           >
             名前の変更
           </SMenuItem>
@@ -71,20 +67,10 @@ const ChapterListMenuButton = ({ item, handleDelete, handleEdit, handleTitleChan
               handleEdit();
               handleClose();
             }}
-            sx={{
-              '&:hover': {
-                color: Consts.COLOR.Primary,
-              },
-            }}
           >
             編集
           </SMenuItem>
           <SMenuItem
-            sx={{
-              '&:hover': {
-                color: Consts.COLOR.Primary,
-              },
-            }}
             onClick={() => {
               handleEdit();
               handleClose();
@@ -93,11 +79,6 @@ const ChapterListMenuButton = ({ item, handleDelete, handleEdit, handleTitleChan
             試し読み可能に
           </SMenuItem>
           <SMenuItem
-            sx={{
-              '&:hover': {
-                color: Consts.COLOR.Primary,
-              },
-            }}
             onClick={() => {
               handleDelete(item);
               handleClose();
@@ -108,6 +89,7 @@ const ChapterListMenuButton = ({ item, handleDelete, handleEdit, handleTitleChan
         </Menu>
       </Box>
       <ChapterTitleSettingDialog
+        key={item.id}
         title={item.title}
         open={chapterNameSettingOpen}
         onChange={handleTitleChange}

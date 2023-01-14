@@ -1,5 +1,5 @@
 import { Box, InputBase, Dialog, DialogActions, DialogContent } from '@mui/material';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import Consts from 'utils/Consts';
 
@@ -37,7 +37,13 @@ const ChapterTitleSettingDialog = ({ open, onClose, title, onChange }) => {
         </Box>
       </Box>
       <DialogActions>
-        <DefaultButton onClick={onClose}>キャンセル</DefaultButton>
+        <DefaultButton
+          onClick={() => {
+            onClose();
+          }}
+        >
+          キャンセル
+        </DefaultButton>
         <DefaultButton
           onClick={() => {
             onChange(newTitle);

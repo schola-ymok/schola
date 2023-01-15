@@ -1,5 +1,4 @@
-import { Edit } from '@mui/icons-material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { IconButton } from '@mui/material';
 import router from 'next/router';
 
@@ -16,7 +15,7 @@ const BackButton = () => {
         router.back();
       }}
     >
-      <ArrowBackIosIcon sx={{ my: 'auto' }} />
+      <ArrowBackIosNewIcon sx={{ my: 'auto' }} />
     </IconButton>
   );
 };

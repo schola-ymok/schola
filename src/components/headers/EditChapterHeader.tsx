@@ -1,76 +1,166 @@
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Box, Button, useMediaQuery, IconButton, InputBase, CircularProgress } from '@mui/material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import InsertPhotoIcon from '@mui/icons-material/InsertPhotoOutlined';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { Box, useMediaQuery, IconButton, InputBase, CircularProgress } from '@mui/material';
 import router, { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 
-import DefaultButton from 'components/DefaultButton';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 
-import BackButton from './BackButton';
-
 const EditChapterHeader = ({
   handleSaveClick,
-  handleTitleChange,
-  title,
+  handleSelectFile,
+  handleModeChange,
   textId,
   chapterId,
   isSaving,
 }) => {
-  const { state, dispatch } = useContext(AppContext);
-  const [toggleViewModeValue, setToggleViewModeValue] = useState('both');
-  const [enableSave, setEnableSave] = useState(true);
-
-  const mq = useMediaQuery('(min-width:600px)');
   const router = useRouter();
+
+  const [mode, setMode] = useState(0);
 
   return (
     <Box
       sx={{
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'space-between',
         width: '100%',
+        height: '32px',
         px: 1,
       }}
     >
-      <BackButton />
+      <Box sx={{ display: 'flex' }}>
+        <BackButton onClick={() => router.back()} />
+        <ImageButton handleSelectFile={handleSelectFile} />
+      </Box>
 
-      <Box sx={{ width: '100%', my: 'auto', py: 0.5 }}>
-        <InputBase
-          placeholder='チャプターのタイトルを入力'
-          value={title}
-          sx={{ fontSize: '0.9em', my: 'auto' }}
-          variant='outlined'
-          fullWidth
-          onChange={handleTitleChange}
-        />
+      <Box sx={{ display: 'flex' }}>
+        <ModeEditButton mode={mode} setMode={setMode} handleModeChange={handleModeChange} />
+        <ModeMultiButton mode={mode} setMode={setMode} handleModeChange={handleModeChange} />
+        <ModeViewButton mode={mode} setMode={setMode} handleModeChange={handleModeChange} />
       </Box>
 
       <Box
         sx={{
           display: 'flex',
-          marginLeft: 'auto',
           alignItems: 'center',
         }}
       >
-        <DefaultButton disabled={!enableSave} onClick={handleSaveClick} exSx={{ height: '30px' }}>
-          {isSaving ? <CircularProgress size={28} sx={{ color: 'white' }} /> : <>保存</>}
-        </DefaultButton>
-
-        <IconButton
-          type='button'
-          sx={{
-            '&:hover': Consts.SX.IconButtonHover,
-          }}
+        <ViewButton
           onClick={() => {
             router.push(`/texts/${textId}/view?cid=${chapterId}`);
           }}
-        >
-          <RemoveRedEyeIcon sx={{ my: 'auto' }} />
-        </IconButton>
+        />
+
+        <SaveButton onClick={handleSaveClick} />
       </Box>
     </Box>
   );
 };
+/*
+        <DefaultButton disabled={!enableSave} onClick={handleSaveClick} exSx={{ height: '30px' }}>
+          {isSaving ? <CircularProgress size={28} sx={{ color: 'white' }} /> : <>保存</>}
+        </DefaultButton>
+        */
+
+const TButton = ({ children, onClick, selected = false }) => {
+  let sx = {
+    width: '24px',
+    height: '24px',
+    display: 'flex',
+    m: 0.2,
+    borderRadius: '15%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    '&:hover': {
+      color: Consts.COLOR.Primary,
+      cursor: 'pointer',
+      backgroundColor: '#eeeeee',
+    },
+  };
+
+  if (selected) sx.backgroundColor = '#eeeeee';
+
+  return (
+    <Box sx={sx} onClick={onClick}>
+      {children}
+    </Box>
+  );
+};
+
+const BackButton = ({ onClick }) => (
+  <TButton onClick={onClick}>
+    <ChevronLeftIcon sx={{ transform: 'scale(1.0)' }} />
+  </TButton>
+);
+
+const ViewButton = ({ onClick }) => (
+  <TButton onClick={onClick}>
+    <VisibilityOutlinedIcon sx={{ transform: 'scale(0.7)' }} />
+  </TButton>
+);
+
+const SaveButton = ({ onClick }) => (
+  <TButton onClick={onClick}>
+    <SaveOutlinedIcon sx={{ transform: 'scale(0.7)' }} />
+  </TButton>
+);
+
+const ModeMultiButton = ({ mode, setMode, handleModeChange }) => {
+  const selected = mode == 0;
+  return (
+    <TButton
+      selected={selected}
+      onClick={() => {
+        setMode(0);
+        handleModeChange(0);
+      }}
+    >
+      <img src='/split_middle.svg' />
+    </TButton>
+  );
+};
+
+const ModeEditButton = ({ mode, setMode, handleModeChange }) => {
+  const selected = mode == 1;
+  return (
+    <TButton
+      selected={selected}
+      onClick={() => {
+        setMode(1);
+        handleModeChange(1);
+      }}
+    >
+      <img src='/split_right.svg' />
+    </TButton>
+  );
+};
+
+const ModeViewButton = ({ mode, setMode, handleModeChange }) => {
+  const selected = mode == 2;
+  return (
+    <TButton
+      selected={selected}
+      onClick={() => {
+        setMode(2);
+        handleModeChange(2);
+      }}
+    >
+      <img src='/split_left.svg' />
+    </TButton>
+  );
+};
+
+const ImageButton = ({ onClick, handleSelectFile }) => (
+  <Box component='label'>
+    <TButton onClick={onClick}>
+      <InsertPhotoIcon sx={{ transform: 'scale(0.7)' }} />
+      <input type='file' accept='image/*' onChange={handleSelectFile} style={{ display: 'none' }} />
+    </TButton>
+  </Box>
+);
 
 export default EditChapterHeader;

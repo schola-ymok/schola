@@ -32,6 +32,7 @@ const EditChapter: NextPage = () => {
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [mode, setMode] = useState(0);
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -45,10 +46,6 @@ const EditChapter: NextPage = () => {
 
   const inputRef = useRef();
   const viewerRef = useRef();
-
-  const handleTitleChange = (e) => {
-    setTitle(e.target.value);
-  };
 
   const handleContentChange = (e) => {
     setContent(e.target.value);
@@ -102,22 +99,98 @@ const EditChapter: NextPage = () => {
   if (!data) return <CenterLoadingSpinner />;
 
   const handleScroll = (event) => {
-    console.log(event.currentTarget.scrollTop);
+    //    console.log(event.currentTarget.scrollTop);
     const percentage =
       event.currentTarget.scrollTop /
       (event.currentTarget.scrollHeight - event.currentTarget.offsetHeight);
     console.log(percentage);
-    viewerRef.current.scrollTo(
-      percentage * (event.currentTarget.scrollHeight - event.currentTarget.offsetHeight),
+
+    viewerRef?.current.scrollTo(
+      0,
+      percentage * (viewerRef.current.scrollHeight - viewerRef.current.offsetHeight),
     );
+  };
+
+  const ModeContent = () => {
+    switch (mode) {
+      case 0:
+        return (
+          <>
+            <Box sx={{ width: '50%' }}>
+              <textarea
+                placeholder='マークダウンで入力'
+                className='mde'
+                onChange={handleContentChange}
+                onScroll={handleScroll}
+                value={content}
+              />
+            </Box>
+            <Box
+              ref={viewerRef}
+              sx={{
+                width: '50%',
+                overflowY: 'auto',
+                borderWidth: '0px 0px 0px 1px',
+                borderStyle: 'dotted',
+                borderColor: '#a0a0a0',
+                p: 1,
+              }}
+            >
+              <ReactMarkdown
+                className='markdown-body p-3'
+                remarkPlugins={[remarkGfm, remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+              >
+                {content}
+              </ReactMarkdown>
+            </Box>
+          </>
+        );
+      case 1:
+        return (
+          <Box sx={{ width: '100%' }}>
+            <textarea
+              placeholder='マークダウンで入力'
+              className='mde'
+              onChange={handleContentChange}
+              onScroll={handleScroll}
+              value={content}
+            />
+          </Box>
+        );
+      case 2:
+        return (
+          <Box
+            ref={viewerRef}
+            sx={{
+              width: '50%',
+              overflowY: 'auto',
+              borderWidth: '0px 0px 0px 1px',
+              borderStyle: 'dotted',
+              borderColor: '#a0a0a0',
+              p: 1,
+            }}
+          >
+            <ReactMarkdown
+              className='markdown-body p-3'
+              remarkPlugins={[remarkGfm, remarkMath]}
+              rehypePlugins={[rehypeKatex]}
+            >
+              {content}
+            </ReactMarkdown>
+          </Box>
+        );
+    }
   };
 
   return (
     <>
       <EditChapterHeader
         handleSaveClick={handleSaveClick}
-        handleTitleChange={handleTitleChange}
-        title={title}
+        handleSelectFile={handleSelectFile}
+        handleModeChange={(mode) => {
+          setMode(mode);
+        }}
         textId={data.text_id}
         chapterId={chapterId}
         isSaving={isSaving}
@@ -125,61 +198,13 @@ const EditChapter: NextPage = () => {
       <Box
         sx={{
           display: 'flex',
-          borderWidth: '2px 0px 2px 0px',
+          borderWidth: '1px 0px 0px 0px',
           borderStyle: 'solid',
           borderColor: '#a0a0a0',
+          height: 'calc(100vh - 40px)',
         }}
       >
-        <Box sx={{ width: '50%' }}>
-          <textarea
-            placeholder='マークダウンで入力'
-            className='mde'
-            onChange={handleContentChange}
-            onScroll={handleScroll}
-            value={content}
-          />
-        </Box>
-        <Box
-          ref={viewerRef}
-          sx={{
-            width: '50%',
-            height: 'calc(100vh - 60px)',
-            overflowY: 'auto',
-            borderWidth: '0px 0px 0px 2px',
-            borderStyle: 'dotted',
-            borderColor: '#a0a0a0',
-            p: 1,
-          }}
-        >
-          <Box sx={{ fontWeight: 'bold', fontSize: '2.1em', mb: 1 }}>{title}</Box>
-          <ReactMarkdown
-            className='markdown-body p-3'
-            remarkPlugins={[remarkGfm, remarkMath]}
-            rehypePlugins={[rehypeKatex]}
-          >
-            {content}
-          </ReactMarkdown>
-        </Box>
-        <Fab
-          sx={{
-            position: 'fixed',
-            left: '10px',
-            bottom: '30px',
-            backgroundColor: '#bbbbbb',
-            '&:hover': { backgroundColor: '#dddddd' },
-          }}
-          size='small'
-        >
-          <IconButton type='button' component='label'>
-            <InsertPhotoIcon />
-            <input
-              type='file'
-              accept='image/*'
-              onChange={handleSelectFile}
-              style={{ display: 'none' }}
-            />
-          </IconButton>
-        </Fab>
+        <ModeContent />
       </Box>
     </>
   );

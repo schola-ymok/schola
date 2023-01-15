@@ -34,7 +34,6 @@ const TextView: NextPage = () => {
 
   const textId = router.query.text_id;
   const mq = useMediaQuery('(min-width:1000px)');
-  const { mutate } = useSWRConfig();
 
   const { data, error } = useSWR(`texts/${textId}/view`, () => getViewText(textId, authAxios), {
     revalidateOnFocus: false,
@@ -51,19 +50,13 @@ const TextView: NextPage = () => {
   if (error || errorPurchasedInfo) console.log('error');
   if (!data || !dataPurchasedInfo) return <CenterLoadingSpinner />;
 
-  var tocs = {};
-  Object.keys(data.chapters).map((id) => {
-    const toc = extractToc(data.chapters[id].content);
-    tocs[id] = toc;
-  });
-
   if (mq) {
     return (
       <Box sx={{ display: 'flex' }}>
-        <Box sx={{ width: '{LEFT_COL_SIZE}px' }}>
-          <Toc chapters={data.chapters} tocs={tocs} left={true} />
+        <Box sx={{ width: '350px' }}>
+          <Toc data={data} left={true} />
         </Box>
-        <Box sx={{ width: '700px' }}>
+        <Box sx={{ width: '100%', display: 'flex', flexFlow: 'column' }}>
           <ChapterContent data={data} />
         </Box>
       </Box>
@@ -72,9 +65,9 @@ const TextView: NextPage = () => {
     return (
       <Box sx={{ display: 'flex', flexFlow: 'column' }}>
         <Box sx={{ width: '100%' }}>
-          <Toc chapters={data.chapters} tocs={tocs} left={false} />
+          <Toc data={data} />
         </Box>
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', display: 'flex', flexFlow: 'column' }}>
           <ChapterContent data={data} />
         </Box>
       </Box>
@@ -99,41 +92,69 @@ const ChapterContent = ({ data }) => {
   }
 
   return (
-    <Box>
-      <IconButton
-        type='button'
+    <>
+      <Box
         sx={{
-          position: 'fixed',
-          right: '10px',
-          top: '10px',
-          '&:hover': Consts.SX.IconButtonHover,
-        }}
-        onClick={() => {
-          router.push(`/chapters/${chapterId}/edit`);
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          backgroundColor: '#f1f5f9',
+          height: '200px',
         }}
       >
-        <Edit sx={{ my: 'auto' }} />
-      </IconButton>
-      <Box sx={{ mt: 1, p: 1 }}>
-        <Box sx={{ fontWeight: 'bold', fontSize: '2.1em', mb: 1 }}>
-          {data.chapters[chapterId]?.title}
-        </Box>
-        <ReactMarkdown
-          className='markdown-body p-3'
-          remarkPlugins={[remarkGfm, remarkMath]}
-          rehypePlugins={[rehypeKatex, rehypeSlug]}
+        <IconButton
+          type='button'
+          sx={{
+            position: 'fixed',
+            right: '10px',
+            top: '10px',
+            '&:hover': Consts.SX.IconButtonHover,
+          }}
+          onClick={() => {
+            router.push(`/chapters/${chapterId}/edit`);
+          }}
         >
-          {data.chapters[chapterId]?.content}
-        </ReactMarkdown>
+          <Edit sx={{ my: 'auto', transform: 'scale(0.8)' }} />
+        </IconButton>
+
+        <Box sx={{ my: 'auto', display: 'flex', flexFlow: 'column', height: 'fit-content', p: 2 }}>
+          <Box sx={{ width: '760px', mx: 'auto', fontWeight: 'bold', fontSize: '2.1em', mb: 1 }}>
+            {data.chapters[chapterId]?.title}
+          </Box>
+          <Box sx={{ width: '760px', mx: 'auto' }}>更新日: 2022.12212.</Box>
+        </Box>
       </Box>
-    </Box>
+
+      <Box sx={{ p: 2 }}>
+        <Box sx={{ width: '760px', mx: 'auto' }}>
+          <ReactMarkdown
+            className='markdown-body p-3'
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex, rehypeSlug]}
+          >
+            {data.chapters[chapterId]?.content}
+          </ReactMarkdown>
+        </Box>
+      </Box>
+    </>
   );
 };
 
-const Toc = ({ chapters, tocs, left }) => {
+const Toc = ({ data, left }) => {
+  var tocs = {};
+  Object.keys(data.chapters).map((id) => {
+    const toc = extractToc(data.chapters[id].content);
+    tocs[id] = toc;
+  });
+
   const router = useRouter();
   const textId = router.query.text_id;
   const cid = router.query.cid;
+
+  const imageUrl = data.photo_id
+    ? Consts.IMAGE_STORE_URL + data.photo_id + '.png'
+    : '/cover-default.svg';
 
   function handleChapterClick(id) {
     router.push(`/texts/${textId}/view?cid=${id}`);
@@ -165,14 +186,12 @@ const Toc = ({ chapters, tocs, left }) => {
 
   const sx = left
     ? {
-        p: 1,
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        bottom: 0,
-        right: 0,
-        overflowY: 'auto',
-        width: '{LEFT_COL_SIZE}px',
+        pl: 2,
+        pr: 1,
+        borderRight: '1px solid #cccccc',
+        width: '350px',
+        display: 'flex',
+        flexFlow: 'column',
       }
     : {
         p: 1,
@@ -183,44 +202,95 @@ const Toc = ({ chapters, tocs, left }) => {
   return (
     <>
       <Box sx={sx}>
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+          <Box
+            component='img'
+            sx={{ display: 'flex', width: 'fit-content', width: '90px', cursor: 'pointer', py: 3 }}
+            src='/logo-s.svg'
+            onClick={() => router.push('/')}
+          />
+
           <IconButton
             type='button'
             sx={{
-              pr: 0,
               '&:hover': Consts.SX.IconButtonHover,
             }}
             onClick={() => {
-              router.back();
+              router.push(`/texts/${textId}/edit`);
             }}
           >
-            <ArrowBackIosIcon sx={{ my: 'auto' }} />
+            <Edit sx={{ my: 'auto', transform: 'scale(0.8)' }} />
           </IconButton>
         </Box>
-        <Box sx={{ display: 'flex', flexFlow: 'column', p: 0.5 }}>
-          {Object.keys(chapters).map((id) => {
-            return (
-              <>
+
+        <Box
+          sx={{ overflowY: 'auto', height: 'calc(100vh - 72px)', borderTop: '1px solid #cccccc' }}
+        >
+          <Box sx={{ display: 'flex', flexFlow: 'column' }}>
+            <Box sx={{ display: 'flex', my: 3 }}>
+              <Box
+                component='img'
+                sx={{
+                  display: 'flex',
+                  width: 'fit-content',
+                  width: 105,
+                  height: 58,
+                  cursor: 'pointer',
+                }}
+                src={imageUrl}
+                onClick={() => router.push(`/texts/${textId}`)}
+              />
+              <Box sx={{ display: 'flex', flexFlow: 'column', ml: 1 }}>
                 <Box
-                  key={id}
+                  sx={{ fontSize: '0.9em', fontWeight: 'bold', cursor: 'pointer' }}
+                  onClick={() => router.push(`/texts/${textId}`)}
+                >
+                  {data.title}
+                </Box>
+                <Box
                   sx={{
+                    fontSize: '0.8em',
                     cursor: 'pointer',
-                    fontSize: '0.9em',
                     '&:hover': {
-                      color: Consts.COLOR.VIEW.Primary,
                       textDecoration: 'underline',
+                      color: Consts.COLOR.Primary,
                     },
                   }}
-                  onClick={() => handleChapterClick(id)}
+                  onClick={() => router.push(`/texts/${textId}`)}
                 >
-                  {chapters[id].title}
+                  {data.author_display_name}
                 </Box>
-                {tocs[id].map((item) => {
-                  return <NestItem item={item} chapterId={id} />;
-                })}
-              </>
-            );
-          })}
+              </Box>
+            </Box>
+          </Box>
+
+          <Box sx={{ display: 'flex', flexFlow: 'column', mb: 3 }}>
+            {Object.keys(data.chapters).map((id) => {
+              return (
+                <>
+                  <Box
+                    key={id}
+                    sx={{
+                      my: 0.5,
+                      cursor: 'pointer',
+                      fontSize: '0.9em',
+                      color: '#555555',
+                      '&:hover': {
+                        color: Consts.COLOR.Primary,
+                        textDecoration: 'underline',
+                      },
+                    }}
+                    onClick={() => handleChapterClick(id)}
+                  >
+                    {data.chapters[id].title}
+                  </Box>
+                  {tocs[id].map((item) => {
+                    return <NestItem item={item} chapterId={id} />;
+                  })}
+                </>
+              );
+            })}
+          </Box>
         </Box>
       </Box>
     </>

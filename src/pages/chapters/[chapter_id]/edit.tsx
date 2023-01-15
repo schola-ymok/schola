@@ -105,7 +105,7 @@ const EditChapter: NextPage = () => {
       (event.currentTarget.scrollHeight - event.currentTarget.offsetHeight);
     console.log(percentage);
 
-    viewerRef?.current.scrollTo(
+    viewerRef?.current?.scrollTo(
       0,
       percentage * (viewerRef.current.scrollHeight - viewerRef.current.offsetHeight),
     );
@@ -183,6 +183,9 @@ const EditChapter: NextPage = () => {
     }
   };
 
+  const leftWidth = mode == 1 ? '100%' : '50%';
+  const rightWidth = mode == 2 ? '100%' : '50%';
+
   return (
     <>
       <EditChapterHeader
@@ -204,7 +207,38 @@ const EditChapter: NextPage = () => {
           height: 'calc(100vh - 40px)',
         }}
       >
-        <ModeContent />
+        {mode !== 2 && (
+          <Box sx={{ width: leftWidth }}>
+            <textarea
+              placeholder='マークダウンで入力'
+              className='mde'
+              onChange={handleContentChange}
+              onScroll={handleScroll}
+              value={content}
+            />
+          </Box>
+        )}
+        {mode !== 1 && (
+          <Box
+            ref={viewerRef}
+            sx={{
+              width: rightWidth,
+              overflowY: 'auto',
+              borderWidth: '0px 0px 0px 1px',
+              borderStyle: 'dotted',
+              borderColor: '#a0a0a0',
+              p: 1,
+            }}
+          >
+            <ReactMarkdown
+              className='markdown-body p-3'
+              remarkPlugins={[remarkGfm, remarkMath]}
+              rehypePlugins={[rehypeKatex]}
+            >
+              {content}
+            </ReactMarkdown>
+          </Box>
+        )}
       </Box>
     </>
   );

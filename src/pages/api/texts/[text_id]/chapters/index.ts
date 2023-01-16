@@ -27,18 +27,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   switch (req.method) {
     case 'GET': // get chapters
       const { data: dataGet, error: errorGet } = await dbQuery(escape`
-      select id, title, is_trial_reading_available, number_of_characters
-      from chapters 
+      select chapters.id as id, chapters.title as title, is_trial_reading_available, number_of_characters from chapters
       where text_id=${req.query.text_id}`);
 
       if (errorGet) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+
+      const { data: dataGetChapterOrder, error: errorGetChapterOrder } = await dbQuery(escape`
+      select chapter_order from texts
+      where id=${req.query.text_id}`);
+
+      if (errorGetChapterOrder) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
 
       /*
       if (dataGet.length == 0)
         return res.status(Consts.HTTP_BAD_REQUEST).end('chapter does not exist');
       */
 
-      return res.status(Consts.HTTP_OK).json(dataGet);
+      return res
+        .status(Consts.HTTP_OK)
+        .json({ chapters: dataGet, chapter_order: dataGetChapterOrder[0].chapter_order });
 
     case 'POST': // add new chapter
       if (!verify || !(await checkAuthor(req.headers.user_id)))

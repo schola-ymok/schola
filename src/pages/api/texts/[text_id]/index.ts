@@ -56,6 +56,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
         data = dataRelease;
         error = errorRelease;
+      } else if (req.query.chapter_order !== undefined) {
+        const { data: dataChapterOrder, error: errorChapterOrder } = await dbQuery(escape`
+        update texts
+        set
+        chapter_order = ${req.body.chapter_order}
+        where
+        id = ${req.query.text_id}
+        and
+        author_id = ${req.headers.user_id}
+        `);
+
+        console.log(req.body.chapter_order);
+
+        data = dataChapterOrder;
+        error = errorChapterOrder;
       } else if (req.query.photo_id) {
         const { data: dataPhotoUpdate, error: errorPhotoUpdate } = await dbQuery(escape`
         update texts

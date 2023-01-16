@@ -16,7 +16,7 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { Container } from '@mui/system';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 import { WithContext as ReactTags } from 'react-tag-input';
 import useSWR, { useSWRConfig } from 'swr';
@@ -27,6 +27,7 @@ import { getChapterList } from 'api/getChapterList';
 import { getMyText } from 'api/getMyText';
 import { releaseText } from 'api/releaseText';
 import { setTextCoverPhotoId } from 'api/setTextCoverPhotoId';
+import { updateChapterOrder } from 'api/updateChapterOrder';
 import { updateChapterTitle } from 'api/updateChapterTitle';
 import { updateText } from 'api/updateText';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
@@ -126,7 +127,6 @@ const EditText = () => {
       setTitle(data.title);
       if (data.category1) setCategory1(data.category1);
       if (data.category2) setCategory2(data.category2);
-      if (data.chapter_order) setChapterOrder(JSON.parse(data.chapter_order));
       if (data.photo_id) setImageUrl(Consts.IMAGE_STORE_URL + data.photo_id + '.png');
 
       if (data.learning_contents) {
@@ -722,12 +722,37 @@ const ChapterList = () => {
 
   const [chapterNameSettingOpen, setChapterMenuSettingOpen] = useState(false);
 
+  useLayoutEffect(() => {
+    if (data) {
+      if (data.chapter_order) {
+        setChapterOrder(JSON.parse(data.chapter_order));
+      } else {
+        const _chapterOrder = data.chapter_order.map((item) => item.id);
+        setChapterOrder(_chapterOrder);
+      }
+    }
+  }, [data]);
+
   if (error) return <div>failed to load</div>;
   if (!data) return <CenterLoadingSpinner />;
 
   const handleAddChapterClick = () => {
     setChapterMenuSettingOpen(true);
   };
+
+  async function handleChapterOrderChanged(order) {
+    setIsLoading(true);
+
+    const { error } = await updateChapterOrder(textId, JSON.stringify(order), authAxios);
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    mutate(`/texts/${textId}/chapters/`);
+    setIsLoading(false);
+  }
 
   async function handleChapterNameDecided(name) {
     setIsLoading(true);
@@ -773,13 +798,27 @@ const ChapterList = () => {
     mutate(`/texts/${textId}/chapters/`);
   }
 
+  let keyedChapterList = {};
+  data.chapters.forEach((item) => {
+    keyedChapterList[item.id] = item;
+  });
+
   return (
     <>
       <Box sx={{ minHeight: 400 }}>
         <Box sx={{ p: { xs: 0, md: 2 } }}>
-          {data.length > 0 ? (
-            <ReactSortable list={data} setList={setChapterOrder}>
-              {data.map((item) => (
+          {data.chapters.length > 0 ? (
+            <ReactSortable
+              list={chapterOrder}
+              setList={(list) => {
+                const _chapterOrder = list.map((id) => id);
+                setChapterOrder(_chapterOrder);
+                if (JSON.stringify(chapterOrder) != JSON.stringify(_chapterOrder)) {
+                  handleChapterOrderChanged(_chapterOrder);
+                }
+              }}
+            >
+              {chapterOrder.map((chapterId) => (
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Box
                     sx={{
@@ -793,18 +832,18 @@ const ChapterList = () => {
                       alignItems: 'center',
                     }}
                     onClick={() => {
-                      handleChapterClick(item);
+                      handleChapterClick(keyedChapterList[chapterId]);
                     }}
                   >
-                    {item.title}
+                    {keyedChapterList[chapterId].title}
                   </Box>
                   <ChapterListMenuButton
-                    key={item.id}
-                    item={item}
+                    key={chapterId}
+                    item={keyedChapterList[chapterId]}
                     handleDelete={handleDeleteChapterClick}
                     handleEdit={handleChapterClick}
                     handleTitleChange={(title) => {
-                      handleTitleChange(item.id, title);
+                      handleTitleChange(chapterId, title);
                     }}
                   />
                 </Box>

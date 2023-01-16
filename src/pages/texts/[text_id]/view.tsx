@@ -1,6 +1,5 @@
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import EditIcon from '@mui/icons-material/Edit';
 import { Box, IconButton, useMediaQuery } from '@mui/material';
+import { color } from '@mui/system';
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useLayoutEffect } from 'react';
@@ -19,6 +18,9 @@ import 'github-markdown-css/github-markdown.css';
 
 import Consts from 'utils/Consts';
 import { extractToc } from 'utils/extractToc';
+
+import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
+import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 
 import type { NextPage } from 'next';
 
@@ -52,18 +54,28 @@ const TextView: NextPage = () => {
 
   if (mq) {
     return (
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', overflow: 'hidden' }}>
         <Box sx={{ width: '350px' }}>
           <Toc data={data} left={true} />
         </Box>
-        <Box sx={{ width: '100%', display: 'flex', flexFlow: 'column' }}>
+        <Box
+          className='thinsb'
+          sx={{
+            width: '100vw',
+            display: 'flex',
+            flexFlow: 'column',
+            height: '100vh',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+          }}
+        >
           <ChapterContent data={data} />
         </Box>
       </Box>
     );
   } else {
     return (
-      <Box sx={{ display: 'flex', flexFlow: 'column' }}>
+      <Box sx={{ display: 'flex', flexFlow: 'column', overflow: 'hidden' }}>
         <Box sx={{ width: '100%' }}>
           <Toc data={data} />
         </Box>
@@ -80,6 +92,7 @@ const ChapterContent = ({ data }) => {
   const textId = router.query.text_id;
 
   let chapterId;
+
   if (router.query.cid) {
     chapterId = router.query.cid;
   } else {
@@ -91,6 +104,80 @@ const ChapterContent = ({ data }) => {
     }
   }
 
+  const content = data.chapters[chapterId]?.content;
+  const title = data.chapters[chapterId]?.title;
+
+  const PrevButton = ({ id, title }) => (
+    <Box
+      sx={{
+        width: '250px',
+        height: '100px',
+        display: 'flex',
+        alignItems: 'center',
+        cursor: 'pointer',
+        '&:hover .prevButtonInnerText': {
+          color: Consts.COLOR.Primary,
+          textDecoration: 'underline',
+        },
+        '&:hover .prevButtonInnerIcon': {
+          color: Consts.COLOR.IconDarkGrey,
+        },
+      }}
+      onClick={() => {}}
+    >
+      <ArrowBackIosOutlinedIcon
+        className='prevButtonInnerIcon'
+        sx={{ color: '#cccccc', transform: 'scale(1.1)' }}
+      />
+      <Box
+        className='prevButtonInnerText'
+        sx={{
+          ml: 1,
+          mr: 'auto',
+          fontWeight: 'bold',
+        }}
+      >
+        {title}
+      </Box>
+    </Box>
+  );
+
+  const NextButton = ({ id, title }) => (
+    <Box
+      sx={{
+        width: '250px',
+        height: '100px',
+        display: 'flex',
+        alignItems: 'center',
+        textAlign: 'right',
+        cursor: 'pointer',
+        '&:hover .nextButtonInnerText': {
+          color: Consts.COLOR.Primary,
+          textDecoration: 'underline',
+        },
+        '&:hover .nextButtonInnerIcon': {
+          color: Consts.COLOR.IconDarkGrey,
+        },
+      }}
+      onClick={() => {}}
+    >
+      <Box
+        className='nextButtonInnerText'
+        sx={{
+          ml: 'auto',
+          mr: 1,
+          fontWeight: 'bold',
+        }}
+      >
+        {title}
+      </Box>
+      <ArrowForwardIosOutlinedIcon
+        className='nextButtonInnerIcon'
+        sx={{ color: '#cccccc', transform: 'scale(1.1)' }}
+      />
+    </Box>
+  );
+
   return (
     <>
       <Box
@@ -99,8 +186,9 @@ const ChapterContent = ({ data }) => {
           justifyContent: 'center',
           alignItems: 'center',
           width: '100%',
-          backgroundColor: '#f1f5f9',
+          backgroundColor: '#f6f8fa',
           height: '200px',
+          flexShrink: 0,
         }}
       >
         <IconButton
@@ -118,24 +206,44 @@ const ChapterContent = ({ data }) => {
           <Edit sx={{ my: 'auto', transform: 'scale(0.8)' }} />
         </IconButton>
 
-        <Box sx={{ my: 'auto', display: 'flex', flexFlow: 'column', height: 'fit-content', p: 2 }}>
-          <Box sx={{ width: '760px', mx: 'auto', fontWeight: 'bold', fontSize: '2.1em', mb: 1 }}>
-            {data.chapters[chapterId]?.title}
-          </Box>
-          <Box sx={{ width: '760px', mx: 'auto' }}>更新日: 2022.12212.</Box>
+        <Box
+          sx={{
+            p: 1,
+            my: 'auto',
+            mx: 'auto',
+            width: '760px',
+            display: 'flex',
+            flexFlow: 'column',
+            height: 'fit-content',
+          }}
+        >
+          <Box sx={{ fontWeight: 'bold', fontSize: '2.1em' }}>{title}</Box>
+          <Box>更新日: 2022.12212.</Box>
         </Box>
       </Box>
 
-      <Box sx={{ p: 2 }}>
-        <Box sx={{ width: '760px', mx: 'auto' }}>
-          <ReactMarkdown
-            className='markdown-body p-3'
-            remarkPlugins={[remarkGfm, remarkMath]}
-            rehypePlugins={[rehypeKatex, rehypeSlug]}
-          >
-            {data.chapters[chapterId]?.content}
-          </ReactMarkdown>
-        </Box>
+      <Box sx={{ p: 1, my: 4, width: '760px', mx: 'auto' }}>
+        <ReactMarkdown
+          className='markdown-body p-3'
+          remarkPlugins={[remarkGfm, remarkMath]}
+          rehypePlugins={[rehypeKatex, rehypeSlug]}
+        >
+          {content}
+        </ReactMarkdown>
+      </Box>
+
+      <Box
+        sx={{
+          p: 1,
+          my: 4,
+          width: '760px',
+          mx: 'auto',
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <PrevButton id={'id'} title={'title'} />
+        <NextButton id={'id'} title={'title'} />
       </Box>
     </>
   );
@@ -165,13 +273,14 @@ const Toc = ({ data, left }) => {
   }
 
   const NestItem = ({ item, chapterId }) => {
-    const ml = item.depth * 1.5;
+    const ml = item.depth * 2;
     return (
       <Box
         sx={{
           ml: ml,
           cursor: 'pointer',
-          fontSize: '0.9em',
+          fontSize: '0.8em',
+          my: 0.4,
           '&:hover': {
             color: Consts.COLOR.VIEW.Primary,
             textDecoration: 'underline',
@@ -186,8 +295,7 @@ const Toc = ({ data, left }) => {
 
   const sx = left
     ? {
-        pl: 2,
-        pr: 1,
+        px: 2,
         borderRight: '1px solid #cccccc',
         width: '350px',
         display: 'flex',
@@ -224,7 +332,13 @@ const Toc = ({ data, left }) => {
         </Box>
 
         <Box
-          sx={{ overflowY: 'auto', height: 'calc(100vh - 72px)', borderTop: '1px solid #cccccc' }}
+          className='thinsb'
+          sx={{
+            overflowX: 'hidden',
+            overflowY: 'auto',
+            height: 'calc(100vh - 72px)',
+            borderTop: '1px solid #cccccc',
+          }}
         >
           <Box sx={{ display: 'flex', flexFlow: 'column' }}>
             <Box sx={{ display: 'flex', my: 3 }}>
@@ -271,10 +385,12 @@ const Toc = ({ data, left }) => {
                   <Box
                     key={id}
                     sx={{
-                      my: 0.5,
+                      my: 0.4,
                       cursor: 'pointer',
-                      fontSize: '0.9em',
-                      color: '#555555',
+                      fontSize: '0.8em',
+                      fontWeight: 'bold',
+                      color: '#000000',
+
                       '&:hover': {
                         color: Consts.COLOR.Primary,
                         textDecoration: 'underline',

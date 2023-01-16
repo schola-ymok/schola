@@ -111,78 +111,6 @@ const EditChapter: NextPage = () => {
     );
   };
 
-  const ModeContent = () => {
-    switch (mode) {
-      case 0:
-        return (
-          <>
-            <Box sx={{ width: '50%' }}>
-              <textarea
-                placeholder='マークダウンで入力'
-                className='mde'
-                onChange={handleContentChange}
-                onScroll={handleScroll}
-                value={content}
-              />
-            </Box>
-            <Box
-              ref={viewerRef}
-              sx={{
-                width: '50%',
-                overflowY: 'auto',
-                borderWidth: '0px 0px 0px 1px',
-                borderStyle: 'dotted',
-                borderColor: '#a0a0a0',
-                p: 1,
-              }}
-            >
-              <ReactMarkdown
-                className='markdown-body p-3'
-                remarkPlugins={[remarkGfm, remarkMath]}
-                rehypePlugins={[rehypeKatex]}
-              >
-                {content}
-              </ReactMarkdown>
-            </Box>
-          </>
-        );
-      case 1:
-        return (
-          <Box sx={{ width: '100%' }}>
-            <textarea
-              placeholder='マークダウンで入力'
-              className='mde'
-              onChange={handleContentChange}
-              onScroll={handleScroll}
-              value={content}
-            />
-          </Box>
-        );
-      case 2:
-        return (
-          <Box
-            ref={viewerRef}
-            sx={{
-              width: '50%',
-              overflowY: 'auto',
-              borderWidth: '0px 0px 0px 1px',
-              borderStyle: 'dotted',
-              borderColor: '#a0a0a0',
-              p: 1,
-            }}
-          >
-            <ReactMarkdown
-              className='markdown-body p-3'
-              remarkPlugins={[remarkGfm, remarkMath]}
-              rehypePlugins={[rehypeKatex]}
-            >
-              {content}
-            </ReactMarkdown>
-          </Box>
-        );
-    }
-  };
-
   const leftWidth = mode == 1 ? '100%' : '50%';
   const rightWidth = mode == 2 ? '100%' : '50%';
 
@@ -211,7 +139,7 @@ const EditChapter: NextPage = () => {
           <Box sx={{ width: leftWidth }}>
             <textarea
               placeholder='マークダウンで入力'
-              className='mde'
+              className='mde thinsb'
               onChange={handleContentChange}
               onScroll={handleScroll}
               value={content}
@@ -221,6 +149,7 @@ const EditChapter: NextPage = () => {
         {mode !== 1 && (
           <Box
             ref={viewerRef}
+            className='thinsb'
             sx={{
               width: rightWidth,
               overflowY: 'auto',

@@ -809,7 +809,7 @@ const Text: NextPage = () => {
                         ml: 0.4,
                       }}
                     >
-                      {item.text}
+                      {item}
                     </Box>
                   </Box>
                 </Grid>

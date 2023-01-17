@@ -307,6 +307,13 @@ const Toc = ({ data, left }) => {
         width: '100%',
       };
 
+  let chapterOrder;
+  if (data.chapter_order != null) {
+    chapterOrder = JSON.parse(data.chapter_order);
+  } else {
+    chapterOrder = Object.keys(data.chapters);
+  }
+
   return (
     <>
       <Box sx={sx}>
@@ -379,7 +386,7 @@ const Toc = ({ data, left }) => {
           </Box>
 
           <Box sx={{ display: 'flex', flexFlow: 'column', mb: 3 }}>
-            {Object.keys(data.chapters).map((id) => {
+            {chapterOrder.map((id) => {
               return (
                 <>
                   <Box

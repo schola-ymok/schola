@@ -464,14 +464,14 @@ const EditText = () => {
                   },
                 }}
               >
-                <SMenuItem disabled value='nul'>
+                <MenuItem disabled value='nul'>
                   --- カテゴリ ---
-                </SMenuItem>
+                </MenuItem>
                 {Object.keys(Consts.CATEGORY).map((key) => {
                   return (
-                    <SMenuItem key={key} value={key}>
+                    <MenuItem key={key} value={key}>
                       {Consts.CATEGORY[key].label}
-                    </SMenuItem>
+                    </MenuItem>
                   );
                 })}
               </Select>
@@ -502,15 +502,15 @@ const EditText = () => {
                   },
                 }}
               >
-                <SMenuItem disabled value='nul'>
+                <MenuItem disabled value='nul'>
                   --- サブカテゴリ ---
-                </SMenuItem>
+                </MenuItem>
                 {category1 != 'nul' &&
                   Consts.CATEGORY[category1].items.map((item) => {
                     return (
-                      <SMenuItem key={item.key} value={item.key}>
+                      <MenuItem key={item.key} value={item.key}>
                         {item.label}
-                      </SMenuItem>
+                      </MenuItem>
                     );
                   })}
               </Select>
@@ -725,9 +725,16 @@ const ChapterList = () => {
   useLayoutEffect(() => {
     if (data) {
       if (data.chapter_order) {
-        setChapterOrder(JSON.parse(data.chapter_order));
+        const _chapterOrder = JSON.parse(data.chapter_order);
+        const filteredChapterOrder = _chapterOrder.filter((id) => {
+          for (let i = 0; i < data.chapters.length; i++) {
+            if (data.chapters[i].id === id) return true;
+          }
+          return false;
+        });
+        setChapterOrder(filteredChapterOrder);
       } else {
-        const _chapterOrder = data.chapter_order.map((item) => item.id);
+        const _chapterOrder = data.chapters?.map((item) => item.id);
         setChapterOrder(_chapterOrder);
       }
     }
@@ -803,6 +810,12 @@ const ChapterList = () => {
     keyedChapterList[item.id] = item;
   });
 
+  console.log('---');
+  console.log(data);
+  console.log(keyedChapterList);
+  console.log(chapterOrder);
+  console.log('---');
+
   return (
     <>
       <Box sx={{ minHeight: 400 }}>
@@ -835,7 +848,7 @@ const ChapterList = () => {
                       handleChapterClick(keyedChapterList[chapterId]);
                     }}
                   >
-                    {keyedChapterList[chapterId].title}
+                    {keyedChapterList[chapterId]?.title}
                   </Box>
                   <ChapterListMenuButton
                     key={chapterId}

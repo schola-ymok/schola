@@ -67,8 +67,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         author_id = ${req.headers.user_id}
         `);
 
-        console.log(req.body.chapter_order);
-
         data = dataChapterOrder;
         error = errorChapterOrder;
       } else if (req.query.photo_id) {
@@ -107,7 +105,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           const price = req.body.price;
           const category1 = req.body.category1;
           const category2 = req.body.category2;
-          const chapterOrder = req.body.chapter_order;
           const learningContents = req.body.learning_contents;
           const learningRequirements = req.body.learning_requirements;
 
@@ -123,7 +120,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           price = ${price},
           category1 = ${category1},
           category2 = ${category2},
-          chapter_order = ${chapterOrder},
           learning_contents = ${learningContents},
           learning_requirements = ${learningRequirements}
           where
@@ -141,6 +137,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     case 'DELETE': // delete text
       if (!verify) return res.status(Consts.HTTP_BAD_REQUEST).end(`not authorized`);
+
+      const { data: __dataDelete, error: __errorDelete } = await dbQuery(escape`
+      delete from reviews
+        where
+        text_id = ${req.query.text_id}
+      `);
 
       const { data: _dataDelete, error: _errorDelete } = await dbQuery(escape`
       delete from chapters

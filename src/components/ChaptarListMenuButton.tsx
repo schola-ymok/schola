@@ -89,8 +89,8 @@ const ChapterListMenuButton = ({ item, handleDelete, handleEdit, handleTitleChan
         </Menu>
       </Box>
       <ChapterTitleSettingDialog
-        key={item.id}
-        title={item.title}
+        key={item?.id}
+        title={item?.title}
         open={chapterNameSettingOpen}
         onChange={handleTitleChange}
         onClose={() => {

@@ -54,6 +54,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
       if (isEmptyString(title)) return res.status(Consts.HTTP_BAD_REQUEST).end('bad parameter');
 
+      const { data: _dataGetChapterOrder, error: _errorGetChapterOrder } = await dbQuery(escape`
+      select chapter_order from texts
+      where id=${req.query.text_id}`);
+
+      if (_errorGetChapterOrder) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+
       const chapterId = genid();
       const { error: errorPost } = await dbQuery(escape`
       insert into chapters(
@@ -70,9 +76,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
       if (errorPost) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
 
-      const { data: dataChapterOrder, error: errorChapterOrder } = await dbQuery(escape`
-      select chapter_order from
-      texts where id =${req.query.text_id}`);
+      let _chapterOrder = [];
+      if (_dataGetChapterOrder[0].chapter_order != null) {
+        _chapterOrder = JSON.parse(_dataGetChapterOrder[0].chapter_order);
+      }
+
+      _chapterOrder.push(chapterId);
+
+      const { data: dataUpdateChapterOrder, error: errorUpdateChapterOrder } =
+        await dbQuery(escape` update texts set chapter_order=${JSON.stringify(_chapterOrder)}
+      where id =${req.query.text_id}`);
 
       return res.status(Consts.HTTP_OK).json({
         status: 'ok',

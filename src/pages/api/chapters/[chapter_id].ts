@@ -142,6 +142,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       if (!verify || !(await amIAuthor()))
         return res.status(Consts.HTTP_BAD_REQUEST).end('not authorized');
 
+      const chapterId = req.query.chapter_id;
+
+      const { data: dataGetTextId, error: errorGetTextId } = await dbQuery(
+        escape`select text_id from chapters where id=${chapterId}`,
+      );
+
+      if (errorGetTextId) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+
+      const textId = dataGetTextId[0].text_id;
+
       const { data: dataDelete, error: errorDelete } = await dbQuery(escape`
       delete a from chapters a
         inner join texts b on a.text_id = b.id
@@ -150,6 +160,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         and
         b.author_id = ${req.headers.user_id}
       `);
+
+      const { data: dataGetChapterOrder, error: errorGetChapterOrder } = await dbQuery(
+        escape` select chapter_order from texts where id=${textId}`,
+      );
+
+      if (errorGetChapterOrder) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+
+      let chapterOrder = [];
+      if (dataGetChapterOrder[0].chapter_order != null) {
+        chapterOrder = JSON.parse(dataGetChapterOrder[0].chapter_order);
+      }
+
+      const deletedChapterOreder = chapterOrder.filter((id) => {
+        return id != req.query.chapter_id;
+      });
+
+      const { data: dataUpdateChapterOrder, error: errorUpdateChapterOrder } =
+        await dbQuery(escape` update texts set chapter_order=${JSON.stringify(deletedChapterOreder)}
+      where id =${textId}`);
 
       error = errorDelete;
       data = dataDelete;

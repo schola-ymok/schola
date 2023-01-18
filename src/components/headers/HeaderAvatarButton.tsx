@@ -80,25 +80,14 @@ const HeaderAvatarButton = () => {
             </Box>
           </Stack>
         </SMenuItem>
-        <Divider />
+        <Divider sx={{ my: 0.5 }} />
         <SMenuItem
           onClick={() => {
             router.push('/dashboard');
             handleClose();
           }}
         >
-          <Box
-            component='span'
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              verticalAlign: 'middle',
-              my: 'auto',
-            }}
-          >
-            ダッシュボード
-          </Box>
+          ダッシュボード
         </SMenuItem>
         <SMenuItem
           onClick={() => {

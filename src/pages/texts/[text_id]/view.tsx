@@ -59,7 +59,6 @@ const TextView: NextPage = () => {
           <Toc data={data} left={true} />
         </Box>
         <Box
-          className='thinsb'
           sx={{
             width: '100vw',
             display: 'flex',
@@ -135,6 +134,7 @@ const ChapterContent = ({ data }) => {
           ml: 1,
           mr: 'auto',
           fontWeight: 'bold',
+          color: '#888888',
         }}
       >
         {title}
@@ -167,6 +167,7 @@ const ChapterContent = ({ data }) => {
           ml: 'auto',
           mr: 1,
           fontWeight: 'bold',
+          color: '#888888',
         }}
       >
         {title}
@@ -339,7 +340,6 @@ const Toc = ({ data, left }) => {
         </Box>
 
         <Box
-          className='thinsb'
           sx={{
             overflowX: 'hidden',
             overflowY: 'auto',

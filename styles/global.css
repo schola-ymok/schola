@@ -56,6 +56,17 @@ li.category {
   padding-bottom: 0.25em;
 }
 
+ul.category_mobile {
+  list-style: none;
+}
+
+li.category_mobile {
+  list-style: none;
+  font-size: 0.9em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
 a {
   text-decoration: none;
   color: #000000;
@@ -75,15 +86,6 @@ a.no-hover:hover {
   overflow-y: auto;
   height: calc(100vh - 72px);
   border-top: 1px solid #cccccc;
-}
-
-.thinsb::-webkit-scrollbar {
-  width: 8px;
-}
-
-.thinsb::-webkit-scrollbar-thumb {
-  background-color: #cccccc;
-  border-radius: 0px;
 }
 
 .mde {

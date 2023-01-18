@@ -1,9 +1,12 @@
-import { Box } from '@mui/material';
+import { Box, Drawer } from '@mui/material';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
+import Footer from 'components/Footer';
 import HomeTextList from 'components/HomeTextList';
 import TextList from 'components/TextList';
-import Layout from 'components/layouts/Layout';
+import HeaderWithMenuButton from 'components/headers/HeaderWithMenuButton';
+import SideMenuLayout from 'components/layouts/SideMenuLayout';
 import RootCategory from 'components/sidemenu/RootCategory';
 
 import type { NextPage } from 'next';
@@ -12,13 +15,31 @@ const Home: NextPage = () => {
   const router = useRouter();
   const more = router.query.more !== undefined;
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <Box sx={{ display: 'flex' }}>
-      <RootCategory />
-      {!more ? <HomeTextList /> : <TextList />}
-    </Box>
+    <>
+      <HeaderWithMenuButton
+        onClick={() => {
+          setMenuOpen(true);
+        }}
+      />
+      <Box sx={{ display: 'flex', p: { xs: 0.4, sm: 2 } }}>
+        <Drawer
+          anchor={'left'}
+          open={menuOpen}
+          onClose={() => {
+            setMenuOpen(false);
+          }}
+        >
+          <RootCategory />
+        </Drawer>
+
+        {!more ? <HomeTextList /> : <TextList />}
+      </Box>
+      <Footer />
+    </>
   );
 };
 
-Home.getLayout = (page) => <Layout>{page}</Layout>;
 export default Home;

@@ -139,7 +139,7 @@ const EditChapter: NextPage = () => {
           <Box sx={{ width: leftWidth }}>
             <textarea
               placeholder='マークダウンで入力'
-              className='mde thinsb'
+              className='mde'
               onChange={handleContentChange}
               onScroll={handleScroll}
               value={content}
@@ -149,7 +149,6 @@ const EditChapter: NextPage = () => {
         {mode !== 1 && (
           <Box
             ref={viewerRef}
-            className='thinsb'
             sx={{
               width: rightWidth,
               overflowY: 'auto',

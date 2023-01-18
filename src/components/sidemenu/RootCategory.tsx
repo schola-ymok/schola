@@ -38,7 +38,7 @@ const RootCategory = ({ onClose }) => {
       >
         <CloseIcon sx={{ transform: 'scale(1.2)' }} />
       </IconButton>
-      <Box sx={{ width: 180, pr: 1 }}>
+      <Box sx={{ width: 200, pl: 1 }}>
         <ul>
           {keys.map((item) => {
             return (

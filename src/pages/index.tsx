@@ -1,4 +1,4 @@
-import { Box, SwipeableDrawer, useMediaQuery } from '@mui/material';
+import { Box, Drawer, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
@@ -29,7 +29,7 @@ const Home: NextPage = () => {
         {mq ? (
           <RootCategory />
         ) : (
-          <SwipeableDrawer
+          <Drawer
             anchor={'left'}
             open={menuOpen}
             onClose={() => {
@@ -41,7 +41,7 @@ const Home: NextPage = () => {
                 setMenuOpen(false);
               }}
             />
-          </SwipeableDrawer>
+          </Drawer>
         )}
         {!more ? <HomeTextList /> : <TextList />}
       </Box>

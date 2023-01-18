@@ -1,13 +1,14 @@
-import { Box, useMediaQuery } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { Box, IconButton, useMediaQuery } from '@mui/material';
 import Link from 'next/link';
 
 import Consts from 'utils/Consts';
 
-const RootCategory = () => {
+const RootCategory = ({ onClose }) => {
   const keys = Object.keys(Consts.CATEGORY);
   const mq = useMediaQuery('(min-width:600px)');
 
-  const DesktopContent = () => (
+  const DesktopContent = ({ onClose }) => (
     <Box sx={{ whiteSpace: 'nowrap', mr: 2 }}>
       <Box sx={{ width: 200, pr: 1, pt: 2, borderRight: '1px solid #aaaaaa' }}>
         <ul>
@@ -26,7 +27,17 @@ const RootCategory = () => {
   );
 
   const MobileContent = () => (
-    <Box component='presentation' sx={{ whiteSpace: 'nowrap', p: 2 }}>
+    <Box component='presentation' sx={{ whiteSpace: 'nowrap', p: 1 }}>
+      <IconButton
+        type='button'
+        sx={{
+          p: 1,
+          '&:hover': Consts.SX.IconButtonHover,
+        }}
+        onClick={onClose}
+      >
+        <CloseIcon sx={{ transform: 'scale(1.2)' }} />
+      </IconButton>
       <Box sx={{ width: 180, pr: 1 }}>
         <ul>
           {keys.map((item) => {

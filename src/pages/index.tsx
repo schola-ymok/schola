@@ -1,4 +1,4 @@
-import { Box, Drawer } from '@mui/material';
+import { Box, SwipeableDrawer, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
@@ -16,6 +16,8 @@ const Home: NextPage = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const mq = useMediaQuery('(min-width:600px)');
+
   return (
     <>
       <HeaderWithMenuButton
@@ -23,16 +25,24 @@ const Home: NextPage = () => {
           setMenuOpen(true);
         }}
       />
-      <Drawer
-        anchor={'left'}
-        open={menuOpen}
-        onClose={() => {
-          setMenuOpen(false);
-        }}
-      >
-        <RootCategory />
-      </Drawer>
       <Box sx={{ display: 'flex', p: { xs: 0.4, sm: 2 } }}>
+        {mq ? (
+          <RootCategory />
+        ) : (
+          <SwipeableDrawer
+            anchor={'left'}
+            open={menuOpen}
+            onClose={() => {
+              setMenuOpen(false);
+            }}
+          >
+            <RootCategory
+              onClose={() => {
+                setMenuOpen(false);
+              }}
+            />
+          </SwipeableDrawer>
+        )}
         {!more ? <HomeTextList /> : <TextList />}
       </Box>
       <Footer />

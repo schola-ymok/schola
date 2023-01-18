@@ -4,52 +4,42 @@ import Link from 'next/link';
 
 import Consts from 'utils/Consts';
 
+import MenuCloseButton from './MenuCloseButton';
+
 const RootCategory = ({ onClose }) => {
   const keys = Object.keys(Consts.CATEGORY);
   const mq = useMediaQuery('(min-width:600px)');
 
-  const DesktopContent = ({ onClose }) => (
+  const CList = () => {
+    const className = mq ? 'category' : 'category_mobile';
+    return (
+      <ul>
+        {keys.map((item) => {
+          return (
+            <li className={className}>
+              <Link href={'/category/' + item + '/'}>
+                <a>{Consts.CATEGORY[item].label}</a>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
+
+  const DesktopContent = () => (
     <Box sx={{ whiteSpace: 'nowrap', mr: 2 }}>
       <Box sx={{ width: 200, pr: 1, pt: 2, borderRight: '1px solid #aaaaaa' }}>
-        <ul>
-          {keys.map((item) => {
-            return (
-              <li className='category'>
-                <Link href={'/category/' + item + '/'}>
-                  <a>{Consts.CATEGORY[item].label}</a>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <CList />
       </Box>
     </Box>
   );
 
   const MobileContent = () => (
-    <Box component='presentation' sx={{ whiteSpace: 'nowrap', p: 1 }}>
-      <IconButton
-        type='button'
-        sx={{
-          p: 1,
-          '&:hover': Consts.SX.IconButtonHover,
-        }}
-        onClick={onClose}
-      >
-        <CloseIcon sx={{ transform: 'scale(1.2)' }} />
-      </IconButton>
+    <Box sx={{ whiteSpace: 'nowrap', p: 1 }}>
+      <MenuCloseButton onClick={onClose} />
       <Box sx={{ width: 200, pl: 1 }}>
-        <ul>
-          {keys.map((item) => {
-            return (
-              <li className='category_mobile'>
-                <Link href={'/category/' + item + '/'}>
-                  <a>{Consts.CATEGORY[item].label}</a>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <CList />
       </Box>
     </Box>
   );

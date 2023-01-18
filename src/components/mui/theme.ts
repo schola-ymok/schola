@@ -35,9 +35,6 @@ const theme = createTheme({
       },
     },
   },
-  transitions: {
-    create: () => 'none',
-  },
   palette: {
     primary: {
       main: '#008080',

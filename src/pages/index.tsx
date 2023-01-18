@@ -6,7 +6,6 @@ import Footer from 'components/Footer';
 import HomeTextList from 'components/HomeTextList';
 import TextList from 'components/TextList';
 import HeaderWithMenuButton from 'components/headers/HeaderWithMenuButton';
-import SideMenuLayout from 'components/layouts/SideMenuLayout';
 import RootCategory from 'components/sidemenu/RootCategory';
 
 import type { NextPage } from 'next';
@@ -24,17 +23,16 @@ const Home: NextPage = () => {
           setMenuOpen(true);
         }}
       />
+      <Drawer
+        anchor={'left'}
+        open={menuOpen}
+        onClose={() => {
+          setMenuOpen(false);
+        }}
+      >
+        <RootCategory />
+      </Drawer>
       <Box sx={{ display: 'flex', p: { xs: 0.4, sm: 2 } }}>
-        <Drawer
-          anchor={'left'}
-          open={menuOpen}
-          onClose={() => {
-            setMenuOpen(false);
-          }}
-        >
-          <RootCategory />
-        </Drawer>
-
         {!more ? <HomeTextList /> : <TextList />}
       </Box>
       <Footer />

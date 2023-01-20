@@ -24,6 +24,7 @@ const MiniText = ({ text }) => {
         component='img'
         display='flex'
         sx={{
+          my: 'auto',
           width: 100,
           height: 56,
           cursor: 'pointer',

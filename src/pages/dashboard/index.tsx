@@ -1,90 +1,65 @@
-import { Box, Pagination } from '@mui/material';
+import { Tabs, Tab, Box } from '@mui/material';
+import { Container } from '@mui/system';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
-import useSWR, { useSWRConfig } from 'swr';
+import { useContext, useState } from 'react';
 
-import { deleteText } from 'api/deleteText';
-import { getMyTextList } from 'api/getMyTextList';
-import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
-import DashboardTextListItem from 'components/DashboardTextListItem';
 import { AuthContext } from 'components/auth/AuthContext';
+import DashboardPerformance from 'components/dashboard/DashboardPerformance';
+import DashboardRevenue from 'components/dashboard/DashboardRevenue';
+import DashboardReviews from 'components/dashboard/DashboardReviews';
+import DashboardTextList from 'components/dashboard/DashboardTextList';
 import Layout from 'components/layouts/Layout';
-import DashboardMenuLeft from 'components/sidemenu/DashboardMenuLeft';
-import { pagenation } from 'utils/pagenation';
 
-const DashboardTexts = () => {
+const Dashboard = () => {
   const router = useRouter();
 
-  const page = router.query.page ?? 1;
   const { authAxios } = useContext(AuthContext);
 
-  const { mutate } = useSWRConfig();
-  const { data, error } = useSWR(
-    `/dashboard/texts?page=${page}`,
-    () => getMyTextList(authAxios, page - 1),
-    {
-      revalidateOnFocus: false,
-    },
-  );
+  const [tab, setTab] = useState(0);
 
-  if (error) return <h1>error</h1>;
+  const handleChange = (event, newValue) => {
+    setTab(newValue);
+  };
 
-  async function handleDeleteText(textId) {
-    const { error } = await deleteText(textId, authAxios);
-    if (error) {
-      console.log(error);
-      return;
-    }
-
-    mutate(`/dashboard/texts?page=${page}`);
+  function TabPanel({ children, value, index }) {
+    return (
+      <div
+        role='tabpanel'
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+      >
+        {value === index && (
+          <Box sx={{ py: 2, px: { xs: 0, sm: 1 }, mt: { xs: 1, sm: 2 } }}>{children}</Box>
+        )}
+      </div>
+    );
   }
 
-  const handleEditText = (textId) => {
-    router.push(`/texts/${textId}/edit`);
-  };
-
-  const DataContent = ({ data }) => {
-    if (!data) return <CenterLoadingSpinner />;
-
-    const { count, from, to } = pagenation(data.total, page, data.texts.length);
-
-    return (
-      <>
-        <Box>
-          {data.total}件 （{from} - {to} を表示）
-        </Box>
-        {data.texts.map((item) => {
-          return (
-            <DashboardTextListItem
-              text={item}
-              handleDeleteText={() => handleDeleteText(item.id)}
-              handleEditText={() => handleEditText(item.id)}
-            />
-          );
-        })}
-        <Pagination
-          sx={{ mt: 2 }}
-          count={count}
-          color='primary'
-          onChange={(e, page) => router.replace(`/dashboard/?page=${page}`)}
-          page={+page}
-        />
-      </>
-    );
-  };
-
   return (
-    <Box sx={{ display: 'flex' }}>
-      <DashboardMenuLeft />
-      <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%', maxWidth: '700px' }}>
-        <Box>
-          <Box sx={{ fontSize: '1.2em', fontWeight: 'bold', mb: 1 }}>執筆テキスト一覧</Box>
-          <DataContent data={data} />
-        </Box>
+    <Container maxWidth='lg'>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={tab} onChange={handleChange} variant='scrollable'>
+          <Tab label={<Box sx={{ fontWeight: 'bold' }}>テキスト一覧</Box>} />
+          <Tab label={<Box sx={{ fontWeight: 'bold' }}>レビュー</Box>} />
+          <Tab label={<Box sx={{ fontWeight: 'bold' }}>パフォーマンス</Box>} />
+          <Tab label={<Box sx={{ fontWeight: 'bold' }}>収益管理</Box>} />
+        </Tabs>
       </Box>
-    </Box>
+      <TabPanel value={tab} index={0}>
+        <DashboardTextList />
+      </TabPanel>
+      <TabPanel value={tab} index={1}>
+        <DashboardReviews />
+      </TabPanel>
+      <TabPanel value={tab} index={2}>
+        <DashboardPerformance />
+      </TabPanel>
+      <TabPanel value={tab} index={3}>
+        <DashboardRevenue />
+      </TabPanel>
+    </Container>
   );
 };
 
-DashboardTexts.getLayout = (page) => <Layout>{page}</Layout>;
-export default DashboardTexts;
+export default Dashboard;

@@ -37,28 +37,11 @@ const Review: NextPage = () => {
 
   const { data: dataReviews, error: errorReviews } = useSWR(
     `texts/${textId}/reviews?` + new URLSearchParams(params).toString(),
-    () => getReviews(textId, params),
+    () => getReviews(textId, params, authAxios),
     {
       revalidateOnFocus: false,
     },
   );
-
-  /*
-  const ref = useRef(true);
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current = false;
-      return;
-    }
-
-    const query = new URLSearchParams({ ...rateFilter }).toString();
-
-    router.push(`/texts/${router.query.text_id}/reviews?` + query, undefined, {
-      scroll: false,
-    });
-  }, [rateFilter]);
-  */
 
   if (errorText) console.log(errorText);
   if (errorReviews) console.log(errorReviews);
@@ -99,10 +82,10 @@ const Review: NextPage = () => {
           <MiniText text={dataText} />
 
           <DefaultButton
-            exSx={{ fontWeight: 'bold', fontSize: '0.9em', width: '150px' }}
+            exSx={{ fontWeight: 'bold', fontSize: '0.9em', width: '180px', mt: 0.5 }}
             onClick={handleWriteReviewClick}
           >
-            レビューを書く
+            レビューを{dataReviews.is_mine_exists ? '編集する' : '書く'}
           </DefaultButton>
         </Box>
       </Box>

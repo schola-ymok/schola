@@ -101,9 +101,9 @@ const Account = () => {
   return (
     <Container maxWidth='lg'>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={tab} onChange={handleTabChange} aria-label='basic tabs example'>
-          <Tab label={<Box sx={{ fontWeight: 'bold' }}>アカウント</Box>} {...a11yProps(0)} />
-          <Tab label={<Box sx={{ fontWeight: 'bold' }}>プロフィール</Box>} {...a11yProps(1)} />
+        <Tabs value={tab} onChange={handleTabChange}>
+          <Tab label={<Box sx={{ fontWeight: 'bold' }}>アカウント</Box>} />
+          <Tab label={<Box sx={{ fontWeight: 'bold' }}>プロフィール</Box>} />
         </Tabs>
       </Box>
       <TabPanel value={tab} index={0}>
@@ -592,13 +592,6 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
     </Box>
   );
 };
-
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;

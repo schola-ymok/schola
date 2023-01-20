@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useContext, useLayoutEffect, useState } from 'react';
 import useSWR from 'swr';
 
+import { deleteReview } from 'api/deleteReview';
 import { getBriefText } from 'api/getBriefText';
 import { getMyReview } from 'api/getMyReview';
 import { upsertReview } from 'api/upsertReview';
@@ -48,9 +49,18 @@ const EditReview: NextPage = () => {
       return;
     }
 
-    console.log(data);
-
     router.push(`/texts/${textId}/reviews`);
+  }
+
+  async function handleDeleteReviewClick() {
+    const { data, error } = await deleteReview(textId, authAxios);
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    router.replace(`/texts/${textId}/reviews`);
   }
 
   useLayoutEffect(() => {
@@ -125,12 +135,29 @@ const EditReview: NextPage = () => {
           />
         </Box>
 
-        <DefaultButton
-          exSx={{ width: '30%', minWidth: '200px', fontSize: '1.0em', fontWeight: 'bold', mt: 3 }}
-          onClick={handleEditReviewClick}
-        >
-          レビューを投稿する
-        </DefaultButton>
+        <Box sx={{ display: 'flex', mt: 3 }}>
+          <DefaultButton
+            exSx={{ width: '30%', minWidth: '200px', fontSize: '1.0em', fontWeight: 'bold' }}
+            onClick={handleEditReviewClick}
+          >
+            レビューを{dataReview.exists ? '更新' : '投稿'}する
+          </DefaultButton>
+
+          {dataReview.exists && (
+            <DefaultButton
+              exSx={{
+                width: '30%',
+                minWidth: '200px',
+                fontSize: '1.0em',
+                fontWeight: 'bold',
+                ml: 2,
+              }}
+              onClick={handleDeleteReviewClick}
+            >
+              レビューを削除する
+            </DefaultButton>
+          )}
+        </Box>
       </Box>
     </Box>
   );

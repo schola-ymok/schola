@@ -99,7 +99,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           inner join users on reviews.user_id = users.id
           where
           text_id = ${req.query.text_id}`;
-
         selectQuery
           .append(rateFilter)
           .append(`order by updated_at desc limit ${Consts.SELECT_LIMIT} offset ${offset}`);
@@ -110,9 +109,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         if (errorGet || errorCount)
           return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
 
+        let is_mine_exists = false;
+
+        if (verify) {
+          const countMineQuery = escape`select count(*) as cnt from reviews where text_id = ${req.query.text_id} and user_id=${req.headers.user_id}`;
+          const { data: dataMineCount, error: errorMineCount } = await dbQuery(countMineQuery);
+          if (dataMineCount[0].cnt == 1) {
+            is_mine_exists = true;
+          }
+        }
+
         return res.status(200).json({
           total: dataCount[0].cnt,
           page: page,
+          is_mine_exists: is_mine_exists,
           reviews: dataGet,
         });
       }

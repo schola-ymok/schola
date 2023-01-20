@@ -80,7 +80,7 @@ const Text: NextPage = () => {
 
   const { data: dataReviews, error: errorReviews } = useSWR(
     `texts/${textId}/reviews`,
-    () => getReviews(textId),
+    () => getReviews(textId, null, authAxios),
     {
       revalidateOnFocus: false,
     },
@@ -293,6 +293,29 @@ const Text: NextPage = () => {
           </ReadMoreText>
         </Box>
       </>
+    );
+  };
+
+  const ReviewWriteButton = () => {
+    if (!dataReviews) {
+      return <></>;
+    }
+
+    console.log(dataReviews);
+    return (
+      <PanelButton
+        mt={1}
+        onClick={handleWriteReviewClick}
+        colors={{
+          backGround: Consts.COLOR.Primary,
+          border: Consts.COLOR.Primary,
+          text: '#ffffff',
+          hoverBackground: Consts.COLOR.PrimaryDark,
+          hoverBorder: Consts.COLOR.PrimaryDark,
+        }}
+      >
+        レビューを{dataReviews.is_mine_exists ? '編集する' : '書く'}
+      </PanelButton>
     );
   };
 
@@ -542,21 +565,7 @@ const Text: NextPage = () => {
               </PanelButton>
             )}
 
-            {dataPurchasedInfo.purchased && !dataPurchasedInfo.yours && (
-              <PanelButton
-                mt={1}
-                onClick={handleWriteReviewClick}
-                colors={{
-                  backGround: Consts.COLOR.Primary,
-                  border: Consts.COLOR.Primary,
-                  text: '#ffffff',
-                  hoverBackground: Consts.COLOR.PrimaryDark,
-                  hoverBorder: Consts.COLOR.PrimaryDark,
-                }}
-              >
-                レビューを書く
-              </PanelButton>
-            )}
+            {dataPurchasedInfo.purchased && !dataPurchasedInfo.yours && <ReviewWriteButton />}
 
             {dataPurchasedInfo.yours && (
               <PanelButton

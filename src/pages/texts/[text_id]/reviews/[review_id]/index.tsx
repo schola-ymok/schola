@@ -6,6 +6,7 @@ import useSWR from 'swr';
 import { deleteReview } from 'api/deleteReview';
 import { getBriefText } from 'api/getBriefText';
 import { getReview } from 'api/getReview';
+import { getReviews } from 'api/getReviews';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import DefaultButton from 'components/DefaultButton';
 import MiniText from 'components/MiniText';
@@ -41,6 +42,14 @@ const Review: NextPage = () => {
     },
   );
 
+  const { data: dataReviews, error: errorReviews } = useSWR(
+    `texts/${textId}/reviews/`,
+    () => getReviews(textId, null, authAxios),
+    {
+      revalidateOnFocus: false,
+    },
+  );
+
   const handleWriteReviewClick = () => {
     router.push(`/texts/${textId}/reviews/edit`);
   };
@@ -62,7 +71,7 @@ const Review: NextPage = () => {
 
   if (errorText) console.log(errorText);
   if (errorReview) console.log(errorReview);
-  if (!dataText || !dataReview) return <CenterLoadingSpinner />;
+  if (!dataText || !dataReview || !dataReviews) return <CenterLoadingSpinner />;
 
   return (
     <>
@@ -101,12 +110,14 @@ const Review: NextPage = () => {
           <Stack>
             <MiniText text={dataText} />
             {state.userId !== dataReview.user_id && (
-              <DefaultButton exSx={{ width: '150px', mb: 1 }} onClick={handleWriteReviewClick}>
-                レビューを書く
+              <DefaultButton exSx={{ width: '180px', mb: 1 }} onClick={handleWriteReviewClick}>
+                レビューを{dataReviews.is_mine_exists ? '編集する' : '書く'}
               </DefaultButton>
             )}
             <RatingReportPanel text={dataText} />
-            <ShowMore onClick={handleAllReviewListClick}>全てのレビューを参照</ShowMore>
+            <ShowMore onClick={handleAllReviewListClick}>
+              全てのレビューを参照（{dataReviews.total}）
+            </ShowMore>
           </Stack>
         </Box>
       </Box>

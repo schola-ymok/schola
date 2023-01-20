@@ -50,18 +50,13 @@ const DashboardReviews = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <DashboardMenuLeft />
-
-      <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%', maxWidth: '700px' }}>
-        <Box>
-          <Box sx={{ fontSize: '1.2em', fontWeight: 'bold', mb: 1 }}>レビュー一覧</Box>
-          <DataContent data={data} />
-        </Box>
+    <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%', maxWidth: '700px' }}>
+      <Box>
+        <Box sx={{ fontSize: '1.2em', fontWeight: 'bold', mb: 1 }}>レビュー一覧</Box>
+        <DataContent data={data} />
       </Box>
     </Box>
   );
 };
 
-DashboardReviews.getLayout = (page) => <Layout>{page}</Layout>;
 export default DashboardReviews;

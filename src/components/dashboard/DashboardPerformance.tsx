@@ -13,7 +13,6 @@ import { getPerformance } from 'api/getPerformance';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
-import DashboardMenuLeft from 'components/sidemenu/DashboardMenuLeft';
 
 const DashboardPerformance = () => {
   const router = useRouter();
@@ -112,14 +111,10 @@ const DashboardPerformance = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <DashboardMenuLeft />
-      <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%', maxWidth: '700px' }}>
-        <DataContent data={data} />
-      </Box>
+    <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%', maxWidth: '700px' }}>
+      <DataContent data={data} />
     </Box>
   );
 };
 
-DashboardPerformance.getLayout = (page) => <Layout>{page}</Layout>;
 export default DashboardPerformance;

@@ -833,7 +833,7 @@ const Text: NextPage = () => {
 
           <ul className='learningRequirements'>
             {learningRequirements?.map((item) => {
-              return <li>{item.text}</li>;
+              return <li>{item}</li>;
             })}
           </ul>
         </Box>

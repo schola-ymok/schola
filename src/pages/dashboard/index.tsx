@@ -62,4 +62,5 @@ const Dashboard = () => {
   );
 };
 
+Dashboard.getLayout = (page) => <Layout>{page}</Layout>;
 export default Dashboard;

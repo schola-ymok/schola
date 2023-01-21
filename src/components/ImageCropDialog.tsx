@@ -1,9 +1,8 @@
-import { Box } from '@mui/material';
-import Button from '@mui/material/Button';
+import { Box, Slider } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
 import Cropper from 'react-easy-crop';
+
+import DefaultButton from './DefaultButton';
 
 const ImageCropDialog = ({
   open,
@@ -23,31 +22,41 @@ const ImageCropDialog = ({
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
-        <DialogContent>
-          <Box sx={{ width: 400, height: 400 }}>
-            <Cropper
-              image={image}
-              crop={crop}
-              zoom={zoom}
-              cropShape={cropShape ?? 'round'}
-              cropSize={cropSize ?? { width: 128, height: 128 }}
-              aspect={1}
-              onCropChange={onCropChange}
-              onCropComplete={onCropComplete}
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button
-            onClick={() => {
-              showCroppedImage();
-              handleClose();
+        <Box className='ImageCropDialog-container'>
+          <Cropper
+            image={image}
+            crop={crop}
+            zoom={zoom}
+            cropShape={cropShape ?? 'round'}
+            cropSize={cropSize ?? { width: 128, height: 128 }}
+            aspect={4 / 3}
+            onCropChange={onCropChange}
+            onCropComplete={onCropComplete}
+          />
+        </Box>
+        <Box sx={{ display: 'flex', flexFlow: 'column' }}>
+          <Slider
+            defaultValue={0}
+            onChange={(evt, value) => {
+              onZoomChange((100 + value * 2) / 100);
             }}
-          >
-            Agree
-          </Button>
-        </DialogActions>
+            sx={{ width: '85%', mx: 'auto' }}
+          />
+          <Box sx={{ display: 'flex', mt: 2 }}>
+            <DefaultButton exSx={{ ml: 'auto', mr: 1 }} onClick={handleClose}>
+              キャンセル
+            </DefaultButton>
+            <DefaultButton
+              exSx={{ mr: 3, mb: 2 }}
+              onClick={() => {
+                showCroppedImage();
+                handleClose();
+              }}
+            >
+              OK
+            </DefaultButton>
+          </Box>
+        </Box>
       </Dialog>
     </>
   );

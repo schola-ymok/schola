@@ -64,6 +64,8 @@ const EditText = () => {
   const { mutate } = useSWRConfig();
   const photoId = genid(8);
 
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+
   const [
     crop,
     setCrop,
@@ -76,10 +78,17 @@ const EditText = () => {
     onCropComplete,
     showCroppedImage,
     handleSelectFile,
-  ] = useCropImage(Consts.IMAGE_STORE_URL + photoId + '.png', () => {
-    setTextCoverPhotoId(authAxios, textId, photoId);
-    setImageUrl(Consts.IMAGE_STORE_URL + photoId + '.png');
-  });
+  ] = useCropImage(
+    Consts.IMAGE_STORE_URL + photoId + '.png',
+    () => {
+      setIsUploadingImage(true);
+    },
+    () => {
+      setTextCoverPhotoId(authAxios, textId, photoId);
+      setImageUrl(Consts.IMAGE_STORE_URL + photoId + '.png');
+      setIsUploadingImage(false);
+    },
+  );
 
   const { data, error } = useSWR(`texts/${textId}`, () => getMyText(textId, authAxios), {
     revalidateOnFocus: false,
@@ -209,8 +218,8 @@ const EditText = () => {
       <Container maxWidth='md'>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={tab} onChange={handleTabChange}>
-            <Tab label={<Box sx={{ fontWeight: 'bold' }}>テキスト情報</Box>} {...a11yProps(0)} />
-            <Tab label={<Box sx={{ fontWeight: 'bold' }}>チャプター</Box>} {...a11yProps(1)} />
+            <Tab label={<Box sx={{ fontWeight: 'bold' }}>テキスト情報</Box>} />
+            <Tab label={<Box sx={{ fontWeight: 'bold' }}>チャプター</Box>} />
           </Tabs>
         </Box>
         <TabPanel value={tab} index={0}>
@@ -233,38 +242,60 @@ const EditText = () => {
             </Box>
 
             <Box sx={{ mt: 1 }}>
-              <label
-                style={{
-                  cursor: 'pointer',
-                  display: 'block',
-                  width: 256,
-                }}
-              >
-                <input
-                  type='file'
-                  accept='image/*'
-                  onChange={handleSelectFile}
-                  style={{ display: 'none' }}
-                />
-                <img src={imageUrl} width='256' height='144' />
-                <Box sx={{ textAlign: 'center', width: '100%', mx: 'auto' }}>
-                  <a>画像を変更</a>
-                </Box>
-              </label>
+              {isUploadingImage ? (
+                <>
+                  <Box
+                    sx={{
+                      width: 267,
+                      height: 144,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <CircularProgress
+                      size={28}
+                      sx={{ mx: 'auto', my: 'auto', color: Consts.COLOR.Primary }}
+                    />
+                  </Box>
+                  <Box sx={{ textAlign: 'center', width: 267 }}>アップロード中</Box>
+                </>
+              ) : (
+                <>
+                  <label
+                    style={{
+                      cursor: 'pointer',
+                      display: 'block',
+                      width: 256,
+                    }}
+                  >
+                    <input
+                      type='file'
+                      accept='image/*'
+                      onChange={handleSelectFile}
+                      style={{ display: 'none' }}
+                    />
+                    <img src={imageUrl} width='256' height='144' />
+                    <Box sx={{ textAlign: 'center', width: '100%', mx: 'auto' }}>
+                      <a>画像を変更</a>
+                    </Box>
+                  </label>
 
-              <ImageCropDialog
-                open={openImageCropDialog}
-                setOpen={setOpenImageCropDialog}
-                image={imageSrc}
-                crop={crop}
-                zoom={zoom}
-                onCropChange={setCrop}
-                onCropComplete={onCropComplete}
-                onZoomChange={setZoom}
-                showCroppedImage={showCroppedImage}
-                cropShape={'rect'}
-                cropSize={{ width: 256, height: 144 }}
-              />
+                  <ImageCropDialog
+                    open={openImageCropDialog}
+                    setOpen={setOpenImageCropDialog}
+                    image={imageSrc}
+                    crop={crop}
+                    zoom={zoom}
+                    onCropChange={setCrop}
+                    onCropComplete={onCropComplete}
+                    onZoomChange={setZoom}
+                    showCroppedImage={showCroppedImage}
+                    cropShape={'rect'}
+                    cropSize={{ width: 256, height: 144 }}
+                  />
+                </>
+              )}
             </Box>
 
             {/* title */}

@@ -1,4 +1,4 @@
-import { Button, Checkbox, InputBase, Snackbar } from '@mui/material';
+import { Button, Checkbox, CircularProgress, InputBase, Snackbar } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Tab from '@mui/material/Tab';
@@ -177,6 +177,7 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
   const { authAxios } = useContext(AuthContext);
 
   const photoId = genid(8);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const [
     crop,
@@ -190,10 +191,17 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
     onCropComplete,
     showCroppedImage,
     handleSelectFile,
-  ] = useCropImage(Consts.IMAGE_STORE_URL + photoId + '.png', () => {
-    setProfilePhotoId(authAxios, photoId);
-    dispatch({ type: 'SetProfilePhoto', photoId: photoId });
-  });
+  ] = useCropImage(
+    Consts.IMAGE_STORE_URL + photoId + '.png',
+    () => {
+      setIsUploadingImage(true);
+    },
+    () => {
+      setProfilePhotoId(authAxios, photoId);
+      dispatch({ type: 'SetProfilePhoto', photoId: photoId });
+      setIsUploadingImage(false);
+    },
+  );
 
   const onError = () => {
     console.log('error');
@@ -204,35 +212,57 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
       <Box
         sx={{ width: '128px', ml: { md: '200px', xs: 'auto' }, mr: { md: 'unset', xs: 'auto' } }}
       >
-        <label
-          style={{
-            cursor: 'pointer',
-            display: 'block',
-            width: 128,
-          }}
-        >
-          <input
-            type='file'
-            accept='image/*'
-            onChange={handleSelectFile}
-            style={{ display: 'none' }}
-          />
-          <AvatarButton photoId={state.photoId} onClick={() => {}} size={128} />
-          <Box sx={{ textAlign: 'center', width: '100%', mx: 'auto', mt: 1 }}>
-            <a>画像を変更</a>
-          </Box>
-        </label>
-        <ImageCropDialog
-          open={openImageCropDialog}
-          setOpen={setOpenImageCropDialog}
-          image={imageSrc}
-          crop={crop}
-          zoom={zoom}
-          onCropChange={setCrop}
-          onCropComplete={onCropComplete}
-          onZoomChange={setZoom}
-          showCroppedImage={showCroppedImage}
-        />
+        {isUploadingImage ? (
+          <>
+            <Box
+              sx={{
+                width: '128px',
+                height: '128px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <CircularProgress
+                size={28}
+                sx={{ mx: 'auto', my: 'auto', color: Consts.COLOR.Primary }}
+              />
+            </Box>
+            <Box sx={{ textAlign: 'center', width: 128, mt: 1 }}>アップロード中</Box>
+          </>
+        ) : (
+          <>
+            <label
+              style={{
+                cursor: 'pointer',
+                display: 'block',
+                width: 128,
+              }}
+            >
+              <input
+                type='file'
+                accept='image/*'
+                onChange={handleSelectFile}
+                style={{ display: 'none' }}
+              />
+              <AvatarButton photoId={state.photoId} onClick={() => {}} size={128} />
+              <Box sx={{ textAlign: 'center', width: '100%', mx: 'auto', mt: 1 }}>
+                <a>画像を変更</a>
+              </Box>
+            </label>
+            <ImageCropDialog
+              open={openImageCropDialog}
+              setOpen={setOpenImageCropDialog}
+              image={imageSrc}
+              crop={crop}
+              zoom={zoom}
+              onCropChange={setCrop}
+              onCropComplete={onCropComplete}
+              onZoomChange={setZoom}
+              showCroppedImage={showCroppedImage}
+            />
+          </>
+        )}
       </Box>
 
       <Box sx={{ display: 'flex', flexFlow: 'column' }}>

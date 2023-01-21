@@ -130,7 +130,7 @@ const Text: NextPage = () => {
     router.push(`/users/${id}`);
   };
 
-  const PanelButtonThin = ({ ml, onClick, colors, children }) => {
+  const PanelButtonThin = ({ ml, onClick, colors, children, width = '130px' }) => {
     return (
       <Box
         variant='contained'
@@ -138,7 +138,7 @@ const Text: NextPage = () => {
         sx={{
           ml: ml,
           p: 0.5,
-          width: '130px',
+          width: width,
           display: 'block',
           fontWeight: 'bold',
           fontSize: '0.9em',
@@ -768,6 +768,7 @@ const Text: NextPage = () => {
             {dataPurchasedInfo.purchased && !dataPurchasedInfo.yours && (
               <PanelButtonThin
                 ml={1}
+                width={'160px'}
                 onClick={handleWriteReviewClick}
                 colors={{
                   backGround: Consts.COLOR.Primary,
@@ -777,7 +778,7 @@ const Text: NextPage = () => {
                   hoverBorder: Consts.COLOR.PrimaryDark,
                 }}
               >
-                レビューを書く
+                レビューを{dataReviews.is_mine_exists ? '編集する' : '書く'}
               </PanelButtonThin>
             )}
 

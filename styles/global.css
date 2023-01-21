@@ -118,3 +118,14 @@ a.no-hover:hover {
   padding: 0px;
   margin: 0px;
 }
+
+.ImageCropDialog-container {
+  position: relative;
+  margin: 20px 20px;
+  width: 400px;
+  height: 300px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 80px;
+}

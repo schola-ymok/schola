@@ -1,10 +1,11 @@
 import { ref, uploadBytes } from 'firebase/storage';
-import { storage } from 'libs/firebase/firebase';
 import { useState, useCallback } from 'react';
+
+import { storage } from 'libs/firebase/firebase';
 
 import getCroppedImage from './getCroppedImage';
 
-const useCropImage = (path, onUploadComplete) => {
+const useCropImage = (path, onUploadBegin, onUploadComplete) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [imageSrc, setImageSrc] = useState();
@@ -19,6 +20,7 @@ const useCropImage = (path, onUploadComplete) => {
 
   const showCroppedImage = useCallback(async () => {
     if (!croppedAreaPixels) return;
+    onUploadBegin();
     try {
       const croppedImage = await getCroppedImage(imageSrc, croppedAreaPixels);
       setCroppedImageSrc(URL.createObjectURL(croppedImage));

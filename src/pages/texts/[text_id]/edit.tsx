@@ -8,9 +8,6 @@ import {
   MenuItem,
   Select,
   Slider,
-  Dialog,
-  DialogContent,
-  DialogActions,
 } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -18,7 +15,6 @@ import { Container } from '@mui/system';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
-import { WithContext as ReactTags } from 'react-tag-input';
 import useSWR, { useSWRConfig } from 'swr';
 
 import { createNewChapter } from 'api/createNewChapter';
@@ -35,10 +31,10 @@ import ChapterListMenuButton from 'components/ChaptarListMenuButton';
 import ChapterTitleSettingDialog from 'components/ChapterTitleSettingDialog';
 import DefaultButton from 'components/DefaultButton';
 import ImageCropDialog from 'components/ImageCropDialog';
-import SMenuItem from 'components/SMenuItem';
 import { AuthContext } from 'components/auth/AuthContext';
 import EditTextHeader from 'components/headers/EditTextHeader';
 import EditTextLayout from 'components/layouts/EditTextLayout';
+import RTEditor from 'components/rteditor/RTEditor';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
 import useCropImage from 'utils/useCropImage';
@@ -377,31 +373,14 @@ const EditText = () => {
               テキストの詳細な解説
             </Box>
 
-            <Box
-              sx={{
-                p: 1,
-                mt: 0.5,
-                mx: 'auto',
-                width: '100%',
-                maxWidth: 800,
-                border: '2px solid ' + Consts.COLOR.Grey,
-                '&:hover': {
-                  border: '2px solid ' + Consts.COLOR.Primary,
-                },
+            <RTEditor
+              placeholder='テキストの詳細な解説'
+              initialValue={data.explanation}
+              onChange={(value) => {
+                setExplanation(value);
+                setChanged(true);
               }}
-            >
-              <InputBase
-                placeholder='テキストの詳細な解説'
-                value={explanation}
-                fullWidth
-                rows={8}
-                multiline
-                onChange={(e) => {
-                  onExplanationChange(e);
-                  setChanged(true);
-                }}
-              />
-            </Box>
+            />
 
             {/* Price */}
             <Box

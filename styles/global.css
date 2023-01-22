@@ -144,3 +144,7 @@ a.no-hover:hover {
     bottom: 80px;
   }
 }
+
+.public-DraftEditor-content {
+  min-height: 200px;
+}

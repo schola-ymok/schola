@@ -31,10 +31,6 @@ import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 
 import Edit from '@mui/icons-material/Edit';
 
-import { title } from 'process';
-
-import { maxWidth } from '@mui/system';
-
 const TextView: NextPage = () => {
   const router = useRouter();
   const { authAxios } = useContext(AuthContext);
@@ -100,7 +96,6 @@ const TextView: NextPage = () => {
             alignItems: 'center',
             width: '100%',
             height: '54px',
-            whiteSpace: 'nowrap',
             px: { xs: 0.4, sm: 2 },
           }}
         >
@@ -111,11 +106,11 @@ const TextView: NextPage = () => {
           />
           <Box
             sx={{
-              pr: 1,
               my: 'auto',
               mx: 'auto',
               fontSize: '0.9em',
               textOverflow: 'ellipsis',
+              overflow: 'hidden',
               whiteSpace: 'nowrap',
             }}
           >
@@ -284,7 +279,7 @@ const ChapterContent = ({ data, chapterOrder }) => {
           sx={{
             position: 'fixed',
             right: '10px',
-            top: '10px',
+            bottom: '10px',
             '&:hover': Consts.SX.IconButtonHover,
           }}
           onClick={() => {

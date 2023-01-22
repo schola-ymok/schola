@@ -1,8 +1,8 @@
-import { Box, IconButton, useMediaQuery } from '@mui/material';
+import { Box, Drawer, IconButton, useMediaQuery } from '@mui/material';
 import { color } from '@mui/system';
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useLayoutEffect } from 'react';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import rehypeSlug from 'rehype-slug';
@@ -16,6 +16,10 @@ import { AuthContext } from 'components/auth/AuthContext';
 import 'katex/dist/katex.min.css';
 import 'github-markdown-css/github-markdown.css';
 
+import Logo from 'components/headers/Logo';
+import SLogo from 'components/headers/SLogo';
+import SideMenuIcon from 'components/headers/SideMenuIcon';
+import MenuCloseButton from 'components/sidemenu/MenuCloseButton';
 import Consts from 'utils/Consts';
 import { extractToc } from 'utils/extractToc';
 
@@ -37,6 +41,8 @@ const TextView: NextPage = () => {
   const textId = router.query.text_id;
   const mq = useMediaQuery('(min-width:1000px)');
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const { data, error } = useSWR(`texts/${textId}/view`, () => getViewText(textId, authAxios), {
     revalidateOnFocus: false,
   });
@@ -56,7 +62,7 @@ const TextView: NextPage = () => {
     return (
       <Box sx={{ display: 'flex', overflow: 'hidden' }}>
         <Box sx={{ width: '350px' }}>
-          <Toc data={data} left={true} />
+          <Toc data={data} />
         </Box>
         <Box
           sx={{
@@ -74,14 +80,66 @@ const TextView: NextPage = () => {
     );
   } else {
     return (
-      <Box sx={{ display: 'flex', flexFlow: 'column', overflow: 'hidden' }}>
-        <Box sx={{ width: '100%' }}>
-          <Toc data={data} />
+      <>
+        <Box
+          sx={{
+            pt: { xs: 0, sm: 1 },
+            pb: { xs: 0, sm: 1 },
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
+            height: '54px',
+            whiteSpace: 'nowrap',
+            px: { xs: 0.4, sm: 2 },
+          }}
+        >
+          <SideMenuIcon
+            onClick={() => {
+              setMenuOpen(true);
+            }}
+          />
+          <Box
+            sx={{
+              pr: 1,
+              my: 'auto',
+              mx: 'auto',
+              fontSize: '0.9em',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {data.title}
+          </Box>
         </Box>
-        <Box sx={{ width: '100%', display: 'flex', flexFlow: 'column' }}>
+        <Drawer
+          anchor={'left'}
+          open={menuOpen}
+          onClose={() => {
+            setMenuOpen(false);
+          }}
+        >
+          <Toc
+            data={data}
+            mobile
+            onClose={() => {
+              setMenuOpen(false);
+            }}
+          />
+        </Drawer>
+        <Box
+          sx={{
+            width: '100vw',
+            display: 'flex',
+            flexFlow: 'column',
+            height: '100vh',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+          }}
+        >
           <ChapterContent data={data} />
         </Box>
-      </Box>
+      </>
     );
   }
 };
@@ -212,7 +270,8 @@ const ChapterContent = ({ data }) => {
             p: 1,
             my: 'auto',
             mx: 'auto',
-            width: '760px',
+            width: '100%',
+            maxWidth: '760px',
             display: 'flex',
             flexFlow: 'column',
             height: 'fit-content',
@@ -223,7 +282,7 @@ const ChapterContent = ({ data }) => {
         </Box>
       </Box>
 
-      <Box sx={{ p: 1, my: 4, width: '760px', mx: 'auto' }}>
+      <Box sx={{ p: 1, my: 4, width: '100%', maxWidth: '760px', mx: 'auto' }}>
         <ReactMarkdown
           className='markdown-body p-3'
           remarkPlugins={[remarkGfm, remarkMath]}
@@ -250,7 +309,7 @@ const ChapterContent = ({ data }) => {
   );
 };
 
-const Toc = ({ data, left }) => {
+const Toc = ({ data, mobile, onClose }) => {
   var tocs = {};
   Object.keys(data.chapters).map((id) => {
     const toc = extractToc(data.chapters[id].content);
@@ -294,18 +353,18 @@ const Toc = ({ data, left }) => {
     );
   };
 
-  const sx = left
+  const sx = mobile
     ? {
+        p: 1,
+        pb: 0,
+        width: '280px',
+      }
+    : {
         px: 2,
         borderRight: '1px solid #cccccc',
         width: '350px',
         display: 'flex',
         flexFlow: 'column',
-      }
-    : {
-        p: 1,
-        pb: 0,
-        width: '100%',
       };
 
   let chapterOrder;
@@ -319,12 +378,21 @@ const Toc = ({ data, left }) => {
     <>
       <Box sx={sx}>
         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-          <Box
-            component='img'
-            sx={{ display: 'flex', width: 'fit-content', width: '90px', cursor: 'pointer', py: 3 }}
-            src='/logo-s.svg'
-            onClick={() => router.push('/')}
-          />
+          <Box sx={{ display: 'flex' }}>
+            {mobile && <MenuCloseButton onClick={onClose} />}
+            <Box
+              component='img'
+              sx={{
+                display: 'flex',
+                width: 'fit-content',
+                width: '90px',
+                cursor: 'pointer',
+                py: 3,
+              }}
+              src='/logo-s.svg'
+              onClick={() => router.push('/')}
+            />
+          </Box>
 
           <IconButton
             type='button'
@@ -363,7 +431,7 @@ const Toc = ({ data, left }) => {
               />
               <Box sx={{ display: 'flex', flexFlow: 'column', ml: 1 }}>
                 <Box
-                  sx={{ fontSize: '0.9em', fontWeight: 'bold', cursor: 'pointer' }}
+                  sx={{ fontSize: '0.9em', cursor: 'pointer' }}
                   onClick={() => router.push(`/texts/${textId}`)}
                 >
                   {data.title}
@@ -371,6 +439,7 @@ const Toc = ({ data, left }) => {
                 <Box
                   sx={{
                     fontSize: '0.8em',
+                    color: '#888888',
                     cursor: 'pointer',
                     '&:hover': {
                       textDecoration: 'underline',

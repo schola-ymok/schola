@@ -5,7 +5,9 @@ import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import UpdateIcon from '@mui/icons-material/Update';
 import { Box, CircularProgress, colors, Grid, Rating, Stack, useMediaQuery } from '@mui/material';
-import { useRouter } from 'next/router';
+import { ref } from 'firebase/storage';
+import htmlParse from 'html-react-parser';
+import router, { useRouter } from 'next/router';
 import { useCallback, useContext, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 
@@ -118,6 +120,10 @@ const Text: NextPage = () => {
     return;
   };
 
+  const handleEditTextClick = () => {
+    router.push(`/texts/${textId}/edit`);
+  };
+
   const handleWriteReviewClick = () => {
     router.push(`/texts/${router.query.text_id}/reviews/edit`);
   };
@@ -211,12 +217,18 @@ const Text: NextPage = () => {
     reviews.splice(displayNum);
 
     return (
-      <Box sx={{ p: 1, width: '100%' }}>
-        {reviews.map((item) => {
-          return <Review review={item} onUserClick={() => handleReviewerClick(item.user_id)} />;
-        })}
-        {more && <ShowMore onClick={handleReviewListClick}>全てのレビューを参照</ShowMore>}
-      </Box>
+      <>
+        <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>読者からのレビュー</Box>
+        <Box sx={{ pl: 1, py: 1 }}>
+          <RatingReportPanel text={data} />
+        </Box>
+        <Box sx={{ p: 1, width: '100%' }}>
+          {reviews.map((item) => {
+            return <Review review={item} onUserClick={() => handleReviewerClick(item.user_id)} />;
+          })}
+          {more && <ShowMore onClick={handleReviewListClick}>全てのレビューを参照</ShowMore>}
+        </Box>
+      </>
     );
   };
 
@@ -225,99 +237,362 @@ const Text: NextPage = () => {
 
     return (
       <>
-        <Box
-          onClick={handleAuthorClick}
-          component='span'
-          sx={{
-            textDecoration: 'underline',
-            fontSize: '1.3em',
-            fontWeight: 'bold',
-            color: Consts.COLOR.Primary,
-            cursor: 'pointer',
-            '&:hover': { color: Consts.COLOR.PrimaryDark },
-          }}
-        >
-          {dataAuthor.display_name}
-        </Box>
-        <Box sx={{ color: '#666666' }}>{dataAuthor.majors}</Box>
+        <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>著者</Box>
+        <Box sx={{ px: 1 }}>
+          <Box
+            onClick={handleAuthorClick}
+            component='span'
+            sx={{
+              textDecoration: 'underline',
+              fontSize: '1.3em',
+              fontWeight: 'bold',
+              color: Consts.COLOR.Primary,
+              cursor: 'pointer',
+              '&:hover': { color: Consts.COLOR.PrimaryDark },
+            }}
+          >
+            {dataAuthor.display_name}
+          </Box>
+          <Box sx={{ color: '#666666' }}>{dataAuthor.majors}</Box>
 
-        <Box sx={{ width: '100%', display: 'flex', mt: 1 }}>
-          <AvatarButton photoId={dataAuthor.photo_id} onClick={handleAuthorClick} size={100} />
+          <Box sx={{ width: '100%', display: 'flex', mt: 1 }}>
+            <AvatarButton photoId={dataAuthor.photo_id} onClick={handleAuthorClick} size={100} />
 
-          <Box sx={{ ml: 2, fontSize: '0.9em' }}>
-            <Box sx={{ display: 'flex', width: '100%' }}>
-              <Box sx={{ my: 'auto' }}>
-                <MenuBookIcon sx={{ transform: 'scale(0.8)' }} />
+            <Box sx={{ ml: 2, fontSize: '0.9em' }}>
+              <Box sx={{ display: 'flex', width: '100%' }}>
+                <Box sx={{ my: 'auto' }}>
+                  <MenuBookIcon sx={{ transform: 'scale(0.8)' }} />
+                </Box>
+                <Box
+                  sx={{
+                    my: 'auto',
+                    ml: 1,
+                  }}
+                >
+                  テキスト数: {dataAuthor.num_of_texts}
+                </Box>
               </Box>
-              <Box
-                sx={{
-                  my: 'auto',
-                  ml: 1,
-                }}
-              >
-                テキスト数: {dataAuthor.num_of_texts}
+              <Box sx={{ display: 'flex', width: '100%' }}>
+                <Box sx={{ my: 'auto' }}>
+                  <PeopleIcon sx={{ transform: 'scale(0.8)' }} />
+                </Box>
+                <Box
+                  sx={{
+                    my: 'auto',
+                    ml: 1,
+                  }}
+                >
+                  読者数: {dataAuthor.num_of_sales}
+                </Box>
               </Box>
-            </Box>
-            <Box sx={{ display: 'flex', width: '100%' }}>
-              <Box sx={{ my: 'auto' }}>
-                <PeopleIcon sx={{ transform: 'scale(0.8)' }} />
-              </Box>
-              <Box
-                sx={{
-                  my: 'auto',
-                  ml: 1,
-                }}
-              >
-                読者数: {dataAuthor.num_of_sales}
-              </Box>
-            </Box>
-            <Box sx={{ display: 'flex', width: '100%' }}>
-              <Box sx={{ my: 'auto' }}>
-                <StarIcon sx={{ transform: 'scale(0.8)' }} />
-              </Box>
-              <Box
-                sx={{
-                  my: 'auto',
-                  ml: 1,
-                }}
-              >
-                レビュー数: {dataAuthor.num_of_reviews}
+              <Box sx={{ display: 'flex', width: '100%' }}>
+                <Box sx={{ my: 'auto' }}>
+                  <StarIcon sx={{ transform: 'scale(0.8)' }} />
+                </Box>
+                <Box
+                  sx={{
+                    my: 'auto',
+                    ml: 1,
+                  }}
+                >
+                  レビュー数: {dataAuthor.num_of_reviews}
+                </Box>
               </Box>
             </Box>
           </Box>
-        </Box>
 
-        <Box sx={{ width: '100%', mt: 1.5 }}>
-          <ReadMoreText height='200' fontSize='0.9em'>
-            {dataAuthor.profile_message}
-          </ReadMoreText>
+          <Box sx={{ width: '100%', mt: 1.5 }}>
+            <ReadMoreText height='200' fontSize='0.9em'>
+              {dataAuthor.profile_message}
+            </ReadMoreText>
+          </Box>
         </Box>
       </>
     );
   };
 
-  const ReviewWriteButton = () => {
+  const WriteReviewButton = ({ xs }) => {
     if (!dataReviews) {
       return <></>;
     }
 
-    console.log(dataReviews);
+    const colors = {
+      backGround: Consts.COLOR.Primary,
+      border: Consts.COLOR.Primary,
+      text: '#ffffff',
+      hoverBackground: Consts.COLOR.PrimaryDark,
+      hoverBorder: Consts.COLOR.PrimaryDark,
+    };
+
+    if (xs) {
+      return (
+        <PanelButtonThin ml={1} width={'160px'} onClick={handleWriteReviewClick} colors={colors}>
+          レビューを{dataReviews.is_mine_exists ? '編集する' : '書く'}
+        </PanelButtonThin>
+      );
+    } else {
+      return (
+        <PanelButton mt={1} onClick={handleWriteReviewClick} colors={colors}>
+          レビューを{dataReviews.is_mine_exists ? '編集する' : '書く'}
+        </PanelButton>
+      );
+    }
+  };
+
+  const ReadTextButton = ({ xs }) => {
+    const colors = {
+      backGround: '#ffffff',
+      border: Consts.COLOR.Primary,
+      text: Consts.COLOR.Primary,
+      hoverBackground: Consts.COLOR.LightPrimarySelected,
+      hoverBorder: Consts.COLOR.PrimarySelected,
+    };
+    if (xs) {
+      return (
+        <PanelButtonThin ml={'auto'} onClick={handleReadTextClick} colors={colors}>
+          テキストを読む
+        </PanelButtonThin>
+      );
+    } else {
+      return (
+        <PanelButton mt={1} onClick={handleReadTextClick} colors={colors}>
+          テキストを読む
+        </PanelButton>
+      );
+    }
+  };
+
+  const BuyTextButton = ({ xs }) => {
+    const colors = {
+      backGround: Consts.COLOR.Primary,
+      border: Consts.COLOR.Primary,
+      text: '#ffffff',
+      hoverBackground: Consts.COLOR.PrimaryDark,
+      hoverBorder: Consts.COLOR.PrimaryDark,
+    };
+
+    if (xs) {
+      return (
+        <PanelButtonThin onClick={handlePurchaseClick} ml={'auto'} colors={colors}>
+          テキストを購入
+        </PanelButtonThin>
+      );
+    } else {
+      return (
+        <PanelButton onClick={handlePurchaseClick} colors={colors}>
+          {isPurchaseProcessing ? (
+            <CircularProgress size={20} sx={{ color: 'white', p: 0, m: 0 }} />
+          ) : (
+            <>テキストを購入</>
+          )}
+        </PanelButton>
+      );
+    }
+  };
+
+  const EditTextButton = ({ xs }) => {
+    const colors = {
+      backGround: Consts.COLOR.Primary,
+      border: Consts.COLOR.Primary,
+      text: '#ffffff',
+      hoverBackground: Consts.COLOR.PrimaryDark,
+      hoverBorder: Consts.COLOR.PrimaryDark,
+    };
+    if (xs) {
+      return (
+        <PanelButtonThin
+          ml={1}
+          onClick={handleEditTextClick}
+          colors={{
+            backGround: Consts.COLOR.Primary,
+            border: Consts.COLOR.Primary,
+            text: '#ffffff',
+            hoverBackground: Consts.COLOR.PrimaryDark,
+            hoverBorder: Consts.COLOR.PrimaryDark,
+          }}
+        >
+          編集
+        </PanelButtonThin>
+      );
+    } else {
+      return (
+        <PanelButton mt={1} onClick={handleEditTextClick} colors={colors}>
+          編集
+        </PanelButton>
+      );
+    }
+  };
+
+  const RateAndAuthorInfo = () => (
+    <>
+      <Box sx={{ display: 'flex', width: '100%', mt: 1.5 }}>
+        <Box sx={{ cursor: 'pointer', display: 'flex' }}>
+          <Box sx={{ fontWeight: 'bold', color: '#faaf00', my: 'auto', fontSize: '0.9em' }}>
+            {data.rate}
+          </Box>
+
+          <Rating
+            sx={{ mt: 1, my: 'auto', ml: 0.5 }}
+            value={data.rate}
+            readOnly
+            size='small'
+            precision={0.5}
+            emptyIcon={
+              <StarBorderIcon style={{ opacity: 0.55, color: '#ffd269' }} fontSize='inherit' />
+            }
+          />
+          <Box
+            onClick={handleReviewListClick}
+            sx={{
+              color: COLOR_PURPLE,
+              my: 'auto',
+              textDecoration: 'underline',
+              ml: 1,
+              fontSize: '0.9em',
+            }}
+          >
+            {data.number_of_reviews}件の評価
+          </Box>
+        </Box>
+
+        <Box sx={{ my: 'auto', ml: 2, color: COLOR_BANNER_TEXT, fontSize: '0.9em' }}>
+          販売数:{data.number_of_sales}
+        </Box>
+      </Box>
+
+      <Box sx={{ display: 'flex', width: '100%', mt: 0.6 }}>
+        <Box sx={{ my: 'auto', color: COLOR_BANNER_TEXT, fontSize: '0.9em' }}>作成者:</Box>
+        <Box
+          onClick={handleAuthorClick}
+          sx={{
+            my: 'auto',
+            ml: 0.4,
+            color: COLOR_PURPLE,
+            fontSize: '0.9em',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+          }}
+        >
+          {data.author_display_name}
+        </Box>
+      </Box>
+
+      <Box sx={{ display: 'flex', width: '100%', mt: 1 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            color: COLOR_BANNER_TEXT,
+            fontSize: '0.9em',
+          }}
+        >
+          <UpdateIcon sx={{ my: 'auto', transform: 'scale(0.9)' }} />
+        </Box>
+        <Box
+          sx={{
+            my: 'auto',
+            ml: 0.4,
+            color: '#fefefe',
+            fontSize: '0.9em',
+            alignItems: 'center',
+          }}
+        >
+          {data.updated_at !== null && (
+            <span style={{ verticalAlign: 'middle' }}>
+              最終更新日：{new Date(data.updated_at).toLocaleString('jp')}
+            </span>
+          )}
+        </Box>
+      </Box>
+    </>
+  );
+
+  const Toc = ({ xs }) => {
+    if (xs) {
+      return (
+        <Box sx={{ pl: 2 }}>
+          <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>目次</Box>
+          <Box sx={{ pl: 1, py: 1 }}>
+            <ChapterList />
+          </Box>
+        </Box>
+      );
+    } else {
+      return (
+        <Box sx={{ px: { xs: 1, sm: 4 }, mt: { xs: 0, sm: 1 } }}>
+          <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>目次</Box>
+          <Box sx={{ pl: 1, py: { xs: 0.2, sm: 1 } }}>
+            <ChapterList />
+          </Box>
+        </Box>
+      );
+    }
+  };
+
+  const LearningContents = () => (
+    <>
+      <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>学習内容</Box>
+
+      <Grid container>
+        {learningContents?.map((item) => {
+          return (
+            <Grid xs={6}>
+              <Box sx={{ display: 'flex', width: '100%', mt: { xs: 0, sm: 1 } }}>
+                <Box sx={{ ml: { xs: 0.4, sm: 1 }, mb: 'auto', fontSize: '0.6em' }}>
+                  <CheckIcon sx={{ transform: 'scale(0.7)' }} />
+                </Box>
+                <Box
+                  sx={{
+                    my: 'auto',
+                    ml: 0.4,
+                  }}
+                >
+                  {item}
+                </Box>
+              </Box>
+            </Grid>
+          );
+        })}
+      </Grid>
+    </>
+  );
+
+  const LearningRequirements = () => (
+    <>
+      <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>対象・要件</Box>
+
+      <ul className='learningRequirements'>
+        {learningRequirements?.map((item) => {
+          return <li>{item}</li>;
+        })}
+      </ul>
+    </>
+  );
+
+  const Explanation = () => {
+    const html = htmlParse(data.explanation);
     return (
-      <PanelButton
-        mt={1}
-        onClick={handleWriteReviewClick}
-        colors={{
-          backGround: Consts.COLOR.Primary,
-          border: Consts.COLOR.Primary,
-          text: '#ffffff',
-          hoverBackground: Consts.COLOR.PrimaryDark,
-          hoverBorder: Consts.COLOR.PrimaryDark,
-        }}
-      >
-        レビューを{dataReviews.is_mine_exists ? '編集する' : '書く'}
-      </PanelButton>
+      <>
+        <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>解説</Box>
+        <Box sx={{ pl: 1, py: { xs: 0.2, sm: 1 } }}>
+          <ReadMoreText height='220'>{html}</ReadMoreText>
+        </Box>
+      </>
     );
   };
+
+  const ElseText = () => (
+    <>
+      <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>著者によるその他のテキスト</Box>
+      <Box sx={{ pl: 1, py: 0.5 }}>
+        {dataAuthorTexts ? (
+          <AuthorTexts data={dataAuthorTexts} authorId={data.author_id} textId={textId} />
+        ) : (
+          <CenterLoadingSpinner />
+        )}
+      </Box>
+    </>
+  );
 
   if (mq) {
     return (
@@ -336,168 +611,34 @@ const Text: NextPage = () => {
                 <h1>{data.title}</h1>
                 <Box sx={{ fontSize: '1.3em' }}>{abstract}</Box>
               </Box>
-              <Box sx={{ display: 'flex', width: '100%', mt: 1.5 }}>
-                <Box sx={{ cursor: 'pointer', display: 'flex' }}>
-                  <Box sx={{ fontWeight: 'bold', color: '#faaf00', my: 'auto', fontSize: '0.9em' }}>
-                    {data.rate}
-                  </Box>
 
-                  <Rating
-                    sx={{ mt: 1, my: 'auto', ml: 0.5 }}
-                    value={data.rate}
-                    readOnly
-                    size='small'
-                    precision={0.5}
-                    emptyIcon={
-                      <StarBorderIcon
-                        style={{ opacity: 0.55, color: '#ffd269' }}
-                        fontSize='inherit'
-                      />
-                    }
-                  />
-                  <Box
-                    onClick={handleReviewListClick}
-                    sx={{
-                      color: COLOR_PURPLE,
-                      my: 'auto',
-                      textDecoration: 'underline',
-                      ml: 1,
-                      fontSize: '0.9em',
-                    }}
-                  >
-                    {data.number_of_reviews}件の評価
-                  </Box>
-                </Box>
-
-                <Box sx={{ my: 'auto', ml: 2, color: COLOR_BANNER_TEXT, fontSize: '0.9em' }}>
-                  販売数:{data.number_of_sales}
-                </Box>
-              </Box>
-
-              <Box sx={{ display: 'flex', width: '100%', mt: 0.6 }}>
-                <Box sx={{ my: 'auto', color: COLOR_BANNER_TEXT, fontSize: '0.9em' }}>作成者:</Box>
-                <Box
-                  onClick={handleAuthorClick}
-                  sx={{
-                    my: 'auto',
-                    ml: 0.4,
-                    color: COLOR_PURPLE,
-                    fontSize: '0.9em',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {data.author_display_name}
-                </Box>
-              </Box>
-
-              <Box sx={{ display: 'flex', width: '100%', mt: 1 }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    color: COLOR_BANNER_TEXT,
-                    fontSize: '0.9em',
-                  }}
-                >
-                  <UpdateIcon sx={{ my: 'auto', transform: 'scale(0.9)' }} />
-                </Box>
-                <Box
-                  sx={{
-                    my: 'auto',
-                    ml: 0.4,
-                    color: '#fefefe',
-                    fontSize: '0.9em',
-                    alignItems: 'center',
-                  }}
-                >
-                  {data.updated_at !== null && (
-                    <span style={{ verticalAlign: 'middle' }}>
-                      最終更新日：{new Date(data.updated_at).toLocaleString('jp')}
-                    </span>
-                  )}
-                </Box>
-              </Box>
+              <RateAndAuthorInfo />
             </Box>
 
             <Box sx={{ mt: 6, p: 2, border: '1px solid #cccccc' }}>
-              <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>学習内容</Box>
-
-              <Grid container>
-                {learningContents?.map((item) => {
-                  return (
-                    <Grid xs={6}>
-                      <Box sx={{ display: 'flex', width: '100%', mt: 1 }}>
-                        <Box sx={{ ml: 1, mb: 'auto', fontSize: '0.6em' }}>
-                          <CheckIcon sx={{ transform: 'scale(0.7)' }} />
-                        </Box>
-                        <Box
-                          sx={{
-                            my: 'auto',
-                            ml: 0.4,
-                          }}
-                        >
-                          {item}
-                        </Box>
-                      </Box>
-                    </Grid>
-                  );
-                })}
-              </Grid>
+              <LearningContents />
             </Box>
 
             <Box sx={{ mt: 1, p: 2 }}>
-              <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>対象・要件</Box>
-              <Box sx={{ pl: 1, py: 1 }}>
-                <ul className='learningRequirements'>
-                  {learningRequirements?.map((item) => {
-                    return <li>{item}</li>;
-                  })}
-                </ul>
-              </Box>
+              <LearningRequirements />
             </Box>
 
             <Box sx={{ pl: 2 }}>
-              <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>解説</Box>
-
-              <Box sx={{ pl: 1, py: 1 }}>
-                <ReadMoreText height='220' fontSize='0.9em'>
-                  {data.explanation}
-                </ReadMoreText>
-              </Box>
+              <Explanation />
             </Box>
 
-            <Box sx={{ pl: 2 }}>
-              <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>目次</Box>
-              <Box sx={{ pl: 1, py: 1 }}>
-                <ChapterList />
-              </Box>
-            </Box>
+            <Toc xs />
 
             <Box sx={{ pl: 2, mt: 2 }}>
-              <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>著者</Box>
-              <Box sx={{ px: 1 }}>
-                <Author />
-              </Box>
+              <Author />
             </Box>
 
             <Box sx={{ pl: 2, mt: 3 }}>
-              <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>読者からのレビュー</Box>
-              <Box sx={{ pl: 1, py: 1 }}>
-                <RatingReportPanel text={data} />
-              </Box>
               <Reviews />
             </Box>
 
             <Box sx={{ pl: 2, mt: 3 }}>
-              <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>著者によるその他のテキスト</Box>
-              <Box sx={{ pl: 1, py: 1 }}>
-                {dataAuthorTexts ? (
-                  <AuthorTexts data={dataAuthorTexts} authorId={data.author_id} textId={textId} />
-                ) : (
-                  <CenterLoadingSpinner />
-                )}
-              </Box>
+              <ElseText />
             </Box>
           </Box>
 
@@ -533,57 +674,14 @@ const Text: NextPage = () => {
               </Box>
             )}
             {dataPurchasedInfo.purchased || dataPurchasedInfo.yours ? (
-              <PanelButton
-                mt={1}
-                onClick={handleReadTextClick}
-                colors={{
-                  backGround: '#ffffff',
-                  border: Consts.COLOR.Primary,
-                  text: Consts.COLOR.Primary,
-                  hoverBackground: Consts.COLOR.LightPrimarySelected,
-                  hoverBorder: Consts.COLOR.PrimarySelected,
-                }}
-              >
-                テキストを読む
-              </PanelButton>
+              <ReadTextButton />
             ) : (
-              <PanelButton
-                onClick={handlePurchaseClick}
-                colors={{
-                  backGround: Consts.COLOR.Primary,
-                  border: Consts.COLOR.Primary,
-                  text: '#ffffff',
-                  hoverBackground: Consts.COLOR.PrimaryDark,
-                  hoverBorder: Consts.COLOR.PrimaryDark,
-                }}
-              >
-                {isPurchaseProcessing ? (
-                  <CircularProgress size={20} sx={{ color: 'white', p: 0, m: 0 }} />
-                ) : (
-                  <>テキストを購入</>
-                )}
-              </PanelButton>
+              <BuyTextButton />
             )}
 
-            {dataPurchasedInfo.purchased && !dataPurchasedInfo.yours && <ReviewWriteButton />}
+            {dataPurchasedInfo.purchased && !dataPurchasedInfo.yours && <WriteReviewButton />}
 
-            {dataPurchasedInfo.yours && (
-              <PanelButton
-                mt={1}
-                onClick={() => {
-                  router.push(`/texts/${textId}/edit`);
-                }}
-                colors={{
-                  backGround: Consts.COLOR.Primary,
-                  border: Consts.COLOR.Primary,
-                  text: '#ffffff',
-                  hoverBackground: Consts.COLOR.PrimaryDark,
-                  hoverBorder: Consts.COLOR.PrimaryDark,
-                }}
-              >
-                編集
-              </PanelButton>
-            )}
+            {dataPurchasedInfo.yours && <EditTextButton />}
 
             <Box sx={{ p: 0.5, mt: 1 }}>
               <Box sx={{ fontWeight: 'bold' }}>このテキストについて</Box>
@@ -626,85 +724,8 @@ const Text: NextPage = () => {
               </Box>
             </Box>
           </Box>
-          <Box sx={{ display: 'flex', width: '100%', mt: 1.5 }}>
-            <Box sx={{ cursor: 'pointer', display: 'flex' }}>
-              <Box sx={{ fontWeight: 'bold', color: '#faaf00', my: 'auto', fontSize: '0.9em' }}>
-                {data.rate}
-              </Box>
 
-              <Rating
-                sx={{ mt: 1, my: 'auto', ml: 0.5 }}
-                value={data.rate}
-                readOnly
-                size='small'
-                precision={0.5}
-                emptyIcon={
-                  <StarBorderIcon style={{ opacity: 0.55, color: '#ffd269' }} fontSize='inherit' />
-                }
-              />
-              <Box
-                onClick={handleReviewListClick}
-                sx={{
-                  color: COLOR_PURPLE,
-                  my: 'auto',
-                  textDecoration: 'underline',
-                  ml: 1,
-                  fontSize: '0.9em',
-                }}
-              >
-                {data.number_of_reviews}件の評価
-              </Box>
-            </Box>
-
-            <Box sx={{ my: 'auto', ml: 2, color: COLOR_BANNER_TEXT, fontSize: '0.9em' }}>
-              販売数:{data.number_of_sales}
-            </Box>
-          </Box>
-
-          <Box sx={{ display: 'flex', width: '100%', mt: 0.6 }}>
-            <Box sx={{ my: 'auto', color: COLOR_BANNER_TEXT, fontSize: '0.9em' }}>作成者:</Box>
-            <Box
-              onClick={handleAuthorClick}
-              sx={{
-                my: 'auto',
-                ml: 0.4,
-                color: COLOR_PURPLE,
-                fontSize: '0.9em',
-                textDecoration: 'underline',
-                cursor: 'pointer',
-              }}
-            >
-              {data.author_display_name}
-            </Box>
-          </Box>
-
-          <Box sx={{ display: 'flex', width: '100%', mt: 1 }}>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                color: COLOR_BANNER_TEXT,
-                fontSize: '0.9em',
-              }}
-            >
-              <UpdateIcon sx={{ transform: 'scale(0.9)' }} />
-            </Box>
-            <Box
-              sx={{
-                my: 'auto',
-                ml: 0.4,
-                color: '#fefefe',
-                fontSize: '0.9em',
-                alignItems: 'center',
-              }}
-            >
-              {data.updated_at !== null && (
-                <span style={{ verticalAlign: 'middle' }}>
-                  最終更新日：{new Date(data.updated_at).toLocaleString('jp')}
-                </span>
-              )}
-            </Box>
-          </Box>
+          <RateAndAuthorInfo />
         </Box>
 
         <Box
@@ -736,147 +757,41 @@ const Text: NextPage = () => {
               </Box>
             )}
             {dataPurchasedInfo.purchased || dataPurchasedInfo.yours ? (
-              <PanelButtonThin
-                ml={'auto'}
-                onClick={handleReadTextClick}
-                colors={{
-                  backGround: '#ffffff',
-                  border: Consts.COLOR.Primary,
-                  text: Consts.COLOR.Primary,
-                  hoverBackground: Consts.COLOR.LightPrimarySelected,
-                  hoverBorder: Consts.COLOR.PrimarySelected,
-                }}
-              >
-                テキストを読む
-              </PanelButtonThin>
+              <ReadTextButton xs />
             ) : (
-              <PanelButtonThin
-                onClick={handlePurchaseClick}
-                ml={'auto'}
-                colors={{
-                  backGround: Consts.COLOR.Primary,
-                  border: Consts.COLOR.Primary,
-                  text: '#ffffff',
-                  hoverBackground: Consts.COLOR.PrimaryDark,
-                  hoverBorder: Consts.COLOR.PrimaryDark,
-                }}
-              >
-                テキストを購入
-              </PanelButtonThin>
+              <BuyTextButton xs />
             )}
 
-            {dataPurchasedInfo.purchased && !dataPurchasedInfo.yours && (
-              <PanelButtonThin
-                ml={1}
-                width={'160px'}
-                onClick={handleWriteReviewClick}
-                colors={{
-                  backGround: Consts.COLOR.Primary,
-                  border: Consts.COLOR.Primary,
-                  text: '#ffffff',
-                  hoverBackground: Consts.COLOR.PrimaryDark,
-                  hoverBorder: Consts.COLOR.PrimaryDark,
-                }}
-              >
-                レビューを{dataReviews.is_mine_exists ? '編集する' : '書く'}
-              </PanelButtonThin>
-            )}
+            {dataPurchasedInfo.purchased && !dataPurchasedInfo.yours && <WriteReviewButton xs />}
 
-            {dataPurchasedInfo.yours && (
-              <PanelButtonThin
-                ml={1}
-                onClick={() => {
-                  router.push(`/texts/${textId}/edit`);
-                }}
-                colors={{
-                  backGround: Consts.COLOR.Primary,
-                  border: Consts.COLOR.Primary,
-                  text: '#ffffff',
-                  hoverBackground: Consts.COLOR.PrimaryDark,
-                  hoverBorder: Consts.COLOR.PrimaryDark,
-                }}
-              >
-                編集
-              </PanelButtonThin>
-            )}
+            {dataPurchasedInfo.yours && <EditTextButton xs />}
           </Box>
         </Box>
 
         <Box sx={{ m: { xs: 0.4, sm: 2 }, p: { xs: 0.4, sm: 2 }, border: '1px solid #cccccc' }}>
-          <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>学習内容</Box>
-
-          <Grid container>
-            {learningContents?.map((item) => {
-              return (
-                <Grid xs={6}>
-                  <Box sx={{ display: 'flex', width: '100%', mt: { xs: 0, sm: 1 } }}>
-                    <Box sx={{ ml: { xs: 0.4, sm: 1 }, mb: 'auto', fontSize: '0.6em' }}>
-                      <CheckIcon sx={{ transform: 'scale(0.7)' }} />
-                    </Box>
-                    <Box
-                      sx={{
-                        my: 'auto',
-                        ml: 0.4,
-                      }}
-                    >
-                      {item}
-                    </Box>
-                  </Box>
-                </Grid>
-              );
-            })}
-          </Grid>
+          <LearningContents />
         </Box>
 
         <Box sx={{ px: { xs: 1, sm: 4 } }}>
-          <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>対象・要件</Box>
-
-          <ul className='learningRequirements'>
-            {learningRequirements?.map((item) => {
-              return <li>{item}</li>;
-            })}
-          </ul>
+          <LearningRequirements />
         </Box>
 
         <Box sx={{ px: { xs: 1, sm: 4 }, mt: { xs: 1, sm: 2 } }}>
-          <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>解説</Box>
-
-          <Box sx={{ pl: 1, py: { xs: 0.2, sm: 1 } }}>
-            <ReadMoreText height='220'>{data.explanation}</ReadMoreText>
-          </Box>
+          <Explanation />
         </Box>
 
-        <Box sx={{ px: { xs: 1, sm: 4 }, mt: { xs: 0, sm: 1 } }}>
-          <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>目次</Box>
-          <Box sx={{ pl: 1, py: { xs: 0.2, sm: 1 } }}>
-            <ChapterList />
-          </Box>
+        <Toc />
+
+        <Box sx={{ px: { xs: 1, sm: 4 }, mt: { xs: 1, sm: 2 } }}>
+          <Author />
         </Box>
 
         <Box sx={{ px: { xs: 1, sm: 4 }, mt: { xs: 1, sm: 2 } }}>
-          <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>著者</Box>
-          <Box sx={{ px: 1 }}>
-            <Author />
-          </Box>
-        </Box>
-
-        <Box sx={{ px: { xs: 1, sm: 4 }, mt: { xs: 1, sm: 2 } }}>
-          <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>読者からのレビュー</Box>
-          <Box sx={{ pl: 1, py: 1 }}>
-            <RatingReportPanel text={data} />
-          </Box>
           <Reviews />
         </Box>
 
         <Box sx={{ px: { xs: 1, sm: 4 }, mt: { xs: 1, sm: 2 } }}>
-          <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>著者によるその他のテキスト</Box>
-          <Box sx={{ pl: 1, py: 0.5 }}>
-            {dataAuthorTexts ? (
-              <AuthorTexts data={dataAuthorTexts} authorId={data.author_id} textId={textId} />
-            ) : (
-              <CenterLoadingSpinner />
-            )}
-          </Box>
+          <ElseText />
         </Box>
       </>
     );

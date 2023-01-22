@@ -29,7 +29,7 @@ const ReadMoreText = ({ children, id, height, fontSize = '1.0em' }) => {
 
   if (!overFlow) {
     return (
-      <Box key={id} ref={ref}>
+      <Box key={id} ref={ref} className='richtext'>
         {children}
       </Box>
     );
@@ -47,7 +47,7 @@ const ReadMoreText = ({ children, id, height, fontSize = '1.0em' }) => {
           fontSize: fontSize,
         }}
       >
-        {children}
+        <Box className='richtext'>{children}</Box>
         <Box
           sx={{
             position: 'absolute',
@@ -75,7 +75,7 @@ const ReadMoreText = ({ children, id, height, fontSize = '1.0em' }) => {
   } else {
     return (
       <>
-        <Box key={id} sx={{ fontSize: fontSize }}>
+        <Box className='richtext' key={id} sx={{ fontSize: fontSize }}>
           {children}
           <Box
             onClick={() => {

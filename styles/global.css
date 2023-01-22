@@ -148,3 +148,7 @@ a.no-hover:hover {
 .public-DraftEditor-content {
   min-height: 200px;
 }
+
+.richtext li {
+  margin-left: 2em;
+}

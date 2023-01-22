@@ -33,6 +33,8 @@ import Edit from '@mui/icons-material/Edit';
 
 import { title } from 'process';
 
+import { maxWidth } from '@mui/system';
+
 const TextView: NextPage = () => {
   const router = useRouter();
   const { authAxios } = useContext(AuthContext);
@@ -72,17 +74,15 @@ const TextView: NextPage = () => {
   if (mq) {
     return (
       <Box sx={{ display: 'flex', overflow: 'hidden' }}>
-        <Box sx={{ width: '350px' }}>
+        <Box sx={{ width: '350px', position: 'fixed', top: 0, left: 0 }}>
           <Toc data={data} chapterOrder={chapterOrder} />
         </Box>
         <Box
           sx={{
-            width: '100vw',
+            ml: '350px',
+            width: '100%',
             display: 'flex',
             flexFlow: 'column',
-            height: '100vh',
-            overflowY: 'auto',
-            overflowX: 'hidden',
           }}
         >
           <ChapterContent data={data} chapterOrder={chapterOrder} />
@@ -115,7 +115,6 @@ const TextView: NextPage = () => {
               my: 'auto',
               mx: 'auto',
               fontSize: '0.9em',
-              overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
             }}
@@ -141,12 +140,9 @@ const TextView: NextPage = () => {
         </Drawer>
         <Box
           sx={{
-            width: '100vw',
             display: 'flex',
             flexFlow: 'column',
-            height: '100vh',
-            overflowY: 'auto',
-            overflowX: 'hidden',
+            width: '100%',
           }}
         >
           <ChapterContent data={data} chapterOrder={chapterOrder} />
@@ -300,7 +296,7 @@ const ChapterContent = ({ data, chapterOrder }) => {
 
         <Box
           sx={{
-            p: 1,
+            px: 2,
             my: 'auto',
             mx: 'auto',
             width: '100%',
@@ -315,7 +311,17 @@ const ChapterContent = ({ data, chapterOrder }) => {
         </Box>
       </Box>
 
-      <Box sx={{ p: 1, my: 4, width: '100%', maxWidth: '760px', mx: 'auto' }}>
+      <Box
+        sx={{
+          px: 2,
+          my: 4,
+          width: '100%',
+          maxWidth: '760px',
+          mx: 'auto',
+          overflowX: 'hidden',
+          overflowY: 'hidden',
+        }}
+      >
         <ReactMarkdown
           className='markdown-body p-3'
           remarkPlugins={[remarkGfm, remarkMath]}
@@ -329,7 +335,8 @@ const ChapterContent = ({ data, chapterOrder }) => {
         sx={{
           p: 1,
           my: 4,
-          width: '760px',
+          width: '100%',
+          maxWidth: '760px',
           mx: 'auto',
           display: 'flex',
           justifyContent: 'space-between',
@@ -391,6 +398,8 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
         p: 1,
         pb: 0,
         width: '280px',
+        overflowY: 'auto',
+        height: '100vh',
       }
     : {
         px: 2,
@@ -398,124 +407,104 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
         width: '350px',
         display: 'flex',
         flexFlow: 'column',
+        overflowY: 'auto',
+        height: '100vh',
       };
 
   return (
     <>
       <Box sx={sx}>
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex' }}>
-            {mobile && <MenuCloseButton onClick={onClose} />}
+        {mobile && <MenuCloseButton onClick={onClose} />}
+
+        <Box sx={{ display: 'flex', flexFlow: 'column' }}>
+          <Box sx={{ display: 'flex', my: 3 }}>
             <Box
               component='img'
               sx={{
                 display: 'flex',
                 width: 'fit-content',
-                width: '90px',
+                width: 105,
+                height: 58,
                 cursor: 'pointer',
-                py: 3,
               }}
-              src='/logo-s.svg'
-              onClick={() => router.push('/')}
+              src={imageUrl}
+              onClick={() => router.push(`/texts/${textId}`)}
             />
-          </Box>
-
-          <IconButton
-            type='button'
-            sx={{
-              '&:hover': Consts.SX.IconButtonHover,
-            }}
-            onClick={() => {
-              router.push(`/texts/${textId}/edit`);
-            }}
-          >
-            <Edit sx={{ my: 'auto', transform: 'scale(0.8)' }} />
-          </IconButton>
-        </Box>
-
-        <Box
-          sx={{
-            overflowX: 'hidden',
-            overflowY: 'auto',
-            height: 'calc(100vh - 72px)',
-            borderTop: '1px solid #cccccc',
-          }}
-        >
-          <Box sx={{ display: 'flex', flexFlow: 'column' }}>
-            <Box sx={{ display: 'flex', my: 3 }}>
+            <Box sx={{ display: 'flex', flexFlow: 'column', ml: 1 }}>
               <Box
-                component='img'
                 sx={{
-                  display: 'flex',
-                  width: 'fit-content',
-                  width: 105,
-                  height: 58,
+                  fontSize: '0.9em',
                   cursor: 'pointer',
+                  '&:hover': {
+                    textDecoration: 'underline',
+                    color: Consts.COLOR.Primary,
+                  },
                 }}
-                src={imageUrl}
                 onClick={() => router.push(`/texts/${textId}`)}
-              />
-              <Box sx={{ display: 'flex', flexFlow: 'column', ml: 1 }}>
-                <Box
-                  sx={{
-                    fontSize: '0.9em',
-                    cursor: 'pointer',
-                    '&:hover': {
-                      textDecoration: 'underline',
-                      color: Consts.COLOR.Primary,
-                    },
-                  }}
-                  onClick={() => router.push(`/texts/${textId}`)}
-                >
-                  {data.title}
-                </Box>
-                <Box
-                  sx={{
-                    fontSize: '0.8em',
-                    color: '#888888',
-                    cursor: 'pointer',
-                    '&:hover': {
-                      textDecoration: 'underline',
-                      color: Consts.COLOR.Primary,
-                    },
-                  }}
-                  onClick={() => router.push(`/texts/${textId}`)}
-                >
-                  {data.author_display_name}
-                </Box>
+              >
+                {data.title}
+              </Box>
+              <Box
+                sx={{
+                  fontSize: '0.8em',
+                  color: '#888888',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    textDecoration: 'underline',
+                    color: Consts.COLOR.Primary,
+                  },
+                }}
+                onClick={() => router.push(`/texts/${textId}`)}
+              >
+                {data.author_display_name}
               </Box>
             </Box>
           </Box>
+        </Box>
 
-          <Box sx={{ display: 'flex', flexFlow: 'column', mb: 3 }}>
-            {chapterOrder.map((id) => {
-              return (
-                <>
-                  <Box
-                    key={id}
-                    sx={{
-                      my: 0.4,
-                      cursor: 'pointer',
-                      fontSize: '0.8em',
-                      fontWeight: 'bold',
-                      color: '#000000',
+        <IconButton
+          type='button'
+          sx={{
+            position: 'fixed',
+            left: '280px',
+            bottom: '20px',
+            '&:hover': Consts.SX.IconButtonHover,
+          }}
+          onClick={() => {
+            router.push(`/texts/${textId}/edit`);
+          }}
+        >
+          <Edit sx={{ my: 'auto', transform: 'scale(0.8)' }} />
+        </IconButton>
 
-                      '&:hover': {
-                        color: Consts.COLOR.Primary,
-                        textDecoration: 'underline',
-                      },
-                    }}
-                    onClick={() => handleChapterClick(id)}
-                  >
-                    {data.chapters[id].title}
-                  </Box>
-                  {tocs[id].map((item) => {
-                    return <NestItem item={item} chapterId={id} />;
-                  })}
-                </>
-              );
-            })}
-          </Box>
+        <Box sx={{ display: 'flex', flexFlow: 'column', mb: 3 }}>
+          {chapterOrder.map((id) => {
+            return (
+              <>
+                <Box
+                  key={id}
+                  sx={{
+                    my: 0.4,
+                    cursor: 'pointer',
+                    fontSize: '0.8em',
+                    fontWeight: 'bold',
+                    color: '#000000',
+
+                    '&:hover': {
+                      color: Consts.COLOR.Primary,
+                      textDecoration: 'underline',
+                    },
+                  }}
+                  onClick={() => handleChapterClick(id)}
+                >
+                  {data.chapters[id].title}
+                </Box>
+                {tocs[id].map((item) => {
+                  return <NestItem item={item} chapterId={id} />;
+                })}
+              </>
+            );
+          })}
         </Box>
       </Box>
     </>

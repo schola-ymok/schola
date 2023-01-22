@@ -820,12 +820,6 @@ const ChapterList = () => {
     keyedChapterList[item.id] = item;
   });
 
-  console.log('---');
-  console.log(data);
-  console.log(keyedChapterList);
-  console.log(chapterOrder);
-  console.log('---');
-
   return (
     <>
       <Box sx={{ minHeight: 400 }}>
@@ -915,13 +909,6 @@ const ChapterList = () => {
     </>
   );
 };
-
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;

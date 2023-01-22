@@ -1,3 +1,5 @@
+import { profile } from 'console';
+
 import { Button, Checkbox, CircularProgress, InputBase, Snackbar } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -18,6 +20,7 @@ import DefaultButton from 'components/DefaultButton';
 import ImageCropDialog from 'components/ImageCropDialog';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
+import RTEditor from 'components/rteditor/RTEditor';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
@@ -99,7 +102,7 @@ const Account = () => {
   };
 
   return (
-    <Container maxWidth='lg'>
+    <Container maxWidth='md'>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={tab} onChange={handleTabChange}>
           <Tab label={<Box sx={{ fontWeight: 'bold' }}>アカウント</Box>} />
@@ -208,10 +211,8 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
   };
 
   return (
-    <Box sx={{ width: { sm: '100%', md: '80%' }, pt: { xs: 0, sm: 2 }, mx: 'auto' }}>
-      <Box
-        sx={{ width: '128px', ml: { md: '200px', xs: 'auto' }, mr: { md: 'unset', xs: 'auto' } }}
-      >
+    <Box sx={{ width: { xs: '98%', md: '90%' }, pt: { xs: 0, sm: 2 }, mx: 'auto' }}>
+      <Box sx={{ width: '128px' }}>
         {isUploadingImage ? (
           <>
             <Box
@@ -267,333 +268,209 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
 
       <Box sx={{ display: 'flex', flexFlow: 'column' }}>
         {/* display name */}
-        <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-          <Box sx={{ width: { xs: '100%', md: 200 }, display: 'flex' }}>
-            <Box
-              sx={{
-                pr: 1.5,
-                ml: 'auto',
-                fontWeight: 'bold',
-                mt: 2,
-                mb: 1,
-                mr: { xs: 'auto', md: 'unset' },
-              }}
-            >
-              表示名
-            </Box>
-          </Box>
+        <Box
+          sx={{
+            fontWeight: 'bold',
+            mt: 3,
+          }}
+        >
+          表示名
+        </Box>
 
-          <Box
-            sx={{
-              width: { xs: '100%', md: 'calc(100% - 200px)' },
-              display: 'flex',
-              flexWrap: 'wrap',
+        <Box
+          sx={{
+            p: 1,
+            width: '100%',
+            maxWidth: 800,
+            border: '2px solid ' + Consts.COLOR.Grey,
+            '&:hover': {
+              border: '2px solid ' + Consts.COLOR.Primary,
+            },
+          }}
+        >
+          <InputBase
+            placeholder='表示名'
+            value={profile.displayName}
+            sx={{ fontSize: '1.0em' }}
+            variant='outlined'
+            fullWidth
+            onChange={(e) => {
+              setProfile({
+                ...profile,
+                displayName: e.target.value,
+              });
             }}
-          >
-            <Box
-              sx={{
-                p: 1,
-                width: '100%',
-                maxWidth: 800,
-                border: '2px solid ' + Consts.COLOR.Grey,
-                '&:hover': {
-                  border: '2px solid ' + Consts.COLOR.Primary,
-                },
-              }}
-            >
-              <InputBase
-                placeholder='表示名'
-                value={profile.displayName}
-                sx={{ fontSize: '1.0em' }}
-                variant='outlined'
-                fullWidth
-                onChange={(e) => {
-                  setProfile({
-                    ...profile,
-                    displayName: e.target.value,
-                  });
-                }}
-              />
-            </Box>
-          </Box>
+          />
         </Box>
 
         {/* majors */}
-        <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-          <Box sx={{ width: { xs: '100%', md: 200 }, display: 'flex' }}>
-            <Box
-              sx={{
-                pr: 1.5,
-                ml: 'auto',
-                fontWeight: 'bold',
-                mt: 2,
-                mb: 1,
-                mr: { xs: 'auto', md: 'unset' },
-              }}
-            >
-              専門領域、得意分野
-            </Box>
-          </Box>
+        <Box
+          sx={{
+            fontWeight: 'bold',
+            mt: 3,
+          }}
+        >
+          専門領域、得意分野
+        </Box>
 
-          <Box
-            sx={{
-              width: { xs: '100%', md: 'calc(100% - 200px)' },
-              display: 'flex',
-              flexWrap: 'wrap',
+        <Box
+          sx={{
+            p: 1,
+            width: '100%',
+            maxWidth: 800,
+            border: '2px solid ' + Consts.COLOR.Grey,
+            '&:hover': {
+              border: '2px solid ' + Consts.COLOR.Primary,
+            },
+          }}
+        >
+          <InputBase
+            placeholder='専門領域'
+            value={profile.majors}
+            sx={{ fontSize: '1.0em' }}
+            variant='outlined'
+            fullWidth
+            onChange={(e) => {
+              setProfile({
+                ...profile,
+                majors: e.target.value,
+              });
             }}
-          >
-            <Box
-              sx={{
-                p: 1,
-                width: '100%',
-                maxWidth: 800,
-                border: '2px solid ' + Consts.COLOR.Grey,
-                '&:hover': {
-                  border: '2px solid ' + Consts.COLOR.Primary,
-                },
-              }}
-            >
-              <InputBase
-                placeholder='専門領域'
-                value={profile.majors}
-                sx={{ fontSize: '1.0em' }}
-                variant='outlined'
-                fullWidth
-                onChange={(e) => {
-                  setProfile({
-                    ...profile,
-                    majors: e.target.value,
-                  });
-                }}
-              />
-            </Box>
-          </Box>
+          />
         </Box>
 
         {/* profile */}
-        <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-          <Box sx={{ width: { xs: '100%', md: 200 }, display: 'flex' }}>
-            <Box
-              sx={{
-                pr: 1.5,
-                ml: 'auto',
-                fontWeight: 'bold',
-                mt: 2,
-                mb: 1,
-                my: 'auto',
-                mr: { xs: 'auto', md: 'unset' },
-              }}
-            >
-              プロフィール
-            </Box>
-          </Box>
-
-          <Box
-            sx={{
-              width: { xs: '100%', md: 'calc(100% - 200px)' },
-              display: 'flex',
-              flexWrap: 'wrap',
-            }}
-          >
-            <Box
-              sx={{
-                p: 1,
-                width: '100%',
-                maxWidth: 800,
-                border: '2px solid ' + Consts.COLOR.Grey,
-                '&:hover': {
-                  border: '2px solid ' + Consts.COLOR.Primary,
-                },
-              }}
-            >
-              <InputBase
-                placeholder='プロフィール'
-                value={profile.profileMessage}
-                sx={{ fontSize: '1.0em' }}
-                variant='outlined'
-                multiline
-                rows={8}
-                fullWidth
-                onChange={(e) => {
-                  setProfile({
-                    ...profile,
-                    profileMessage: e.target.value,
-                  });
-                }}
-              />
-            </Box>
-          </Box>
+        <Box
+          sx={{
+            fontWeight: 'bold',
+            mt: 3,
+          }}
+        >
+          プロフィール
         </Box>
 
-        {/* homepage */}
-        <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-          <Box sx={{ width: { xs: '100%', md: 200 }, display: 'flex' }}>
-            <Box
-              sx={{
-                pr: 1.5,
-                ml: 'auto',
-                fontWeight: 'bold',
-                mt: 2,
-                mb: 1,
-                my: 'auto',
-                mr: { xs: 'auto', md: 'unset' },
-              }}
-            >
-              ホームページ
-            </Box>
-          </Box>
+        <RTEditor
+          placeholder='プロフィール'
+          initialValue={profile.profileMessage}
+          onChange={(value) => {
+            setProfile({
+              ...profile,
+              profileMessage: value,
+            });
+          }}
+        />
 
-          <Box
-            sx={{
-              width: { xs: '100%', md: 'calc(100% - 200px)' },
-              display: 'flex',
-              flexWrap: 'wrap',
+        {/* homepage */}
+        <Box
+          sx={{
+            fontWeight: 'bold',
+            mt: 3,
+          }}
+        >
+          ホームページ
+        </Box>
+
+        <Box
+          sx={{
+            p: 1,
+            width: '100%',
+            maxWidth: 500,
+            border: '2px solid ' + Consts.COLOR.Grey,
+            '&:hover': {
+              border: '2px solid ' + Consts.COLOR.Primary,
+            },
+          }}
+        >
+          <InputBase
+            placeholder='ホームページ'
+            value={profile.web}
+            sx={{ fontSize: '1.0em' }}
+            variant='outlined'
+            fullWidth
+            onChange={(e) => {
+              setProfile({
+                ...profile,
+                web: e.target.value,
+              });
             }}
-          >
-            <Box
-              sx={{
-                p: 1,
-                width: '100%',
-                maxWidth: 500,
-                mx: { xs: 'auto', sm: 'auto', md: 'unset' },
-                border: '2px solid ' + Consts.COLOR.Grey,
-                '&:hover': {
-                  border: '2px solid ' + Consts.COLOR.Primary,
-                },
-              }}
-            >
-              <InputBase
-                placeholder='ホームページ'
-                value={profile.web}
-                sx={{ fontSize: '1.0em' }}
-                variant='outlined'
-                fullWidth
-                onChange={(e) => {
-                  setProfile({
-                    ...profile,
-                    web: e.target.value,
-                  });
-                }}
-              />
-            </Box>
-          </Box>
+          />
         </Box>
 
         {/* twitter */}
-        <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-          <Box sx={{ width: { xs: '100%', md: 200 }, display: 'flex' }}>
-            <Box
-              sx={{
-                pr: 1.5,
-                ml: 'auto',
-                fontWeight: 'bold',
-                mt: 2,
-                mb: 1,
-                my: 'auto',
-                mr: { xs: 'auto', md: 'unset' },
-              }}
-            >
-              Twitter
-            </Box>
-          </Box>
-
-          <Box
-            sx={{
-              width: { xs: '100%', md: 'calc(100% - 200px)' },
-              display: 'flex',
-              flexWrap: 'wrap',
+        <Box
+          sx={{
+            fontWeight: 'bold',
+            mt: 3,
+          }}
+        >
+          Twitter
+        </Box>
+        <Box
+          sx={{
+            p: 1,
+            width: '100%',
+            maxWidth: 300,
+            border: '2px solid ' + Consts.COLOR.Grey,
+            '&:hover': {
+              border: '2px solid ' + Consts.COLOR.Primary,
+            },
+          }}
+        >
+          <InputBase
+            placeholder='twitter'
+            value={profile.twitter}
+            sx={{ fontSize: '1.0em' }}
+            variant='outlined'
+            fullWidth
+            onChange={(e) => {
+              setProfile({
+                ...profile,
+                twitter: e.target.value,
+              });
             }}
-          >
-            <Box
-              sx={{
-                p: 1,
-                width: '100%',
-                mx: { xs: 'auto', sm: 'auto', md: 'unset' },
-                maxWidth: 300,
-                border: '2px solid ' + Consts.COLOR.Grey,
-                '&:hover': {
-                  border: '2px solid ' + Consts.COLOR.Primary,
-                },
-              }}
-            >
-              <InputBase
-                placeholder='twitter'
-                value={profile.twitter}
-                sx={{ fontSize: '1.0em' }}
-                variant='outlined'
-                fullWidth
-                onChange={(e) => {
-                  setProfile({
-                    ...profile,
-                    twitter: e.target.value,
-                  });
-                }}
-              />
-            </Box>
-          </Box>
+          />
         </Box>
 
         {/* facebook */}
-        <Box sx={{ mt: { xs: 2, md: 3 }, width: '100%', display: 'flex', flexWrap: 'wrap' }}>
-          <Box sx={{ width: { xs: '100%', md: 200 }, display: 'flex' }}>
-            <Box
-              sx={{
-                pr: 1.5,
-                ml: 'auto',
-                fontWeight: 'bold',
-                mt: 2,
-                mb: 1,
-                my: 'auto',
-                mr: { xs: 'auto', md: 'unset' },
-              }}
-            >
-              Facebook
-            </Box>
-          </Box>
-
-          <Box
-            sx={{
-              width: { xs: '100%', md: 'calc(100% - 200px)' },
-              display: 'flex',
-              flexWrap: 'wrap',
+        <Box
+          sx={{
+            fontWeight: 'bold',
+            mt: 3,
+          }}
+        >
+          Facebook
+        </Box>
+        <Box
+          sx={{
+            p: 1,
+            width: '100%',
+            maxWidth: 300,
+            border: '2px solid ' + Consts.COLOR.Grey,
+            '&:hover': {
+              border: '2px solid ' + Consts.COLOR.Primary,
+            },
+          }}
+        >
+          <InputBase
+            placeholder='facebook'
+            value={profile.facebook}
+            sx={{ fontSize: '1.0em' }}
+            variant='outlined'
+            fullWidth
+            onChange={(e) => {
+              setProfile({
+                ...profile,
+                facebook: e.target.value,
+              });
             }}
-          >
-            <Box
-              sx={{
-                p: 1,
-                width: '100%',
-                mx: { xs: 'auto', sm: 'auto', md: 'unset' },
-                maxWidth: 300,
-                border: '2px solid ' + Consts.COLOR.Grey,
-                '&:hover': {
-                  border: '2px solid ' + Consts.COLOR.Primary,
-                },
-              }}
-            >
-              <InputBase
-                placeholder='Facebook'
-                value={profile.facebook}
-                sx={{ fontSize: '1.0em' }}
-                variant='outlined'
-                fullWidth
-                onChange={(e) => {
-                  setProfile({
-                    ...profile,
-                    facebook: e.target.value,
-                  });
-                }}
-              />
-            </Box>
-          </Box>
+          />
         </Box>
 
         <DefaultButton
           disabled={isLoading}
           exSx={{
             width: '150px',
-            ml: { xs: 'auto', sm: 'auto', md: '200px' },
-            mr: { xs: 'auto', sm: 'auto', md: 'unset' },
-            mt: 3,
+            mt: 4,
           }}
           onClick={() => {
             setIsLoading(true);

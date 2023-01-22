@@ -2,6 +2,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkIcon from '@mui/icons-material/Link';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import { Box, useMediaQuery } from '@mui/material';
+import htmlParse from 'html-react-parser';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -73,21 +74,27 @@ const User = () => {
     );
   };
 
-  const Name = () => (
-    <>
-      <Box fontSize='2.2em' fontWeight='bold'>
-        {data.display_name}
-      </Box>
-      <Box fontWeight='bold'>{data.majors}</Box>
-      <Box sx={{ display: 'flex', mt: 1, mb: 1 }}>
-        <NumberBox label='テキストの数' value={data.num_of_texts} />
-        <NumberBox label='読者の数' value={data.num_of_sales} />
-      </Box>
-      <Box sx={{ mb: 3 }}>
-        <ReadMoreText height='300'>{data.profile_message}</ReadMoreText>
-      </Box>
-    </>
-  );
+  const Name = () => {
+    let profileMessage = data.profile_message;
+    if (!profileMessage) profileMessage = '';
+    const html = htmlParse(profileMessage);
+
+    return (
+      <>
+        <Box fontSize='2.2em' fontWeight='bold'>
+          {data.display_name}
+        </Box>
+        <Box fontWeight='bold'>{data.majors}</Box>
+        <Box sx={{ display: 'flex', mt: 1, mb: 1 }}>
+          <NumberBox label='テキストの数' value={data.num_of_texts} />
+          <NumberBox label='読者の数' value={data.num_of_sales} />
+        </Box>
+        <Box sx={{ my: 3 }}>
+          <ReadMoreText height='300'>{html}</ReadMoreText>
+        </Box>
+      </>
+    );
+  };
 
   const Texts = () => (
     <>

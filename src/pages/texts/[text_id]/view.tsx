@@ -1,6 +1,4 @@
 import { Box, Drawer, IconButton, useMediaQuery } from '@mui/material';
-import { color } from '@mui/system';
-import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -9,6 +7,7 @@ import rehypeSlug from 'rehype-slug';
 import { remark } from 'remark';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import useSWR, { useSWRConfig } from 'swr';
 
 import { getPurchasedInfo } from 'api/getPurchasedInfo';
 import { getViewText } from 'api/getViewText';
@@ -28,11 +27,11 @@ import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutl
 
 import type { NextPage } from 'next';
 
-import useSWR, { useSWRConfig } from 'swr';
-
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 
 import Edit from '@mui/icons-material/Edit';
+
+import { title } from 'process';
 
 const TextView: NextPage = () => {
   const router = useRouter();
@@ -55,14 +54,26 @@ const TextView: NextPage = () => {
     },
   );
 
+  const [chapterOrder, setChapterOrder] = useState(null);
+
+  useEffect(() => {
+    if (data) {
+      if (data.chapter_order != null) {
+        setChapterOrder(JSON.parse(data.chapter_order));
+      } else {
+        setChapterOrder((chapterOrder = Object.keys(data.chapters)));
+      }
+    }
+  }, [data]);
+
   if (error || errorPurchasedInfo) console.log('error');
-  if (!data || !dataPurchasedInfo) return <CenterLoadingSpinner />;
+  if (!data || !dataPurchasedInfo || !chapterOrder) return <CenterLoadingSpinner />;
 
   if (mq) {
     return (
       <Box sx={{ display: 'flex', overflow: 'hidden' }}>
         <Box sx={{ width: '350px' }}>
-          <Toc data={data} />
+          <Toc data={data} chapterOrder={chapterOrder} />
         </Box>
         <Box
           sx={{
@@ -74,7 +85,7 @@ const TextView: NextPage = () => {
             overflowX: 'hidden',
           }}
         >
-          <ChapterContent data={data} />
+          <ChapterContent data={data} chapterOrder={chapterOrder} />
         </Box>
       </Box>
     );
@@ -121,6 +132,7 @@ const TextView: NextPage = () => {
         >
           <Toc
             data={data}
+            chapterOrder={chapterOrder}
             mobile
             onClose={() => {
               setMenuOpen(false);
@@ -137,14 +149,14 @@ const TextView: NextPage = () => {
             overflowX: 'hidden',
           }}
         >
-          <ChapterContent data={data} />
+          <ChapterContent data={data} chapterOrder={chapterOrder} />
         </Box>
       </>
     );
   }
 };
 
-const ChapterContent = ({ data }) => {
+const ChapterContent = ({ data, chapterOrder }) => {
   const router = useRouter();
   const textId = router.query.text_id;
 
@@ -164,6 +176,24 @@ const ChapterContent = ({ data }) => {
   const content = data.chapters[chapterId]?.content;
   const title = data.chapters[chapterId]?.title;
 
+  let chapterNo = 0;
+
+  chapterOrder.map((id, index) => {
+    if (id == chapterId) chapterNo = index;
+  });
+
+  let nextChapter = null;
+  let prevChapter = null;
+
+  if (chapterNo > 0) {
+    const index = chapterNo - 1;
+    prevChapter = { id: chapterOrder[index], title: data.chapters[chapterOrder[index]].title };
+  }
+  if (chapterNo < chapterOrder.length - 1) {
+    const index = chapterNo + 1;
+    nextChapter = { id: chapterOrder[index], title: data.chapters[chapterOrder[index]].title };
+  }
+
   const PrevButton = ({ id, title }) => (
     <Box
       sx={{
@@ -180,18 +210,19 @@ const ChapterContent = ({ data }) => {
           color: Consts.COLOR.IconDarkGrey,
         },
       }}
-      onClick={() => {}}
+      onClick={() => {
+        router.push(`/texts/${textId}/view?cid=${id}`);
+      }}
     >
       <ArrowBackIosOutlinedIcon
         className='prevButtonInnerIcon'
-        sx={{ color: '#cccccc', transform: 'scale(1.1)' }}
+        sx={{ color: '#cccccc', transform: 'scale(0.9)' }}
       />
       <Box
         className='prevButtonInnerText'
         sx={{
           ml: 1,
           mr: 'auto',
-          fontWeight: 'bold',
           color: '#888888',
         }}
       >
@@ -203,6 +234,7 @@ const ChapterContent = ({ data }) => {
   const NextButton = ({ id, title }) => (
     <Box
       sx={{
+        ml: 'auto',
         width: '250px',
         height: '100px',
         display: 'flex',
@@ -217,14 +249,15 @@ const ChapterContent = ({ data }) => {
           color: Consts.COLOR.IconDarkGrey,
         },
       }}
-      onClick={() => {}}
+      onClick={() => {
+        router.push(`/texts/${textId}/view?cid=${id}`);
+      }}
     >
       <Box
         className='nextButtonInnerText'
         sx={{
           ml: 'auto',
           mr: 1,
-          fontWeight: 'bold',
           color: '#888888',
         }}
       >
@@ -232,7 +265,7 @@ const ChapterContent = ({ data }) => {
       </Box>
       <ArrowForwardIosOutlinedIcon
         className='nextButtonInnerIcon'
-        sx={{ color: '#cccccc', transform: 'scale(1.1)' }}
+        sx={{ color: '#cccccc', transform: 'scale(0.9)' }}
       />
     </Box>
   );
@@ -302,14 +335,14 @@ const ChapterContent = ({ data }) => {
           justifyContent: 'space-between',
         }}
       >
-        <PrevButton id={'id'} title={'title'} />
-        <NextButton id={'id'} title={'title'} />
+        {prevChapter != null && <PrevButton id={prevChapter.id} title={prevChapter.title} />}
+        {nextChapter != null && <NextButton id={nextChapter.id} title={nextChapter.title} />}
       </Box>
     </>
   );
 };
 
-const Toc = ({ data, mobile, onClose }) => {
+const Toc = ({ data, mobile, onClose, chapterOrder }) => {
   var tocs = {};
   Object.keys(data.chapters).map((id) => {
     const toc = extractToc(data.chapters[id].content);
@@ -366,13 +399,6 @@ const Toc = ({ data, mobile, onClose }) => {
         display: 'flex',
         flexFlow: 'column',
       };
-
-  let chapterOrder;
-  if (data.chapter_order != null) {
-    chapterOrder = JSON.parse(data.chapter_order);
-  } else {
-    chapterOrder = Object.keys(data.chapters);
-  }
 
   return (
     <>
@@ -431,7 +457,14 @@ const Toc = ({ data, mobile, onClose }) => {
               />
               <Box sx={{ display: 'flex', flexFlow: 'column', ml: 1 }}>
                 <Box
-                  sx={{ fontSize: '0.9em', cursor: 'pointer' }}
+                  sx={{
+                    fontSize: '0.9em',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      textDecoration: 'underline',
+                      color: Consts.COLOR.Primary,
+                    },
+                  }}
                   onClick={() => router.push(`/texts/${textId}`)}
                 >
                   {data.title}

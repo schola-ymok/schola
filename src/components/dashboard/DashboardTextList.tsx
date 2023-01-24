@@ -6,8 +6,8 @@ import useSWR, { useSWRConfig } from 'swr';
 import { deleteText } from 'api/deleteText';
 import { getMyTextList } from 'api/getMyTextList';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
-import DashboardTextListItem from 'components/DashboardTextListItem';
 import { AuthContext } from 'components/auth/AuthContext';
+import DashboardTextListItem from 'components/dashboard/DashboardTextListItem';
 import { pagenation } from 'utils/pagenation';
 
 const DashboardTextList = () => {
@@ -72,7 +72,7 @@ const DashboardTextList = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%', maxWidth: '700px' }}>
+    <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%' }}>
       <Box>
         <Box sx={{ fontSize: '1.2em', fontWeight: 'bold', mb: 1 }}>執筆テキスト一覧</Box>
         <DataContent data={data} />

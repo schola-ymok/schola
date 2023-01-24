@@ -5,7 +5,7 @@ import { useContext, useState } from 'react';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 
-import SMenuItem from './SMenuItem';
+import SMenuItem from '../SMenuItem';
 
 const DashboardTextListMenuButton = ({ isReleased, handleDelete, handleEdit, handleView }) => {
   const [anchorEl, setAnchorEl] = useState(null);

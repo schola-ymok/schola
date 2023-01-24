@@ -58,8 +58,27 @@ namespace Consts {
     },
   };
 
-  export const EVENT = {
-    SAVE: '__SAVE',
+  export const VALIDATE = {
+    textTitle: {
+      min: 4,
+      max: 64,
+    },
+    textAbstract: {
+      min: 10,
+      max: 180,
+    },
+    textExplanation: {
+      min: 10,
+      max: 3000,
+    },
+    learningContent: {
+      min: 2,
+      max: 48,
+    },
+    learningRequirements: {
+      min: 2,
+      max: 48,
+    },
   };
 
   export const CATEGORY = {

@@ -8,6 +8,7 @@ const RichTextEditor = dynamic(() => import('react-rte'), { ssr: false });
 
 const RTEditor = ({ placeholder, initialValue, onChange }) => {
   const [editorState, setEditorState] = useState();
+  const [init, setInit] = useState(true);
 
   useEffect(() => {
     const importModule = async () => {
@@ -35,6 +36,10 @@ const RTEditor = ({ placeholder, initialValue, onChange }) => {
   };
 
   const _onChange = (value) => {
+    if (init) {
+      setInit(false);
+      return;
+    }
     setEditorState(value);
     onChange(value.toString('html'));
   };

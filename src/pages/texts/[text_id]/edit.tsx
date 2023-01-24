@@ -30,6 +30,9 @@ import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import ChapterListMenuButton from 'components/ChaptarListMenuButton';
 import ChapterTitleSettingDialog from 'components/ChapterTitleSettingDialog';
 import DefaultButton from 'components/DefaultButton';
+import FormItemLabel from 'components/FormItemLabel';
+import FormItemState from 'components/FormItemState';
+import FormItemSubLabel from 'components/FormItemSubLabel';
 import ImageCropDialog from 'components/ImageCropDialog';
 import { AuthContext } from 'components/auth/AuthContext';
 import EditTextHeader from 'components/headers/EditTextHeader';
@@ -38,6 +41,7 @@ import RTEditor from 'components/rteditor/RTEditor';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
 import useCropImage from 'utils/useCropImage';
+import { validate } from 'utils/validate';
 
 const EditText = () => {
   const router = useRouter();
@@ -46,21 +50,84 @@ const EditText = () => {
   const [tab, setTab] = useState(router.query.chp !== undefined ? 1 : 0);
 
   const textId = router.query.text_id;
-  const [price, setPrice] = useState(100);
-  const [abstract, setAbstract] = useState('');
-  const [changed, setChanged] = useState(false);
-  const [explanation, setExplanation] = useState('');
-  const [title, setTitle] = useState('');
+
+  const [price, setPrice] = useState();
+  const [oldPrice, setOldPrice] = useState();
+  const [priceChanged, setPriceChanged] = useState(false);
+
+  const [setComplete, setSetComplete] = useState(false);
+
+  const [title, setTitle] = useState();
+  const [oldTitle, setOldTitle] = useState();
+  const [titleChanged, setTitleChanged] = useState(false);
+  const [titleValidation, setTitleValidation] = useState();
+
+  const [abstract, setAbstract] = useState();
+  const [oldAbstract, setOldAbstract] = useState();
+  const [abstractChanged, setAbstractChanged] = useState(false);
+  const [abstractValidation, setAbstractValidation] = useState();
+
+  const [explanation, setExplanation] = useState();
+  const [oldExplanation, setOldExplanation] = useState();
+  const [explanationChanged, setExplanationChanged] = useState(false);
+  const [explanationValidation, setExplanationValidation] = useState();
+
+  const [learningContents, setLearningContents] = useState();
+  const [oldLearningContents, setOldLearningContents] = useState();
+  const [learningContentsChanged, setLearningContentsChanged] = useState(false);
+  const [learningContentsValidation, setLearningContentsValidation] = useState();
+
+  const [learningRequirements, setLearningRequirements] = useState();
+  const [oldLearningRequirements, setOldLearningRequirements] = useState();
+  const [learningRequirementsChanged, setLearningRequirementsChanged] = useState(false);
+  const [learningRequirementsValidation, setLearningRequirementsValidation] = useState();
+
   const [category1, setCategory1] = useState('nul');
+  const [oldCategory1, setOldCategory1] = useState('nul');
+  const [category1Changed, setCategory1Changed] = useState(false);
+
   const [category2, setCategory2] = useState('nul');
-  const [learningContents, setLearningContents] = useState([]);
-  const [learningRequirements, setLearningRequirements] = useState([]);
+  const [oldCategory2, setOldCategory2] = useState('nul');
+  const [category2Changed, setCategory2Changed] = useState(false);
 
   const [savingState, setSavingState] = useState(null);
   const { mutate } = useSWRConfig();
   const photoId = genid(8);
 
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  function checkChange() {
+    return (
+      priceChanged ||
+      titleChanged ||
+      abstractChanged ||
+      explanationChanged ||
+      category1Changed ||
+      category2Changed ||
+      learningContentsChanged ||
+      learningRequirementsChanged
+    );
+  }
+
+  function checkValidation() {
+    let _learningContentsValidation = true;
+    for (let i = 0; i < learningContentsValidation.length; i++) {
+      _learningContentsValidation = _learningContentsValidation && learningContentsValidation[i].ok;
+    }
+    let _learningRequirementsValidation = true;
+    for (let i = 0; i < learningRequirementsValidation.length; i++) {
+      _learningRequirementsValidation =
+        _learningRequirementsValidation && learningRequirementsValidation[i].ok;
+    }
+
+    return (
+      titleValidation.ok &&
+      abstractValidation.ok &&
+      explanationValidation.ok &&
+      _learningContentsValidation &&
+      _learningRequirementsValidation
+    );
+  }
 
   const [
     crop,
@@ -92,27 +159,76 @@ const EditText = () => {
 
   const onPriceChange = (e) => {
     setPrice(e.target.value);
+    setPriceChanged(e.target.value != oldPrice);
   };
 
   const onAbstractChange = (e) => {
     setAbstract(e.target.value);
+    setAbstractChanged(e.target.value != oldAbstract);
+    validateAbstract(e.target.value);
+  };
+  const validateAbstract = (value) => {
+    setAbstractValidation(validate(value, Consts.VALIDATE.textAbstract));
   };
 
-  const onExplanationChange = (e) => {
-    setExplanation(e.target.value);
+  const onExplanationChange = (value) => {
+    setExplanation(value);
+    setExplanationChanged(value != oldExplanation);
+    validateExplanation(value);
+  };
+
+  const validateExplanation = (value) => {
+    const tagEliminatedValue = value?.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
+    setExplanationValidation(validate(tagEliminatedValue, Consts.VALIDATE.textExplanation));
   };
 
   const onTitleChange = (e) => {
     setTitle(e.target.value);
+    setTitleChanged(e.target.value != oldTitle);
+    validateTitle(e.target.value);
+  };
+
+  const validateTitle = (value) => {
+    setTitleValidation(validate(value, Consts.VALIDATE.textTitle));
+  };
+
+  const onLearningContentsChange = (list) => {
+    setLearningContents(list);
+    setLearningContentsChanged(JSON.stringify(list) != JSON.stringify(oldLearningContents));
+    validateLearningContents(list);
+  };
+
+  const validateLearningContents = (list) => {
+    setLearningContentsValidation(
+      list.map((item) => {
+        return validate(item, Consts.VALIDATE.learningContent);
+      }),
+    );
+  };
+
+  const onLearningRequirementsChange = (list) => {
+    setLearningRequirements(list);
+    setLearningRequirementsChanged(JSON.stringify(list) != JSON.stringify(oldLearningRequirements));
+    validateLearningRequirements(list);
+  };
+
+  const validateLearningRequirements = (list) => {
+    setLearningRequirementsValidation(
+      list.map((item) => {
+        return validate(item, Consts.VALIDATE.learningRequirements);
+      }),
+    );
   };
 
   const onCategory1Change = (e) => {
     setCategory1(e.target.value);
     setCategory2('nul');
+    setCategory1Changed(e.target.value != oldCategory1);
   };
 
   const onCategory2Change = (e) => {
     setCategory2(e.target.value);
+    setCategory2Changed(e.target.value != oldCategory2);
   };
 
   const handleTabChange = (event, newNumber) => {
@@ -124,30 +240,71 @@ const EditText = () => {
     setTab(newNumber);
   };
 
+  //console.log('validated=' + validated);
+
   useEffect(() => {
     if (data) {
-      if (data.price) setPrice(data.price);
-      if (data.abstract) setAbstract(data.abstract);
-      if (data.explanation) setExplanation(data.explanation);
+      if (data.price) {
+        setPrice(data.price);
+        setOldPrice(data.price);
+      } else {
+        setPrice(50);
+        setOldPrice(50);
+      }
+
       setTitle(data.title);
-      if (data.category1) setCategory1(data.category1);
-      if (data.category2) setCategory2(data.category2);
+      setOldTitle(data.title);
+      setTitleChanged(false);
+      validateTitle(data.title);
+
+      setAbstract(data.abstract);
+      setOldAbstract(data.abstract);
+      setAbstractChanged(false);
+      validateAbstract(data.abstract);
+
+      setExplanation(data.explanation);
+      setOldExplanation(data.explanation);
+      setExplanationChanged(false);
+      validateExplanation(data.explanation);
+
+      setCategory1(data.category1);
+      setOldCategory1(data.category1);
+      setCategory1Changed(false);
+
+      setCategory2(data.category2);
+      setOldCategory2(data.category2);
+      setCategory2Changed(false);
+
       if (data.photo_id) setImageUrl(Consts.IMAGE_STORE_URL + data.photo_id + '.png');
 
+      let _learningContents;
       if (data.learning_contents) {
-        const _learningContents = JSON.parse(data.learning_contents);
-        let len = 4 - _learningContents.length;
+        const __learningContents = JSON.parse(data.learning_contents);
+        let len = 4 - __learningContents.length;
         if (len < 0) len = 0;
-        setLearningContents([..._learningContents, ...Array(len)]);
+        _learningContents = [...__learningContents, ...Array(len)];
       } else {
-        setLearningContents([...Array(4)]);
+        _learningContents = [...Array(4)];
       }
 
+      setLearningContents(_learningContents);
+      setOldLearningContents(_learningContents);
+      setLearningContentsChanged(false);
+      validateLearningContents(_learningContents);
+
+      let _learningRequirements;
       if (data.learning_requirements) {
-        setLearningRequirements(JSON.parse(data.learning_requirements));
+        _learningRequirements = JSON.parse(data.learning_requirements);
       } else {
-        setLearningRequirements([...Array(1)]);
+        _learningRequirements = [''];
       }
+
+      setLearningRequirements(_learningRequirements);
+      setOldLearningRequirements(_learningRequirements);
+      setLearningRequirementsChanged(false);
+      validateLearningRequirements(_learningRequirements);
+
+      setSetComplete(true);
     }
   }, [data]);
 
@@ -180,7 +337,6 @@ const EditText = () => {
     mutate(`texts/${textId}`);
 
     setSavingState('saved');
-    setChanged(false);
   }
 
   async function handleReleaseToggle(release) {
@@ -190,17 +346,20 @@ const EditText = () => {
   const [imageUrl, setImageUrl] = useState('/cover-default.svg');
 
   if (error) console.log(error);
-  if (!data) return <CenterLoadingSpinner />;
+  if (!data || !setComplete) return <CenterLoadingSpinner />;
 
   let saveButtonContent;
 
   if (savingState === 'saving') {
     saveButtonContent = <CircularProgress size={28} sx={{ color: 'white' }} />;
-  } else if (savingState === 'saved' && !changed) {
+  } else if (savingState === 'saved' && !checkChange()) {
     saveButtonContent = <CheckIcon sx={{ color: 'black' }} />;
   } else {
     saveButtonContent = <>保存</>;
   }
+
+  console.log('changed=' + checkChange());
+  console.log('validated=' + checkValidation());
 
   return (
     <>
@@ -229,13 +388,7 @@ const EditText = () => {
             }}
           >
             {/* image */}
-            <Box
-              sx={{
-                fontWeight: 'bold',
-              }}
-            >
-              カバー画像
-            </Box>
+            <FormItemLabel>カバー画像</FormItemLabel>
 
             <Box sx={{ mt: 1 }}>
               {isUploadingImage ? (
@@ -295,19 +448,15 @@ const EditText = () => {
             </Box>
 
             {/* title */}
-            <Box
-              sx={{
-                fontWeight: 'bold',
-                mt: 3,
-              }}
-            >
-              テキストのタイトル
-            </Box>
+            <FormItemLabel sx={{ mt: 3 }}>テキストのタイトル</FormItemLabel>
+            <FormItemSubLabel>
+              テキストのタイトルを{Consts.VALIDATE.textTitle.min}～{Consts.VALIDATE.textTitle.max}
+              文字で入力
+            </FormItemSubLabel>
 
             <Box
               sx={{
                 p: 1,
-                mt: 0.5,
                 width: '100%',
                 maxWidth: 800,
                 border: '2px solid ' + Consts.COLOR.Grey,
@@ -321,27 +470,22 @@ const EditText = () => {
                 value={title}
                 variant='outlined'
                 fullWidth
-                onChange={(e) => {
-                  onTitleChange(e);
-                  setChanged(true);
-                }}
+                onChange={onTitleChange}
               />
             </Box>
+            <FormItemState validation={titleValidation} />
 
             {/* abstract */}
-            <Box
-              sx={{
-                fontWeight: 'bold',
-                mt: 2,
-              }}
-            >
-              テキストの概要
-            </Box>
+            <FormItemLabel sx={{ mt: 2 }}>テキストの簡単な説明</FormItemLabel>
+            <FormItemSubLabel>
+              テキストの簡単な説明を{Consts.VALIDATE.textAbstract.min}～
+              {Consts.VALIDATE.textAbstract.max}
+              文字で入力
+            </FormItemSubLabel>
 
             <Box
               sx={{
                 p: 1,
-                mt: 0.5,
                 width: '100%',
                 maxWidth: 800,
                 border: '2px solid ' + Consts.COLOR.Grey,
@@ -356,41 +500,30 @@ const EditText = () => {
                 fullWidth
                 rows={4}
                 multiline
-                onChange={(e) => {
-                  onAbstractChange(e);
-                  setChanged(true);
-                }}
+                onChange={onAbstractChange}
               />
             </Box>
+            <FormItemState validation={abstractValidation} />
 
             {/* explanation */}
-            <Box
-              sx={{
-                fontWeight: 'bold',
-                mt: 2,
-              }}
-            >
-              テキストの詳細な解説
-            </Box>
+            <FormItemLabel sx={{ mt: 2 }}>テキストの詳細な解説</FormItemLabel>
+            <FormItemSubLabel>
+              テキストの詳細な解説を{Consts.VALIDATE.textExplanation.min}～
+              {Consts.VALIDATE.textExplanation.max}
+              文字で入力
+            </FormItemSubLabel>
 
             <RTEditor
               placeholder='テキストの詳細な解説'
-              initialValue={data.explanation}
-              onChange={(value) => {
-                setExplanation(value);
-                setChanged(true);
-              }}
+              initialValue={explanation}
+              onChange={onExplanationChange}
             />
 
+            <FormItemState validation={explanationValidation} />
+
             {/* Price */}
-            <Box
-              sx={{
-                fontWeight: 'bold',
-                mt: 2,
-              }}
-            >
-              テキストの販売価格
-            </Box>
+            <FormItemLabel sx={{ mt: 2 }}>テキストの販売価格</FormItemLabel>
+            <FormItemSubLabel>テキストの販売価格をスライダで決定</FormItemSubLabel>
 
             <Box sx={{ display: 'flex', flexFlow: { xs: 'column', sm: 'unset' } }}>
               <Box
@@ -407,13 +540,12 @@ const EditText = () => {
                 {price}円
               </Box>
 
-              <Box sx={{ my: 'auto', ml: 2, mr: { xs: 'unset', sm: 'auto' }, p: 1, width: '60%' }}>
+              <Box sx={{ my: 'auto', ml: 2, mr: { xs: 'unset', sm: 'auto' }, p: 1, width: '90%' }}>
                 <Slider
                   aria-label='円'
                   value={price}
                   onChange={(e) => {
                     onPriceChange(e);
-                    setChanged(true);
                   }}
                   valueLabelDisplay='auto'
                   marks={[
@@ -434,14 +566,8 @@ const EditText = () => {
             </Box>
 
             {/* Category */}
-            <Box
-              sx={{
-                fontWeight: 'bold',
-                mt: 2,
-              }}
-            >
-              カテゴリの選択
-            </Box>
+            <FormItemLabel sx={{ mt: 1 }}>カテゴリの選択</FormItemLabel>
+            <FormItemSubLabel>テキストのカテゴリを選択【任意】</FormItemSubLabel>
 
             <Box
               sx={{
@@ -455,10 +581,6 @@ const EditText = () => {
                 value={category1}
                 onChange={(e) => {
                   onCategory1Change(e);
-                  setChanged(true);
-                }}
-                sx={{
-                  mt: 0.5,
                 }}
                 inputProps={{
                   sx: {
@@ -492,11 +614,10 @@ const EditText = () => {
                 value={category2}
                 onChange={(e) => {
                   onCategory2Change(e);
-                  setChanged(true);
                 }}
                 sx={{
-                  mt: 0.5,
                   ml: { xs: 'unset', md: 1 },
+                  mt: { xs: 0.5, md: 'unset' },
                 }}
                 inputProps={{
                   sx: {
@@ -527,56 +648,50 @@ const EditText = () => {
             </Box>
 
             {/* LearningContents */}
-            <Box
-              sx={{
-                fontWeight: 'bold',
-                mt: 2,
-              }}
-            >
-              テキストで学習できることは何ですか？
-            </Box>
+            <FormItemLabel sx={{ mt: 3 }}>テキストで学習できることは何ですか？</FormItemLabel>
+            <FormItemSubLabel>
+              学べることを最低４つ入力（各項目は{Consts.VALIDATE.learningContent.min}～
+              {Consts.VALIDATE.learningContent.max}文字で入力）
+            </FormItemSubLabel>
 
             <Box sx={{ width: '100%' }}>
               <LearningContentsList
                 learningContents={learningContents}
-                setLearningContents={setLearningContents}
-                setChanged={setChanged}
+                learningContentsValidation={learningContentsValidation}
+                onLearningContentsChange={onLearningContentsChange}
               />
             </Box>
 
             <ItemAddButton
               onClick={() => {
-                setLearningContents([...learningContents, '']);
+                onLearningContentsChange([...learningContents, '']);
               }}
             />
 
             {/* LearningRequirements */}
-            <Box
-              sx={{
-                fontWeight: 'bold',
-                mt: 2,
-              }}
-            >
-              想定している読者や要件は何ですか？
-            </Box>
+            <FormItemLabel sx={{ mt: 3 }}>想定している読者や要件は何ですか？</FormItemLabel>
+            <FormItemSubLabel>
+              想定読者や学習要件を最低１つ入力（各項目は{Consts.VALIDATE.learningRequirements.min}～
+              {Consts.VALIDATE.learningRequirements.max}文字で入力）
+            </FormItemSubLabel>
 
             <Box sx={{ width: '100%' }}>
               <LearningRequirementsList
                 learningRequirements={learningRequirements}
-                setLearningRequirements={setLearningRequirements}
-                setChanged={setChanged}
+                learningRequirementsValidation={learningRequirementsValidation}
+                onLearningRequirementsChange={onLearningRequirementsChange}
               />
             </Box>
 
             <ItemAddButton
               onClick={() => {
-                setLearningRequirements([...learningRequirements, '']);
+                onLearningRequirementsChange([...learningRequirements, '']);
               }}
             />
 
             <DefaultButton
               exSx={{ width: '180px', mt: { xs: 2, md: 4 }, mx: 'auto' }}
-              disabled={!changed}
+              disabled={!checkChange() || !checkValidation()}
               onClick={() => {
                 if (savingState !== 'saving') handleSaveClick();
               }}
@@ -618,26 +733,34 @@ const ItemAddButton = ({ onClick }) => {
   );
 };
 
-const LearningContentsList = ({ learningContents, setLearningContents, setChanged }) => {
+const LearningContentsList = ({
+  learningContents,
+  learningContentsValidation,
+  onLearningContentsChange,
+}) => {
   return (
     <>
       {learningContents.map((item, index) => {
         return (
-          <ListItem
-            placeholder={'マーティングの基礎'}
-            value={item}
-            deleteEnable={learningContents.length > 4}
-            onChange={(value) => {
-              setLearningContents(
-                learningContents.map((_value, _index) => (index === _index ? value : _value)),
-              );
-              setChanged(true);
-            }}
-            onDelete={() => {
-              setLearningContents(learningContents.filter((_value, _index) => index !== _index));
-              setChanged(true);
-            }}
-          />
+          <>
+            <ListItem
+              key={'learningContent-' + index}
+              placeholder={'マーティングの基礎'}
+              value={item}
+              deleteEnable={learningContents.length > 4}
+              onChange={(value) => {
+                onLearningContentsChange(
+                  learningContents.map((_value, _index) => (index === _index ? value : _value)),
+                );
+              }}
+              onDelete={() => {
+                onLearningContentsChange(
+                  learningContents.filter((_value, _index) => index !== _index),
+                );
+              }}
+            />
+            <FormItemState validation={learningContentsValidation[index]} />
+          </>
         );
       })}
     </>
@@ -646,30 +769,31 @@ const LearningContentsList = ({ learningContents, setLearningContents, setChange
 
 const LearningRequirementsList = ({
   learningRequirements,
-  setLearningRequirements,
-  setChanged,
+  learningRequirementsValidation,
+  onLearningRequirementsChange,
 }) => {
   return (
     <>
       {learningRequirements.map((item, index) => {
         return (
-          <ListItem
-            placeholder={'マーティングの基礎'}
-            value={item}
-            deleteEnable={learningRequirements.length > 1}
-            onChange={(value) => {
-              setLearningRequirements(
-                learningRequirements.map((_value, _index) => (index === _index ? value : _value)),
-              );
-              setChanged(true);
-            }}
-            onDelete={() => {
-              setLearningRequirements(
-                learningRequirements.filter((_value, _index) => index !== _index),
-              );
-              setChanged(true);
-            }}
-          />
+          <>
+            <ListItem
+              placeholder={'マーティングの基礎'}
+              value={item}
+              deleteEnable={learningRequirements.length > 1}
+              onChange={(value) => {
+                onLearningRequirementsChange(
+                  learningRequirements.map((_value, _index) => (index === _index ? value : _value)),
+                );
+              }}
+              onDelete={() => {
+                onLearningRequirementsChange(
+                  learningRequirements.filter((_value, _index) => index !== _index),
+                );
+              }}
+            />
+            <FormItemState validation={learningRequirementsValidation[index]} />
+          </>
         );
       })}
     </>

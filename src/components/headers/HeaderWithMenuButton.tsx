@@ -9,7 +9,7 @@ import NotificationIcon from 'components/headers/NotificationIcon';
 import SearchBox from 'components/headers/SearchBox';
 import { AppContext } from 'states/store';
 
-import SideMenuIcon from './SideMenuIcon';
+import SideMenuIcon from '../sidemenu/SideMenuIcon';
 
 const HeaderWithMenuButton = ({ authLoading, onClick }) => {
   const { state, dispatch } = useContext(AppContext);

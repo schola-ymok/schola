@@ -17,7 +17,7 @@ import 'github-markdown-css/github-markdown.css';
 
 import Logo from 'components/headers/Logo';
 import SLogo from 'components/headers/SLogo';
-import SideMenuIcon from 'components/headers/SideMenuIcon';
+import SideMenuIcon from 'components/sidemenu/SideMenuIcon';
 import MenuCloseButton from 'components/sidemenu/MenuCloseButton';
 import Consts from 'utils/Consts';
 import { extractToc } from 'utils/extractToc';

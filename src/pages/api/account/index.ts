@@ -132,14 +132,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         const web = req.body.web;
         const facebook = req.body.facebook;
 
-        if (
-          isEmptyString(displayName) ||
-          !profileMessage ||
-          !majors ||
-          !twitter ||
-          !web ||
-          !facebook
-        )
+        if (isEmptyString(displayName))
           return res.status(Consts.HTTP_BAD_REQUEST).end('bad parameter');
 
         const { error } = await dbQuery(escape`

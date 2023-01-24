@@ -309,30 +309,35 @@ const ProfileSetting = () => {
       setDisplayNameChanged(false);
       validateDisplayName(data.displayName);
 
-      setMajors(data.majors);
-      setOldMajors(data.majors);
+      const _majors = data.majors ? data.majors : '';
+      setMajors(_majors);
+      setOldMajors(_majors);
       setMajorsChanged(false);
-      validateMajors(data.majors);
+      validateMajors(_majors);
 
-      setProfile(data.profileMessage);
-      setOldProfile(data.profileMessage);
+      const _profile = data.profileMessage ? data.profileMessage : '';
+      setProfile(_profile);
+      setOldProfile(_profile);
       setProfileChanged(false);
-      validateProfile(data.profileMessage);
+      validateProfile(_profile);
 
-      setWeb(data.web);
-      setOldWeb(data.web);
+      const _web = data.web ? data.web : '';
+      setWeb(_web);
+      setOldWeb(_web);
       setWebChanged(false);
-      validateWeb(data.web);
+      validateWeb(_web);
 
-      setTwitter(data.twitter);
-      setOldTwitter(data.twitter);
+      const _twitter = data.twitter ? data.twitter : '';
+      setTwitter(_twitter);
+      setOldTwitter(_twitter);
       setTwitterChanged(false);
-      validateTwitter(data.twitter);
+      validateTwitter(_twitter);
 
-      setFacebook(data.facebook);
-      setOldFacebook(data.facebook);
+      const _facebook = data.facebook ? data.facebook : '';
+      setFacebook(_facebook);
+      setOldFacebook(_facebook);
       setFacebookChanged(false);
-      validateFacebook(data.facebook);
+      validateFacebook(_facebook);
 
       setSetCompolete(true);
       if (savingState == 'saving') setSavingState('saved');

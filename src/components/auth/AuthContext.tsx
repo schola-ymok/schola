@@ -111,7 +111,7 @@ export const AuthProvider = ({ children }) => {
       };
     }
 
-    authAxios.interceptors.request.use(makeDelayAxios(1000, 500));
+    // authAxios.interceptors.request.use(makeDelayAxios(1000, 500));
 
     return authAxios.interceptors.request.use(
       (config) => {

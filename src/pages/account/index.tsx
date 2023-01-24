@@ -1,13 +1,11 @@
-import { profile } from 'console';
-
-import { Button, Checkbox, CircularProgress, InputBase, Snackbar } from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
+import { Checkbox, CircularProgress, Container, InputBase, Snackbar } from '@mui/material';
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { getAuth, sendEmailVerification } from 'firebase/auth';
 import { useContext, useEffect, useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 import { getMyAccount } from 'api/getMyAccount';
 import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
@@ -17,6 +15,9 @@ import { updateProfile } from 'api/updateProfile';
 import AvatarButton from 'components/AvatarButton';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import DefaultButton from 'components/DefaultButton';
+import FormItemLabel from 'components/FormItemLabel';
+import FormItemState from 'components/FormItemState';
+import FormItemSubLabel from 'components/FormItemSubLabel';
 import ImageCropDialog from 'components/ImageCropDialog';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
@@ -25,6 +26,7 @@ import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
 import useCropImage from 'utils/useCropImage';
+import { validate } from 'utils/validate';
 
 const Account = () => {
   const { authAxios } = useContext(AuthContext);
@@ -32,8 +34,6 @@ const Account = () => {
   const [notifyOnPurchaseCheck, setNotifyOnPurchaseCheck] = useState(false);
   const [notifyOnReviewCheck, setNotifyOnReviewCheck] = useState(false);
   const [tab, setTab] = useState(0);
-
-  const [profile, setProfile] = useState();
 
   const { data, error } = useSWR(`getMyAccount`, () => getMyAccount(authAxios), {
     revalidateOnFocus: false,
@@ -46,15 +46,6 @@ const Account = () => {
     if (data) {
       if (data.notifyOnPurchase) setNotifyOnPurchaseCheck(true);
       if (data.notifyOnReview) setNotifyOnReviewCheck(true);
-
-      setProfile({
-        displayName: data.displayName,
-        profileMessage: data.profileMessage,
-        majors: data.majors,
-        twitter: data.twitter,
-        web: data.web,
-        facebook: data.facebook,
-      });
     }
   }, [data]);
 
@@ -92,15 +83,6 @@ const Account = () => {
     });
   };
 
-  const saveProfile = async (profile, onFinish, onError) => {
-    try {
-      await updateProfile(authAxios, profile);
-      onFinish();
-    } catch (e) {
-      onError();
-    }
-  };
-
   return (
     <Container maxWidth='md'>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -123,7 +105,7 @@ const Account = () => {
         />
       </TabPanel>
       <TabPanel value={tab} index={1}>
-        <ProfileSetting profile={profile} setProfile={setProfile} saveProfile={saveProfile} />
+        <ProfileSetting />
       </TabPanel>
     </Container>
   );
@@ -173,14 +155,189 @@ const AccountSetting = ({
   );
 };
 
-const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
+const ProfileSetting = () => {
+  const { data, error } = useSWR(`getMyAccount`, () => getMyAccount(authAxios), {
+    revalidateOnFocus: false,
+  });
   const { state, dispatch } = useContext(AppContext);
+
   const [isLoading, setIsLoading] = useState();
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const { authAxios } = useContext(AuthContext);
 
+  const [displayName, setDisplayName] = useState();
+  const [oldDisplayName, setOldDisplayName] = useState();
+  const [displayNameChanged, setDisplayNameChanged] = useState(false);
+  const [displayNameValidation, setDisplayNameValidation] = useState(false);
+
+  const [majors, setMajors] = useState();
+  const [oldMajors, setOldMajors] = useState();
+  const [majorsChanged, setMajorsChanged] = useState(false);
+  const [majorsValidation, setMajorsValidation] = useState();
+
+  const [profile, setProfile] = useState();
+  const [oldProfile, setOldProfile] = useState();
+  const [profileChanged, setProfileChanged] = useState(false);
+  const [profileValidation, setProfileValidation] = useState();
+
+  const [web, setWeb] = useState();
+  const [oldWeb, setOldWeb] = useState();
+  const [webChanged, setWebChanged] = useState(false);
+  const [webValidation, setWebValidation] = useState();
+
+  const [twitter, setTwitter] = useState();
+  const [oldTwitter, setOldTwitter] = useState();
+  const [twitterChanged, setTwitterChanged] = useState(false);
+  const [twitterValidation, setTwitterValidation] = useState();
+
+  const [facebook, setFacebook] = useState();
+  const [oldFacebook, setOldFacebook] = useState();
+  const [facebookChanged, setFacebookChanged] = useState(false);
+  const [facebookValidation, setFacebookValidation] = useState();
+
+  const [setComplete, setSetCompolete] = useState(false);
+
   const photoId = genid(8);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  const [savingState, setSavingState] = useState(null);
+
+  function checkChange() {
+    return (
+      displayNameChanged ||
+      majorsChanged ||
+      profileChanged ||
+      webChanged ||
+      twitterChanged ||
+      facebookChanged
+    );
+  }
+
+  function checkValidation() {
+    return (
+      displayNameValidation.ok &&
+      majorsValidation.ok &&
+      profileValidation.ok &&
+      webValidation.ok &&
+      twitterValidation.ok &&
+      facebookValidation.ok
+    );
+  }
+
+  async function handleSaveClick() {
+    setSavingState('saving');
+
+    const { error } = await updateProfile(authAxios, {
+      displayName: displayName,
+      profileMessage: profile,
+      majors: majors,
+      twitter: twitter,
+      web: web,
+      facebook: facebook,
+    });
+
+    if (error) console.log(error);
+
+    mutate(`getMyAccount`);
+  }
+
+  const onDisplayNameChange = (e) => {
+    setDisplayName(e.target.value);
+    setDisplayNameChanged(e.target.value != oldDisplayName);
+    validateDisplayName(e.target.value);
+  };
+
+  const validateDisplayName = (value) => {
+    setDisplayNameValidation(validate(value, Consts.VALIDATE.displayName));
+  };
+
+  const onMajorsChange = (e) => {
+    setMajors(e.target.value);
+    setMajorsChanged(e.target.value != oldMajors);
+    validateMajors(e.target.value);
+  };
+
+  const validateMajors = (value) => {
+    setMajorsValidation(validate(value, Consts.VALIDATE.majors));
+  };
+
+  const onProfileChange = (value) => {
+    setProfile(value);
+    setProfileChanged(value != oldProfile);
+    validateProfile(value);
+  };
+
+  const validateProfile = (value) => {
+    const tagEliminatedValue = value?.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
+    setProfileValidation(validate(tagEliminatedValue, Consts.VALIDATE.profile));
+  };
+
+  const onWebChange = (e) => {
+    setWeb(e.target.value);
+    setWebChanged(e.target.value != oldWeb);
+    validateWeb(e.target.value);
+  };
+
+  const validateWeb = (value) => {
+    setWebValidation(validate(value, Consts.VALIDATE.web));
+  };
+
+  const onTwitterChange = (e) => {
+    setTwitter(e.target.value);
+    setTwitterChanged(e.target.value != oldTwitter);
+    validateTwitter(e.target.value);
+  };
+
+  const validateTwitter = (value) => {
+    setTwitterValidation(validate(value, Consts.VALIDATE.twitter));
+  };
+
+  const onFacebookChange = (e) => {
+    setFacebook(e.target.value);
+    setFacebookChanged(e.target.value != oldFacebook);
+    validateFacebook(e.target.value);
+  };
+
+  const validateFacebook = (value) => {
+    setFacebookValidation(validate(value, Consts.VALIDATE.facebook));
+  };
+
+  useEffect(() => {
+    if (data) {
+      setDisplayName(data.displayName);
+      setOldDisplayName(data.displayName);
+      setDisplayNameChanged(false);
+      validateDisplayName(data.displayName);
+
+      setMajors(data.majors);
+      setOldMajors(data.majors);
+      setMajorsChanged(false);
+      validateMajors(data.majors);
+
+      setProfile(data.profileMessage);
+      setOldProfile(data.profileMessage);
+      setProfileChanged(false);
+      validateProfile(data.profileMessage);
+
+      setWeb(data.web);
+      setOldWeb(data.web);
+      setWebChanged(false);
+      validateWeb(data.web);
+
+      setTwitter(data.twitter);
+      setOldTwitter(data.twitter);
+      setTwitterChanged(false);
+      validateTwitter(data.twitter);
+
+      setFacebook(data.facebook);
+      setOldFacebook(data.facebook);
+      setFacebookChanged(false);
+      validateFacebook(data.facebook);
+
+      setSetCompolete(true);
+      if (savingState == 'saving') setSavingState('saved');
+    }
+  }, [data]);
 
   const [
     crop,
@@ -206,12 +363,21 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
     },
   );
 
-  const onError = () => {
-    console.log('error');
-  };
+  if (!data || !setComplete) return <CenterLoadingSpinner />;
+
+  let saveButtonContent;
+
+  if (savingState === 'saving') {
+    saveButtonContent = <CircularProgress size={28} sx={{ color: 'white' }} />;
+  } else if (savingState === 'saved' && !checkChange()) {
+    saveButtonContent = <CheckIcon sx={{ color: 'black' }} />;
+  } else {
+    saveButtonContent = <>保存</>;
+  }
 
   return (
     <Box sx={{ width: { xs: '98%', md: '90%' }, pt: { xs: 0, sm: 2 }, mx: 'auto' }}>
+      <FormItemLabel>プロフィール画像</FormItemLabel>
       <Box sx={{ width: '128px' }}>
         {isUploadingImage ? (
           <>
@@ -268,14 +434,11 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
 
       <Box sx={{ display: 'flex', flexFlow: 'column' }}>
         {/* display name */}
-        <Box
-          sx={{
-            fontWeight: 'bold',
-            mt: 3,
-          }}
-        >
-          表示名
-        </Box>
+        <FormItemLabel sx={{ mt: 3 }}>表示名</FormItemLabel>
+        <FormItemSubLabel>
+          表示名を{Consts.VALIDATE.displayName.min}～{Consts.VALIDATE.displayName.max}
+          文字で入力
+        </FormItemSubLabel>
 
         <Box
           sx={{
@@ -290,28 +453,20 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
         >
           <InputBase
             placeholder='表示名'
-            value={profile.displayName}
+            value={displayName}
             sx={{ fontSize: '1.0em' }}
             variant='outlined'
             fullWidth
-            onChange={(e) => {
-              setProfile({
-                ...profile,
-                displayName: e.target.value,
-              });
-            }}
+            onChange={onDisplayNameChange}
           />
         </Box>
+        <FormItemState validation={displayNameValidation} />
 
         {/* majors */}
-        <Box
-          sx={{
-            fontWeight: 'bold',
-            mt: 3,
-          }}
-        >
-          専門領域、得意分野
-        </Box>
+        <FormItemLabel sx={{ mt: 3 }}>専門領域、得意分野</FormItemLabel>
+        <FormItemSubLabel>
+          専門領域や得意分野を{Consts.VALIDATE.majors.max}文字以内で入力【任意】
+        </FormItemSubLabel>
 
         <Box
           sx={{
@@ -326,49 +481,27 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
         >
           <InputBase
             placeholder='専門領域'
-            value={profile.majors}
+            value={majors}
             sx={{ fontSize: '1.0em' }}
             variant='outlined'
             fullWidth
-            onChange={(e) => {
-              setProfile({
-                ...profile,
-                majors: e.target.value,
-              });
-            }}
+            onChange={onMajorsChange}
           />
         </Box>
+        <FormItemState validation={majorsValidation} />
 
         {/* profile */}
-        <Box
-          sx={{
-            fontWeight: 'bold',
-            mt: 3,
-          }}
-        >
-          プロフィール
-        </Box>
+        <FormItemLabel sx={{ mt: 3 }}>プロフィール</FormItemLabel>
+        <FormItemSubLabel>
+          プロフィールを{Consts.VALIDATE.profile.max}文字以内で入力【任意】
+        </FormItemSubLabel>
 
-        <RTEditor
-          placeholder='プロフィール'
-          initialValue={profile.profileMessage}
-          onChange={(value) => {
-            setProfile({
-              ...profile,
-              profileMessage: value,
-            });
-          }}
-        />
+        <RTEditor placeholder='プロフィール' initialValue={profile} onChange={onProfileChange} />
+        <FormItemState validation={profileValidation} />
 
         {/* homepage */}
-        <Box
-          sx={{
-            fontWeight: 'bold',
-            mt: 3,
-          }}
-        >
-          ホームページ
-        </Box>
+        <FormItemLabel sx={{ mt: 3 }}>ホームぺージを入力</FormItemLabel>
+        <FormItemSubLabel>ホームページを入力【任意】</FormItemSubLabel>
 
         <Box
           sx={{
@@ -383,28 +516,18 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
         >
           <InputBase
             placeholder='ホームページ'
-            value={profile.web}
+            value={web}
             sx={{ fontSize: '1.0em' }}
             variant='outlined'
             fullWidth
-            onChange={(e) => {
-              setProfile({
-                ...profile,
-                web: e.target.value,
-              });
-            }}
+            onChange={onWebChange}
           />
         </Box>
+        <FormItemState validation={webValidation} />
 
         {/* twitter */}
-        <Box
-          sx={{
-            fontWeight: 'bold',
-            mt: 3,
-          }}
-        >
-          Twitter
-        </Box>
+        <FormItemLabel sx={{ mt: 3 }}>Twitter</FormItemLabel>
+        <FormItemSubLabel>Twitterアカウントを入力【任意】</FormItemSubLabel>
         <Box
           sx={{
             p: 1,
@@ -418,28 +541,18 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
         >
           <InputBase
             placeholder='twitter'
-            value={profile.twitter}
+            value={twitter}
             sx={{ fontSize: '1.0em' }}
             variant='outlined'
             fullWidth
-            onChange={(e) => {
-              setProfile({
-                ...profile,
-                twitter: e.target.value,
-              });
-            }}
+            onChange={onTwitterChange}
           />
         </Box>
+        <FormItemState validation={twitterValidation} />
 
         {/* facebook */}
-        <Box
-          sx={{
-            fontWeight: 'bold',
-            mt: 3,
-          }}
-        >
-          Facebook
-        </Box>
+        <FormItemLabel sx={{ mt: 3 }}>Facebook</FormItemLabel>
+        <FormItemSubLabel>Facebookアカウントを入力【任意】</FormItemSubLabel>
         <Box
           sx={{
             p: 1,
@@ -453,49 +566,28 @@ const ProfileSetting = ({ profile, setProfile, saveProfile }) => {
         >
           <InputBase
             placeholder='facebook'
-            value={profile.facebook}
+            value={facebook}
             sx={{ fontSize: '1.0em' }}
             variant='outlined'
             fullWidth
-            onChange={(e) => {
-              setProfile({
-                ...profile,
-                facebook: e.target.value,
-              });
-            }}
+            onChange={onFacebookChange}
           />
         </Box>
+        <FormItemState validation={facebookValidation} />
 
         <DefaultButton
-          disabled={isLoading}
+          disabled={!checkChange() || !checkValidation()}
           exSx={{
             width: '150px',
             mt: 4,
           }}
           onClick={() => {
-            setIsLoading(true);
-            saveProfile(
-              profile,
-              () => {
-                setIsLoading(false);
-                setSnackBarOpen(true);
-                console.log('done');
-              },
-              onError,
-            );
+            if (savingState !== 'saving') handleSaveClick();
           }}
         >
-          更新
+          {saveButtonContent}
         </DefaultButton>
       </Box>
-      <Snackbar
-        open={snackBarOpen}
-        autoHideDuration={1000}
-        message='Saved'
-        onClose={() => {
-          setSnackBarOpen(false);
-        }}
-      />
     </Box>
   );
 };

@@ -1,5 +1,3 @@
-import error from 'next/error';
-
 export const updateProfile = async (authAxios, profile) => {
   try {
     const res = await authAxios.put('/api/account', {
@@ -12,9 +10,9 @@ export const updateProfile = async (authAxios, profile) => {
     });
 
     if (res.data.status == 'ok') {
-      return;
+      return {};
     } else {
-      return { error: error };
+      return { error: true };
     }
   } catch (error) {
     return { error: error };

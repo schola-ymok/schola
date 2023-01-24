@@ -99,6 +99,20 @@ export const AuthProvider = ({ children }) => {
   };
 
   const setAxiosInterceptor = ({ token, firebaseId, userId }) => {
+    function sleep(time) {
+      return new Promise(function (resolve, reject) {
+        window.setTimeout(resolve, time);
+      });
+    }
+    function makeDelayAxios(msMax, msMin = 0) {
+      return async (config) => {
+        await sleep(Math.random() * (msMax - msMin) + msMin);
+        return config;
+      };
+    }
+
+    authAxios.interceptors.request.use(makeDelayAxios(1000, 500));
+
     return authAxios.interceptors.request.use(
       (config) => {
         config.headers = {

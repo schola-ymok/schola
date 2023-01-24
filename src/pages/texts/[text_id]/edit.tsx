@@ -305,6 +305,7 @@ const EditText = () => {
       validateLearningRequirements(_learningRequirements);
 
       setSetComplete(true);
+      if (savingState == 'saving') setSavingState('saved');
     }
   }, [data]);
 
@@ -335,8 +336,6 @@ const EditText = () => {
     if (error) console.log(error);
 
     mutate(`texts/${textId}`);
-
-    setSavingState('saved');
   }
 
   async function handleReleaseToggle(release) {
@@ -358,14 +357,10 @@ const EditText = () => {
     saveButtonContent = <>保存</>;
   }
 
-  console.log('changed=' + checkChange());
-  console.log('validated=' + checkValidation());
-
   return (
     <>
       <EditTextHeader
         textId={textId}
-        handleSaveClick={handleSaveClick}
         handleReleaseToggle={handleReleaseToggle}
         release={data.is_released}
       />

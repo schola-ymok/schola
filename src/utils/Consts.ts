@@ -61,7 +61,7 @@ namespace Consts {
   export const VALIDATE = {
     textTitle: {
       min: 4,
-      max: 64,
+      max: 60,
     },
     textAbstract: {
       min: 10,
@@ -73,11 +73,35 @@ namespace Consts {
     },
     learningContent: {
       min: 2,
-      max: 48,
+      max: 50,
     },
     learningRequirements: {
       min: 2,
-      max: 48,
+      max: 50,
+    },
+    displayName: {
+      min: 1,
+      max: 30,
+    },
+    majors: {
+      min: 0,
+      max: 50,
+    },
+    profile: {
+      min: 0,
+      max: 3000,
+    },
+    twitter: {
+      min: 0,
+      max: 30,
+    },
+    web: {
+      min: 0,
+      max: 512,
+    },
+    facebook: {
+      min: 0,
+      max: 100,
     },
   };
 

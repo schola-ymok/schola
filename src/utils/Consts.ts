@@ -103,6 +103,18 @@ namespace Consts {
       min: 0,
       max: 100,
     },
+    chapterTitle: {
+      min: 1,
+      max: 60,
+    },
+    reviewTitle: {
+      min: 1,
+      max: 40,
+    },
+    reviewComment: {
+      min: 1,
+      max: 500,
+    },
   };
 
   export const CATEGORY = {

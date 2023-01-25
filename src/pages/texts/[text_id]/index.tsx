@@ -5,7 +5,6 @@ import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import UpdateIcon from '@mui/icons-material/Update';
 import { Box, CircularProgress, colors, Grid, Rating, Stack, useMediaQuery } from '@mui/material';
-import { ref } from 'firebase/storage';
 import htmlParse from 'html-react-parser';
 import router, { useRouter } from 'next/router';
 import { useCallback, useContext, useState } from 'react';
@@ -235,6 +234,8 @@ const Text: NextPage = () => {
   const Author = () => {
     if (!dataAuthor) return <CenterLoadingSpinner />;
 
+    const html = htmlParse(dataAuthor.profile_message ? dataAuthor.profile_message : '');
+
     return (
       <>
         <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>著者</Box>
@@ -303,7 +304,7 @@ const Text: NextPage = () => {
 
           <Box sx={{ width: '100%', mt: 1.5 }}>
             <ReadMoreText height='200' fontSize='0.9em'>
-              {dataAuthor.profile_message}
+              {html}
             </ReadMoreText>
           </Box>
         </Box>

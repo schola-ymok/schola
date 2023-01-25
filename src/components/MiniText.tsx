@@ -50,6 +50,7 @@ const MiniText = ({ text }) => {
         </Box>
         <Box
           sx={{
+            width: 'fit-content',
             fontSize: '1.0em',
             cursor: 'pointer',
             color: Consts.COLOR.Primary,

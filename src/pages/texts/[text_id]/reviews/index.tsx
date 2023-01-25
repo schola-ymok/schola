@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import useSWR from 'swr';
 
 import { getBriefText } from 'api/getBriefText';
@@ -12,7 +12,9 @@ import RatingReportPanel from 'components/RatingReportPanel';
 import ReviewList from 'components/ReviewList';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
+import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
+import { genid } from 'utils/genid';
 
 import type { NextPage } from 'next';
 
@@ -25,7 +27,9 @@ const Review: NextPage = () => {
   let params = { page: page };
   if (router.query.rate !== undefined) params.rate = router.query.rate;
 
+  const { state } = useContext(AppContext);
   const { authAxios } = useContext(AuthContext);
+  const [swrKey] = useState(genid(4));
 
   const { data: dataText, error: errorText } = useSWR(
     `texts/${textId}?brf=1`,
@@ -36,7 +40,7 @@ const Review: NextPage = () => {
   );
 
   const { data: dataReviews, error: errorReviews } = useSWR(
-    `texts/${textId}/reviews?` + new URLSearchParams(params).toString(),
+    `texts/${textId}/reviews?` + new URLSearchParams(params).toString() + '_' + swrKey,
     () => getReviews(textId, params, authAxios),
     {
       revalidateOnFocus: false,
@@ -48,16 +52,10 @@ const Review: NextPage = () => {
 
   if (!dataText || !dataReviews) return <CenterLoadingSpinner />;
 
+  const myText = state.userId == dataText.author_id;
+
   const handleWriteReviewClick = () => {
     router.push(`/texts/${textId}/reviews/edit`);
-  };
-
-  const handleTextClick = () => {
-    router.push(`/texts/${textId}`);
-  };
-
-  const handleAuthorClick = () => {
-    router.push(`/users/${dataText.author_id}`);
   };
 
   const imageUrl = dataText.photo_id
@@ -81,12 +79,14 @@ const Review: NextPage = () => {
         >
           <MiniText text={dataText} />
 
-          <DefaultButton
-            exSx={{ fontWeight: 'bold', fontSize: '0.9em', width: '180px', mt: 0.5 }}
-            onClick={handleWriteReviewClick}
-          >
-            レビューを{dataReviews.is_mine_exists ? '編集する' : '書く'}
-          </DefaultButton>
+          {!myText && (
+            <DefaultButton
+              exSx={{ fontWeight: 'bold', fontSize: '0.9em', width: '180px', mt: 0.5 }}
+              onClick={handleWriteReviewClick}
+            >
+              レビューを{dataReviews.is_mine_exists ? '編集する' : '書く'}
+            </DefaultButton>
+          )}
         </Box>
       </Box>
 

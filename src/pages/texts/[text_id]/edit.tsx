@@ -34,6 +34,7 @@ import FormItemLabel from 'components/FormItemLabel';
 import FormItemState from 'components/FormItemState';
 import FormItemSubLabel from 'components/FormItemSubLabel';
 import ImageCropDialog from 'components/ImageCropDialog';
+import LoadingBackDrop from 'components/LoadingBackDrop';
 import { AuthContext } from 'components/auth/AuthContext';
 import EditTextHeader from 'components/headers/EditTextHeader';
 import EditTextLayout from 'components/layouts/EditTextLayout';
@@ -251,6 +252,7 @@ const EditText = () => {
         setPrice(50);
         setOldPrice(50);
       }
+      setPriceChanged(false);
 
       setTitle(data.title);
       setOldTitle(data.title);
@@ -539,9 +541,7 @@ const EditText = () => {
                 <Slider
                   aria-label='円'
                   value={price}
-                  onChange={(e) => {
-                    onPriceChange(e);
-                  }}
+                  onChange={onPriceChange}
                   valueLabelDisplay='auto'
                   marks={[
                     {
@@ -847,6 +847,7 @@ const ChapterList = () => {
   });
 
   const [chapterOrder, setChapterOrder] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [chapterNameSettingOpen, setChapterMenuSettingOpen] = useState(false);
@@ -866,19 +867,16 @@ const ChapterList = () => {
         const _chapterOrder = data.chapters?.map((item) => item.id);
         setChapterOrder(_chapterOrder);
       }
+
+      setIsLoading(false);
     }
   }, [data]);
-
-  if (error) return <div>failed to load</div>;
-  if (!data) return <CenterLoadingSpinner />;
 
   const handleAddChapterClick = () => {
     setChapterMenuSettingOpen(true);
   };
 
   async function handleChapterOrderChanged(order) {
-    setIsLoading(true);
-
     const { error } = await updateChapterOrder(textId, JSON.stringify(order), authAxios);
 
     if (error) {
@@ -887,7 +885,6 @@ const ChapterList = () => {
     }
 
     mutate(`/texts/${textId}/chapters/`);
-    setIsLoading(false);
   }
 
   async function handleChapterNameDecided(name) {
@@ -901,7 +898,6 @@ const ChapterList = () => {
     }
 
     mutate(`/texts/${textId}/chapters/`);
-    setIsLoading(false);
   }
 
   async function handleDeleteChapterClick(item) {
@@ -914,7 +910,6 @@ const ChapterList = () => {
     }
 
     mutate(`/texts/${textId}/chapters/`);
-    setIsLoading(false);
   }
 
   function handleChapterClick(item) {
@@ -924,6 +919,7 @@ const ChapterList = () => {
   }
 
   async function handleTitleChange(id, title) {
+    setIsLoading(true);
     const { error } = await updateChapterTitle(id, title, authAxios);
 
     if (error) {
@@ -934,6 +930,9 @@ const ChapterList = () => {
     mutate(`/texts/${textId}/chapters/`);
   }
 
+  if (error) return <div>failed to load</div>;
+  if (!data) return <CenterLoadingSpinner />;
+
   let keyedChapterList = {};
   data.chapters.forEach((item) => {
     keyedChapterList[item.id] = item;
@@ -941,6 +940,7 @@ const ChapterList = () => {
 
   return (
     <>
+      {isLoading && <LoadingBackDrop />}
       <Box sx={{ minHeight: 400 }}>
         <Box sx={{ p: { xs: 0, md: 2 } }}>
           {data.chapters.length > 0 ? (
@@ -974,7 +974,7 @@ const ChapterList = () => {
                     {keyedChapterList[chapterId]?.title}
                   </Box>
                   <ChapterListMenuButton
-                    key={chapterId}
+                    key={chapterId + keyedChapterList[chapterId]?.title}
                     item={keyedChapterList[chapterId]}
                     handleDelete={handleDeleteChapterClick}
                     handleEdit={handleChapterClick}
@@ -1008,11 +1008,7 @@ const ChapterList = () => {
             variant='contained'
             onClick={() => handleAddChapterClick()}
           >
-            {isLoading ? (
-              <CircularProgress size={28} sx={{ color: Consts.COLOR.Primary }} />
-            ) : (
-              <>チャプターを追加</>
-            )}
+            チャプターを追加
           </Box>
         </Box>
       </Box>

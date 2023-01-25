@@ -1,6 +1,6 @@
-import { Box, Button, InputBase, Rating } from '@mui/material';
+import { Box, Button, InputBase, Rating, Slide, Snackbar } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useContext, useLayoutEffect, useState } from 'react';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import { deleteReview } from 'api/deleteReview';
@@ -9,10 +9,16 @@ import { getMyReview } from 'api/getMyReview';
 import { upsertReview } from 'api/upsertReview';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import DefaultButton from 'components/DefaultButton';
+import FormItemLabel from 'components/FormItemLabel';
+import FormItemState from 'components/FormItemState';
+import FormItemSubLabel from 'components/FormItemSubLabel';
+import LoadingBackDrop from 'components/LoadingBackDrop';
 import MiniText from 'components/MiniText';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
 import Consts from 'utils/Consts';
+import { genid } from 'utils/genid';
+import { validate } from 'utils/validate';
 
 import type { NextPage } from 'next';
 
@@ -22,9 +28,35 @@ const EditReview: NextPage = () => {
   const textId = router.query.text_id;
   const { authAxios } = useContext(AuthContext);
 
-  const [rate, setRate] = useState(3);
-  const [title, setTitle] = useState('');
-  const [comment, setComment] = useState('');
+  const [rate, setRate] = useState();
+  const [oldRate, setOldRate] = useState();
+  const [rateChanged, setRateChanged] = useState(false);
+
+  const [title, setTitle] = useState();
+  const [oldTitle, setOldTitle] = useState();
+  const [titleChanged, setTitleChanged] = useState(false);
+  const [titleValidation, setTitleValidation] = useState();
+
+  const [comment, setComment] = useState();
+  const [oldComment, setOldComment] = useState();
+  const [commentChanged, setCommentChanged] = useState(false);
+  const [commentValidation, setCommentValidation] = useState();
+
+  const [swrKey] = useState(genid(4));
+
+  const [setComplete, setSetComplete] = useState(false);
+
+  const [isSaving, setSaving] = useState(false);
+
+  const [notice, setNotice] = useState({ open: false, message: '' });
+
+  function checkChange() {
+    return rateChanged || titleChanged || commentChanged;
+  }
+
+  function checkValidation() {
+    return titleValidation.ok && commentValidation.ok;
+  }
 
   const { data: dataText, error: errorText } = useSWR(
     `texts/${textId}?brf=1`,
@@ -33,15 +65,42 @@ const EditReview: NextPage = () => {
       revalidateOnFocus: false,
     },
   );
+
   const { data: dataReview, error: errorReview } = useSWR(
-    `texts/${textId}/reviews?mine`,
+    `texts/${textId}/reviews?mine_${swrKey}`,
     () => getMyReview(textId, authAxios),
     {
       revalidateOnFocus: false,
     },
   );
 
+  const onTitleChange = (e) => {
+    setTitle(e.target.value);
+    setTitleChanged(e.target.value != oldTitle);
+    validateTitle(e.target.value);
+  };
+
+  const validateTitle = (value) => {
+    setTitleValidation(validate(value, Consts.VALIDATE.reviewTitle));
+  };
+
+  const onCommentChange = (e) => {
+    setComment(e.target.value);
+    setCommentChanged(e.target.value != oldComment);
+    validateComment(e.target.value);
+  };
+
+  const onRateChange = (value) => {
+    setRate(value);
+    setRateChanged(value != oldRate);
+  };
+
+  const validateComment = (value) => {
+    setCommentValidation(validate(value, Consts.VALIDATE.reviewComment));
+  };
+
   async function handleEditReviewClick() {
+    setSaving(true);
     const { data, error } = await upsertReview(textId, title, rate, comment, authAxios);
 
     if (error) {
@@ -49,10 +108,18 @@ const EditReview: NextPage = () => {
       return;
     }
 
-    router.push(`/texts/${textId}/reviews`);
+    setNotice({
+      open: true,
+      message: 'レビューを' + (dataReview.exists ? '更新' : '投稿') + 'しました',
+    });
+
+    setTimeout(() => {
+      router.push(`/texts/${textId}/reviews`);
+    }, 1000);
   }
 
   async function handleDeleteReviewClick() {
+    setSaving(true);
     const { data, error } = await deleteReview(textId, authAxios);
 
     if (error) {
@@ -60,35 +127,69 @@ const EditReview: NextPage = () => {
       return;
     }
 
-    router.replace(`/texts/${textId}/reviews`);
+    setNotice({
+      open: true,
+      message: 'レビューを削除しました',
+    });
+
+    setTimeout(() => {
+      router.push(`/texts/${textId}/reviews`);
+    }, 1000);
   }
 
-  useLayoutEffect(() => {
-    if (dataReview && dataReview.exists == true) {
-      setTitle(dataReview.review.title);
-      setComment(dataReview.review.comment);
-      setRate(dataReview.review.rate);
+  useEffect(() => {
+    if (dataReview) {
+      let _rate = 3;
+      let _title, _comment;
+      if (dataReview.exists) {
+        _title = dataReview.review.title;
+        _comment = dataReview.review.comment;
+        if (dataReview.review.rate) _rate = dataReview.review.rate;
+      }
+
+      setTitle(_title);
+      setOldTitle(_title);
+      setTitleChanged(false);
+      validateTitle(_title);
+
+      setComment(_comment);
+      setOldComment(_comment);
+      setCommentChanged(false);
+      validateComment(_comment);
+
+      setRate(_rate);
+      setOldRate(_rate);
+      setRateChanged(false);
+
+      setSetComplete(true);
     }
   }, [dataReview]);
 
   if (errorText) console.log(errorText);
   if (errorReview) console.log(errorReview);
-  if (!dataText || !dataReview) return <CenterLoadingSpinner />;
+  if (!dataText || !dataReview || !setComplete) return <CenterLoadingSpinner />;
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+      {isSaving && <LoadingBackDrop />}
       <Box sx={{ width: { xs: '100%', sm: '600px' }, display: 'flex', flexFlow: 'column' }}>
         <Box sx={{ fontSize: '1.2em', fontWeight: 'bold' }}>このテキストをレビュー</Box>
         <MiniText text={dataText} />
-        <Box sx={{ fontWeight: 'bold', mt: 1 }}>評価</Box>
+
+        <FormItemLabel sx={{ mt: 2 }}>評価</FormItemLabel>
         <Rating
           name='simple-controlled'
           value={rate}
           onChange={(event, newValue) => {
-            setRate(newValue);
+            onRateChange(newValue);
           }}
         />
-        <Box sx={{ fontWeight: 'bold', mt: 1 }}>レビュータイトル</Box>
+
+        <FormItemLabel sx={{ mt: 2 }}>レビュータイトル</FormItemLabel>
+        <FormItemSubLabel>
+          レビュータイトルを{Consts.VALIDATE.reviewTitle.min}～{Consts.VALIDATE.reviewTitle.max}
+          文字で入力
+        </FormItemSubLabel>
 
         <Box
           sx={{
@@ -105,13 +206,16 @@ const EditReview: NextPage = () => {
             value={title}
             variant='outlined'
             fullWidth
-            onChange={(e) => {
-              setTitle(e.target.value);
-            }}
+            onChange={onTitleChange}
           />
         </Box>
+        <FormItemState validation={titleValidation} />
 
-        <Box sx={{ fontWeight: 'bold', mt: 1 }}>レビューコメント</Box>
+        <FormItemLabel sx={{ mt: 2 }}>レビューコメント</FormItemLabel>
+        <FormItemSubLabel>
+          レビューコメントを{Consts.VALIDATE.reviewComment.min}～{Consts.VALIDATE.reviewComment.max}
+          文字で入力
+        </FormItemSubLabel>
         <Box
           sx={{
             p: 1,
@@ -129,36 +233,41 @@ const EditReview: NextPage = () => {
             fullWidth
             rows={4}
             multiline
-            onChange={(e) => {
-              setComment(e.target.value);
-            }}
+            onChange={onCommentChange}
           />
         </Box>
+        <FormItemState validation={commentValidation} />
 
         <Box sx={{ display: 'flex', mt: 3 }}>
           <DefaultButton
-            exSx={{ width: '30%', minWidth: '200px', fontSize: '1.0em', fontWeight: 'bold' }}
+            disabled={!checkChange() || !checkValidation()}
+            exSx={{ width: '30%', minWidth: '150px', fontSize: '1.0em', fontWeight: 'bold' }}
             onClick={handleEditReviewClick}
           >
-            レビューを{dataReview.exists ? '更新' : '投稿'}する
+            レビューを{dataReview.exists ? '更新' : '投稿'}
           </DefaultButton>
 
           {dataReview.exists && (
             <DefaultButton
               exSx={{
                 width: '30%',
-                minWidth: '200px',
+                minWidth: '150px',
                 fontSize: '1.0em',
                 fontWeight: 'bold',
-                ml: 2,
+                ml: 1,
               }}
               onClick={handleDeleteReviewClick}
             >
-              レビューを削除する
+              レビューを削除
             </DefaultButton>
           )}
         </Box>
       </Box>
+      <Snackbar
+        open={notice.open}
+        message={notice.message}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </Box>
   );
 };

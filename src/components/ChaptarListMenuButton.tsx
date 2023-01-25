@@ -24,6 +24,8 @@ const ChapterListMenuButton = ({ item, handleDelete, handleEdit, handleTitleChan
         <IconButton
           type='button'
           sx={{
+            width: '32px',
+            height: '32px',
             p: '7px',
             '&:hover': Consts.SX.IconButtonHover,
           }}

@@ -37,7 +37,7 @@ const AddText: NextPage = () => {
 
   return (
     <Box sx={{ display: 'flex', flexFlow: 'column', justifyContent: 'center', width: '100%' }}>
-      <Box sx={{ width: 600, mx: 'auto' }}>
+      <Box sx={{ width: '90%', maxWidth: '600px', mx: 'auto' }}>
         <FormItemLabel>テキストのタイトル</FormItemLabel>
         <FormItemSubLabel>
           テキストのタイトルを{Consts.VALIDATE.textTitle.min}～{Consts.VALIDATE.textTitle.max}
@@ -69,7 +69,7 @@ const AddText: NextPage = () => {
       </Box>
 
       <Box sx={{ mx: 'auto', mt: 3 }}>
-        <DefaultButton onClick={handleAddText} exSx={{ width: '200px' }}>
+        <DefaultButton onClick={handleAddText} sx={{ width: '200px' }}>
           {isLoading ? (
             <CircularProgress size={28} sx={{ color: 'white' }} />
           ) : (

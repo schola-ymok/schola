@@ -1,3 +1,4 @@
+import error from 'next/error';
 import escape from 'sql-template-strings';
 
 import dbQuery from 'libs/db';
@@ -16,8 +17,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'GET': // get text
       const selectValues =
         req.query.brf !== undefined
-          ? escape`texts.id, title, users.photo_id as author_photo_id, texts.photo_id as photo_id, abstract, explanation, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, updated_at, is_released, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5`
-          : escape`texts.id, title, users.photo_id as author_photo_id,texts.photo_id as photo_id, abstract, explanation, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, created_at, updated_at, number_of_updated, category1, category2, chapter_order, learning_contents, learning_requirements, is_released, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5`;
+          ? escape`texts.id, title, state, users.photo_id as author_photo_id, texts.photo_id as photo_id, abstract, explanation, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, updated_at, is_public, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5`
+          : escape`texts.id, title, state, users.photo_id as author_photo_id,texts.photo_id as photo_id, abstract, explanation, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, created_at, updated_at, number_of_updated, category1, category2, chapter_order, learning_contents, learning_requirements, is_public, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5`;
 
       const selectQuery = escape`select `.append(selectValues).append(escape`
         from texts
@@ -29,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       if (errorGet) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
 
       if (dataGet.length > 0) {
-        if (!dataGet[0].is_released) {
+        if (!dataGet[0].is_public) {
           if (!verify || (verify && dataGet[0].author_id != req.headers.user_id)) {
             return res.status(Consts.HTTP_BAD_REQUEST).end('text not released');
           }
@@ -42,12 +43,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'PUT': // update text
       if (!verify) return res.status(Consts.HTTP_BAD_REQUEST).end('not authorized');
 
-      if (req.query.release) {
+      if (req.query.reqreview !== undefined) {
+        const { data: dataReqReview, error: errorReqReview } = await dbQuery(escape`
+        update texts
+        set
+        state = ${Consts.TEXTSTATE.UnderReview}
+        where
+        id = ${req.query.text_id}
+        and
+        author_id = ${req.headers.user_id}
+        and
+        (
+        state = ${Consts.TEXTSTATE.Draft}
+        or
+        state = ${Consts.TEXTSTATE.DraftBanned}
+        or
+        state = ${Consts.TEXTSTATE.DraftRejected}
+        )
+        `);
+
+        data = dataReqReview;
+        error = errorReqReview;
+      } else if (req.query.release) {
         const release = req.query.release == 1 ? true : false;
         const { data: dataRelease, error: errorRelease } = await dbQuery(escape`
         update texts
         set
-        is_released = ${release}
+        is_public = ${release}
         where
         id = ${req.query.text_id}
         and
@@ -83,35 +105,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         data = dataPhotoUpdate;
         error = errorPhotoUpdate;
       } else {
-        if (req.query.rls) {
-          const isReleased = req.body.is_released == true ? true : false;
+        const title = req.body.title;
+        const abstract = req.body.abstract;
+        const explanation = req.body.explanation;
+        const price = req.body.price;
+        const category1 = req.body.category1;
+        const category2 = req.body.category2;
+        const learningContents = req.body.learning_contents;
+        const learningRequirements = req.body.learning_requirements;
 
-          const { data: dataUpdate, error: errorUpdate } = await dbQuery(escape`
-          update texts
-          set
-          is_released = ${isReleased}
-          where
-          id = ${req.query.text_id}
-          and
-          author_id = ${req.headers.user_id}
+        if (isEmptyString(title) || isEmptyString(abstract) || !Number.isInteger(price))
+          return res.status(Consts.HTTP_BAD_REQUEST).end('bad parameter');
+
+        const { data: dataState, error: errorState } = await dbQuery(escape`
+          select state from texts where id=${req.query.text_id}
           `);
 
-          data = dataUpdate;
-          error = errorUpdate;
+        if (errorState) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+
+        let state;
+        if (dataState.length > 0) {
+          state = dataState[0].state;
         } else {
-          const title = req.body.title;
-          const abstract = req.body.abstract;
-          const explanation = req.body.explanation;
-          const price = req.body.price;
-          const category1 = req.body.category1;
-          const category2 = req.body.category2;
-          const learningContents = req.body.learning_contents;
-          const learningRequirements = req.body.learning_requirements;
+          return res.status(Consts.HTTP_BAD_REQUEST).end('text does not exist');
+        }
 
-          if (isEmptyString(title) || isEmptyString(abstract) || !Number.isInteger(price))
-            return res.status(Consts.HTTP_BAD_REQUEST).end('bad parameter');
+        if (state == Consts.TEXTSTATE.Created) state = Consts.TEXTSTATE.Draft;
 
-          const { data: dataUpdate, error: errorUpdate } = await dbQuery(escape`
+        const { data: dataUpdate, error: errorUpdate } = await dbQuery(escape`
           update texts
           set
           title = ${title},
@@ -121,16 +142,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           category1 = ${category1},
           category2 = ${category2},
           learning_contents = ${learningContents},
-          learning_requirements = ${learningRequirements}
+          learning_requirements = ${learningRequirements},
+          state= ${state}
           where
           id = ${req.query.text_id}
           and
           author_id = ${req.headers.user_id}
-        `);
+          `);
 
-          data = dataUpdate;
-          error = errorUpdate;
-        }
+        data = dataUpdate;
+        error = errorUpdate;
       }
 
       break;

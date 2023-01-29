@@ -1,7 +1,7 @@
 export const releaseText = async (id, isRelease, authAxios) => {
   try {
     const res = await authAxios.put('/api/texts/' + id + '?rls=1', {
-      is_released: isRelease,
+      is_public: isRelease,
     });
 
     console.log(res.data);

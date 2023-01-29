@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             : 5;
       }
 
-      let wherePhrase = escape` where is_released = true`;
+      let wherePhrase = escape` where is_public = true`;
       let joinPhrase = escape` inner join users on texts.author_id = users.id`;
       let orderPhrase = escape` order by texts.updated_at desc`;
 
@@ -105,7 +105,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
       const getQuery = escape`
         select distinct
-        texts.id, texts.title, texts.photo_id as photo_id, users.photo_id as author_photo_id, substring(abstract,128) as abstract, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, texts.updated_at, is_released, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5
+        texts.id, texts.title, texts.photo_id as photo_id, users.photo_id as author_photo_id, substring(abstract,128) as abstract, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, texts.updated_at, is_public, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5, state
         from texts`
         .append(joinPhrase)
         .append(wherePhrase)
@@ -140,20 +140,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         id,
         title,
         author_id,
-        is_released,
+        price,
         number_of_updated,
         number_of_sales,
         number_of_reviews,
-        is_best_seller
+        is_best_seller,
+        state,
+        is_public
       ) values (
         ${textId},
         ${title},
         ${req.headers.user_id},
+        50,
+        0,
+        0,
+        0,
         false,
-        0,
-        0,
-        0,
-        false
+        100,
+        true
       )`);
 
       if (errorInsert) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');

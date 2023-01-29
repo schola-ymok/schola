@@ -103,14 +103,14 @@ const Review: NextPage = () => {
           {state.userId === dataReview.user_id && (
             <Box sx={{ display: 'flex', mb: 2 }}>
               <DefaultButton
-                exSx={{ width: '20%', fontWeight: 'bold', minWidth: '150px' }}
+                sx={{ width: '20%', fontWeight: 'bold', minWidth: '150px' }}
                 onClick={handleWriteReviewClick}
               >
                 レビューを編集
               </DefaultButton>
 
               <DefaultButton
-                exSx={{ fontWeight: 'bold', width: '20%', minWidth: '150px', ml: 1 }}
+                sx={{ fontWeight: 'bold', width: '20%', minWidth: '150px', ml: 1 }}
                 onClick={handleDeleteReviewClick}
               >
                 レビューを削除
@@ -123,7 +123,7 @@ const Review: NextPage = () => {
           <Stack>
             <MiniText text={dataText} />
             {state.userId !== dataReview.user_id && state.userId != dataText.author_id && (
-              <DefaultButton exSx={{ width: '180px', mb: 1 }} onClick={handleWriteReviewClick}>
+              <DefaultButton sx={{ width: '180px', mb: 1 }} onClick={handleWriteReviewClick}>
                 レビューを{dataReviews.is_mine_exists ? '編集する' : '書く'}
               </DefaultButton>
             )}

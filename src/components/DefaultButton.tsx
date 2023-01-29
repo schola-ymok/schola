@@ -3,8 +3,8 @@ import router from 'next/router';
 
 import Consts from 'utils/Consts';
 
-const DefaultButton = ({ onClick, children, disabled, exSx }) => {
-  const _sx = {
+const DefaultButton = ({ onClick, children, disabled, sx }) => {
+  const __sx = {
     backgroundColor: Consts.COLOR.Primary,
     color: 'white',
     cursor: 'pointer',
@@ -20,12 +20,12 @@ const DefaultButton = ({ onClick, children, disabled, exSx }) => {
     },
   };
 
-  let sx = _sx;
+  let _sx = __sx;
   if (disabled) {
-    sx.color = '#888888';
-    sx.backgroundColor = '#cccccc';
-    sx.cursor = 'default';
-    sx['&:hover'] = 'unset';
+    _sx.color = '#888888';
+    _sx.backgroundColor = '#cccccc';
+    _sx.cursor = 'default';
+    _sx['&:hover'] = 'unset';
   }
 
   return (
@@ -33,7 +33,7 @@ const DefaultButton = ({ onClick, children, disabled, exSx }) => {
       onClick={() => {
         if (!disabled) onClick();
       }}
-      sx={{ ...sx, ...exSx }}
+      sx={{ ..._sx, ...sx }}
     >
       {children}
     </Box>

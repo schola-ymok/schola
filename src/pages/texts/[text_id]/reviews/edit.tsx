@@ -241,7 +241,7 @@ const EditReview: NextPage = () => {
         <Box sx={{ display: 'flex', mt: 3 }}>
           <DefaultButton
             disabled={!checkChange() || !checkValidation()}
-            exSx={{ width: '30%', minWidth: '150px', fontSize: '1.0em', fontWeight: 'bold' }}
+            sx={{ width: '30%', minWidth: '150px', fontSize: '1.0em', fontWeight: 'bold' }}
             onClick={handleEditReviewClick}
           >
             レビューを{dataReview.exists ? '更新' : '投稿'}
@@ -249,7 +249,7 @@ const EditReview: NextPage = () => {
 
           {dataReview.exists && (
             <DefaultButton
-              exSx={{
+              sx={{
                 width: '30%',
                 minWidth: '150px',
                 fontSize: '1.0em',

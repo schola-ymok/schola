@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           where user_id = ${req.headers.user_id}`);
 
       const { data, error } = await dbQuery(escape`select
-        texts.id, title, substring(abstract,128) as abstract, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, updated_at, is_released, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5, purchases.created_at as purchased_at
+        texts.id, title, substring(abstract,128) as abstract, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, updated_at, is_public, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5, purchases.created_at as purchased_at
         from texts
         inner join purchases on texts.id = purchases.text_id
         inner join users on texts.author_id = users.id

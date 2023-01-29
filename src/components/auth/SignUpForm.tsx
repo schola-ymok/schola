@@ -171,7 +171,7 @@ export const SignUpForm: NextPage = () => {
       <DefaultButton
         disabled={!buttonEnable}
         variant='contained'
-        exSx={{ mx: 'auto', mt: 3, width: '100px' }}
+        sx={{ mx: 'auto', mt: 3, width: '100px' }}
         onClick={() => save()}
       >
         {isLoading ? <CircularProgress size={28} sx={{ color: 'white' }} /> : <>登録</>}

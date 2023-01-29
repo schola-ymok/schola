@@ -1,6 +1,7 @@
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import {
+  Backdrop,
   Box,
   CircularProgress,
   IconButton,
@@ -8,9 +9,10 @@ import {
   MenuItem,
   Select,
   Slider,
+  Tab,
+  Tabs,
 } from '@mui/material';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
+import { styled } from '@mui/material/styles';
 import { Container } from '@mui/system';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
@@ -23,6 +25,7 @@ import { getChapterList } from 'api/getChapterList';
 import { getMyText } from 'api/getMyText';
 import { releaseText } from 'api/releaseText';
 import { setTextCoverPhotoId } from 'api/setTextCoverPhotoId';
+import { submitApplication } from 'api/submitApplication';
 import { updateChapterOrder } from 'api/updateChapterOrder';
 import { updateChapterTitle } from 'api/updateChapterTitle';
 import { updateText } from 'api/updateText';
@@ -91,9 +94,13 @@ const EditText = () => {
   const [oldCategory2, setOldCategory2] = useState('nul');
   const [category2Changed, setCategory2Changed] = useState(false);
 
+  const [textState, setTextState] = useState();
+
   const [savingState, setSavingState] = useState(null);
   const { mutate } = useSWRConfig();
   const photoId = genid(8);
+
+  const [isReleaseToggleLoading, setIsReleaseToggleLoading] = useState(false);
 
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
@@ -241,10 +248,16 @@ const EditText = () => {
     setTab(newNumber);
   };
 
-  //console.log('validated=' + validated);
+  const LimitedBackdrop = styled(Backdrop)(() => ({
+    position: 'absolute',
+    zIndex: 100,
+    opacity: 0.5,
+  }));
 
   useEffect(() => {
     if (data) {
+      setTextState(data.state);
+
       if (data.price) {
         setPrice(data.price);
         setOldPrice(data.price);
@@ -340,8 +353,16 @@ const EditText = () => {
     mutate(`texts/${textId}`);
   }
 
+  async function handleApplicationClick() {
+    setIsReleaseToggleLoading(true);
+    const { error } = await submitApplication(textId, authAxios);
+    setIsReleaseToggleLoading(false);
+  }
+
   async function handleReleaseToggle(release) {
+    setIsReleaseToggleLoading(true);
     const { error } = await releaseText(textId, release, authAxios);
+    setIsReleaseToggleLoading(false);
   }
 
   const [imageUrl, setImageUrl] = useState('/cover-default.svg');
@@ -361,10 +382,13 @@ const EditText = () => {
 
   return (
     <>
+      {isReleaseToggleLoading && <LoadingBackDrop />}
       <EditTextHeader
+        state={data.state}
         textId={textId}
         handleReleaseToggle={handleReleaseToggle}
-        release={data.is_released}
+        handleApplicationClick={handleApplicationClick}
+        release={data.is_public}
       />
 
       <Container maxWidth='md'>
@@ -374,9 +398,11 @@ const EditText = () => {
             <Tab label={<Box sx={{ fontWeight: 'bold' }}>チャプター</Box>} />
           </Tabs>
         </Box>
+
         <TabPanel value={tab} index={0}>
           <Box
             sx={{
+              position: 'relative',
               width: { xs: '98%', md: '90%' },
               mx: 'auto',
               display: 'flex',
@@ -384,9 +410,20 @@ const EditText = () => {
               p: { xs: 0.4, sm: 2 },
             }}
           >
+            {textState == Consts.TEXTSTATE.UnderReview && <LimitedBackdrop open={open} />}
+
+            <DefaultButton
+              sx={{ width: '100px', ml: 'auto' }}
+              disabled={!checkChange() || !checkValidation()}
+              onClick={() => {
+                if (savingState !== 'saving') handleSaveClick();
+              }}
+            >
+              {saveButtonContent}
+            </DefaultButton>
+
             {/* image */}
             <FormItemLabel>カバー画像</FormItemLabel>
-
             <Box sx={{ mt: 1 }}>
               {isUploadingImage ? (
                 <>
@@ -443,14 +480,12 @@ const EditText = () => {
                 </>
               )}
             </Box>
-
             {/* title */}
             <FormItemLabel sx={{ mt: 3 }}>テキストのタイトル</FormItemLabel>
             <FormItemSubLabel>
               テキストのタイトルを{Consts.VALIDATE.textTitle.min}～{Consts.VALIDATE.textTitle.max}
               文字で入力
             </FormItemSubLabel>
-
             <Box
               sx={{
                 p: 1,
@@ -471,7 +506,6 @@ const EditText = () => {
               />
             </Box>
             <FormItemState validation={titleValidation} />
-
             {/* abstract */}
             <FormItemLabel sx={{ mt: 2 }}>テキストの簡単な説明</FormItemLabel>
             <FormItemSubLabel>
@@ -479,7 +513,6 @@ const EditText = () => {
               {Consts.VALIDATE.textAbstract.max}
               文字で入力
             </FormItemSubLabel>
-
             <Box
               sx={{
                 p: 1,
@@ -501,7 +534,6 @@ const EditText = () => {
               />
             </Box>
             <FormItemState validation={abstractValidation} />
-
             {/* explanation */}
             <FormItemLabel sx={{ mt: 2 }}>テキストの詳細な解説</FormItemLabel>
             <FormItemSubLabel>
@@ -509,19 +541,15 @@ const EditText = () => {
               {Consts.VALIDATE.textExplanation.max}
               文字で入力
             </FormItemSubLabel>
-
             <RTEditor
               placeholder='テキストの詳細な解説'
               initialValue={explanation}
               onChange={onExplanationChange}
             />
-
             <FormItemState validation={explanationValidation} />
-
             {/* Price */}
             <FormItemLabel sx={{ mt: 2 }}>テキストの販売価格</FormItemLabel>
             <FormItemSubLabel>テキストの販売価格をスライダで決定</FormItemSubLabel>
-
             <Box sx={{ display: 'flex', flexFlow: { xs: 'column', sm: 'unset' } }}>
               <Box
                 sx={{
@@ -537,7 +565,15 @@ const EditText = () => {
                 {price}円
               </Box>
 
-              <Box sx={{ my: 'auto', ml: 2, mr: { xs: 'unset', sm: 'auto' }, p: 1, width: '90%' }}>
+              <Box
+                sx={{
+                  my: 'auto',
+                  ml: { xs: 'auto', sm: 2 },
+                  mr: 'auto',
+                  p: 1,
+                  width: '75%',
+                }}
+              >
                 <Slider
                   aria-label='円'
                   value={price}
@@ -559,11 +595,9 @@ const EditText = () => {
                 />
               </Box>
             </Box>
-
             {/* Category */}
             <FormItemLabel sx={{ mt: 1 }}>カテゴリの選択</FormItemLabel>
             <FormItemSubLabel>テキストのカテゴリを選択【任意】</FormItemSubLabel>
-
             <Box
               sx={{
                 display: 'flex',
@@ -641,14 +675,12 @@ const EditText = () => {
                   })}
               </Select>
             </Box>
-
             {/* LearningContents */}
             <FormItemLabel sx={{ mt: 3 }}>テキストで学習できることは何ですか？</FormItemLabel>
             <FormItemSubLabel>
               学べることを最低４つ入力（各項目は{Consts.VALIDATE.learningContent.min}～
               {Consts.VALIDATE.learningContent.max}文字で入力）
             </FormItemSubLabel>
-
             <Box sx={{ width: '100%' }}>
               <LearningContentsList
                 learningContents={learningContents}
@@ -656,20 +688,17 @@ const EditText = () => {
                 onLearningContentsChange={onLearningContentsChange}
               />
             </Box>
-
             <ItemAddButton
               onClick={() => {
                 onLearningContentsChange([...learningContents, '']);
               }}
             />
-
             {/* LearningRequirements */}
             <FormItemLabel sx={{ mt: 3 }}>想定している読者や要件は何ですか？</FormItemLabel>
             <FormItemSubLabel>
               想定読者や学習要件を最低１つ入力（各項目は{Consts.VALIDATE.learningRequirements.min}～
               {Consts.VALIDATE.learningRequirements.max}文字で入力）
             </FormItemSubLabel>
-
             <Box sx={{ width: '100%' }}>
               <LearningRequirementsList
                 learningRequirements={learningRequirements}
@@ -677,15 +706,13 @@ const EditText = () => {
                 onLearningRequirementsChange={onLearningRequirementsChange}
               />
             </Box>
-
             <ItemAddButton
               onClick={() => {
                 onLearningRequirementsChange([...learningRequirements, '']);
               }}
             />
-
             <DefaultButton
-              exSx={{ width: '180px', mt: { xs: 2, md: 4 }, mx: 'auto' }}
+              sx={{ width: '180px', mt: { xs: 2, md: 4 }, mx: 'auto' }}
               disabled={!checkChange() || !checkValidation()}
               onClick={() => {
                 if (savingState !== 'saving') handleSaveClick();

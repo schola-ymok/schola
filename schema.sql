@@ -23,7 +23,7 @@ create table texts(
   id varchar(8) unique not null,
   author_id varchar(8) not null,
   title varchar(255),
-  is_released boolean not null,
+  state smallint,
   abstract mediumtext,
   explanation mediumtext,
   photo_id varchar(8),
@@ -44,7 +44,9 @@ create table texts(
   rate_ratio_2 tinyint, 
   rate_ratio_3 tinyint, 
   rate_ratio_4 tinyint, 
-  rate_ratio_5 tinyint, 
+  rate_ratio_5 tinyint,
+  is_public boolean not null,
+  notice mediumtext,
   fulltext (title,abstract,learning_contents,learning_requirements) with parser ngram,
   constraint cst_texts_author_id
     foreign key (author_id)

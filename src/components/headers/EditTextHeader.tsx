@@ -1,24 +1,25 @@
+import { release } from 'os';
+
 import { Box, ToggleButton, ToggleButtonGroup, useMediaQuery } from '@mui/material';
 import router from 'next/router';
 import { useState } from 'react';
 
+import DefaultButton from 'components/DefaultButton';
 import Consts from 'utils/Consts';
 
 import Logo from './Logo';
+import PreviewButton from './PreviewButton';
+import ReleaseToggle from './ReleaseToggle';
 import SLogo from './SLogo';
 
-const EditTextHeader = ({ textId, release, handleReleaseToggle }) => {
-  const [toggleReleaseValue, setToggleReleaseValue] = useState(release ? 'release' : 'draft');
-
-  const ToggleButtonSxL = {
-    ...Consts.SX.ToggleButton,
-    borderWidth: '2px 0px 2px 2px',
-  };
-  const ToggleButtonSxR = {
-    ...Consts.SX.ToggleButton,
-    borderWidth: '2px 2px 2px 0px',
-  };
-
+const EditTextHeader = ({
+  state,
+  hasChapter,
+  textId,
+  release,
+  handleReleaseToggle,
+  handleApplicationClick,
+}) => {
   const mq = useMediaQuery('(min-width:600px)');
 
   return (
@@ -45,54 +46,19 @@ const EditTextHeader = ({ textId, release, handleReleaseToggle }) => {
             alignItems: 'center',
           }}
         >
-          <ToggleButtonGroup sx={{ fontWeight: 'bold' }} exclusive value={toggleReleaseValue}>
-            <ToggleButton
-              value='draft'
-              sx={ToggleButtonSxL}
-              onClick={() => {
-                setToggleReleaseValue('draft');
-                handleReleaseToggle(false);
-              }}
-            >
-              下書き
-            </ToggleButton>
-            <ToggleButton
-              value='release'
-              sx={ToggleButtonSxR}
-              onClick={() => {
-                setToggleReleaseValue('release');
-                handleReleaseToggle(true);
-              }}
-            >
-              公開
-            </ToggleButton>
-          </ToggleButtonGroup>
-          <Box
-            variant='contained'
+          {state > 300 && (
+            <ReleaseToggle release={release} handleReleaseToggle={handleReleaseToggle} />
+          )}
+          <PreviewButton
             onClick={() => {
               router.push(`/texts/${textId}`);
             }}
-            sx={{
-              pr: 2,
-              pl: 2,
-              ml: 1,
-              height: 40,
-              display: 'flex',
-              cursor: 'pointer',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: Consts.COLOR.Primary,
-              backgroundColor: 'white',
-              whiteSpace: 'nowrap',
-              fontWeight: 'bold',
-              border: '2px solid ' + Consts.COLOR.Primary,
-              '&:hover': {
-                backgroundColor: Consts.COLOR.LightPrimary,
-              },
-            }}
-          >
-            プレビュー
-          </Box>
+          />
+          {(state == Consts.TEXTSTATE.Draft || state == Consts.TEXTSTATE.DraftRejected) && (
+            <DefaultButton sx={{ ml: 1 }} onClick={handleApplicationClick}>
+              販売審査に提出
+            </DefaultButton>
+          )}
         </Box>
       </Box>
     </>

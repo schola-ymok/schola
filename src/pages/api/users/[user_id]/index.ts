@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         }
       } else {
         const { data: dataCountTexts, error: errorCountTexts } = await dbQuery(escape`
-        select count(*) as cnt from texts where author_id=${req.query.user_id} and is_released=true`);
+        select count(*) as cnt from texts where author_id=${req.query.user_id} and is_public=true`);
 
         const { data: dataCountReviews, error: errorCountReviews } = await dbQuery(escape`
         select count(*) as cnt from reviews

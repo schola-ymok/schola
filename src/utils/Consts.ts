@@ -25,25 +25,20 @@ namespace Consts {
     },
   };
 
+  export const TEXTSTATE = {
+    Created: 100,
+    Draft: 101,
+    DraftRejected: 102,
+    DraftBanned: 103,
+    UnderReview: 200,
+    Selling: 300,
+    SellingWithReader: 400,
+  };
+
   export const SX = {
     IconButtonHover: {
       color: Consts.COLOR.IconDarkGrey,
       backgroundColor: Consts.COLOR.IconButtonBackGround,
-    },
-    ToggleButton: {
-      fontSize: '0.8em',
-      fontWeight: 'bold',
-      borderStyle: 'solid',
-      borderColor: Consts.COLOR.Primary,
-      p: 0.9,
-      '&.Mui-selected': {
-        color: Consts.COLOR.Primary,
-        backgroundColor: Consts.COLOR.LightPrimary,
-      },
-      '&.Mui-selected:hover': {
-        color: Consts.COLOR.Primary,
-        backgroundColor: Consts.COLOR.LightPrimarySelected,
-      },
     },
     DashedButton: {
       backgroundColor: Consts.COLOR.LightPrimary,

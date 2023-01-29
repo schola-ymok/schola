@@ -81,7 +81,7 @@ const Review: NextPage = () => {
 
           {!myText && (
             <DefaultButton
-              exSx={{ fontWeight: 'bold', fontSize: '0.9em', width: '180px', mt: 0.5 }}
+              sx={{ fontWeight: 'bold', fontSize: '0.9em', width: '180px', mt: 0.5 }}
               onClick={handleWriteReviewClick}
             >
               レビューを{dataReviews.is_mine_exists ? '編集する' : '書く'}

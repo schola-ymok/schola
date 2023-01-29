@@ -43,11 +43,11 @@ const ImageCropDialog = ({
             sx={{ width: '85%', mx: 'auto' }}
           />
           <Box sx={{ display: 'flex', mt: 2 }}>
-            <DefaultButton exSx={{ ml: 'auto', mr: 1 }} onClick={handleClose}>
+            <DefaultButton sx={{ ml: 'auto', mr: 1 }} onClick={handleClose}>
               キャンセル
             </DefaultButton>
             <DefaultButton
-              exSx={{ mr: 3, mb: 2 }}
+              sx={{ mr: 3, mb: 2 }}
               onClick={() => {
                 showCroppedImage();
                 handleClose();

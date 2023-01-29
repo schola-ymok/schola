@@ -14,15 +14,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
       const { data: dataCount, error: errorCount } =
         await dbQuery(escape`select count(*) as cnt from texts 
-          where is_released = true and author_id = ${req.query.user_id}`);
+          where is_public = true and author_id = ${req.query.user_id}`);
 
       const { data: dataGet, error: errorGet } = await dbQuery(escape`
           select
-          texts.id, title, substring(abstract,128) as abstract, author_id, users.display_name as author_display_name, texts.photo_id as photo_id, price, number_of_sales, number_of_reviews, updated_at, is_released, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5
+          texts.id, title, substring(abstract,128) as abstract, author_id, users.display_name as author_display_name, texts.photo_id as photo_id, price, number_of_sales, number_of_reviews, updated_at, is_public, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5
           from texts
           inner join users on texts.author_id = users.id
           where author_id=${req.query.user_id}
-          and is_released = true
+          and is_public = true
           order by updated_at desc limit ${Consts.SELECT_LIMIT} offset ${offset}
           `);
 

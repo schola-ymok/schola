@@ -8,7 +8,7 @@ import DashboardTextListMenuButton from './DashboardTextListMenuButton';
 
 const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
   const handleTextClick = () => {
-    if (text.is_released) {
+    if (text.is_public) {
       router.push(`/texts/${text.id}`);
     } else {
       handleEditText(text.id);
@@ -54,7 +54,7 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
                   {text.title?.length > 40 && <>...</>}
                 </Box>
                 <Box sx={{ mx: 1, fontSize: '0.8em', my: 'auto', color: Consts.COLOR.Grey }}>
-                  {text.is_released ? '公開中' : '下書き中'}
+                  {text.is_public ? '公開中' : '下書き中'}
                 </Box>
               </Box>
 
@@ -81,7 +81,7 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
               <Box sx={{ display: 'flex', flexFlow: 'column', height: '100%' }}>
                 <Box sx={{ display: 'flex' }}>
                   <DashboardTextListMenuButton
-                    isReleased={text.is_released}
+                    isReleased={text.is_public}
                     handleDelete={handleDeleteText}
                     handleView={handleTextClick}
                     handleEdit={handleEditText}

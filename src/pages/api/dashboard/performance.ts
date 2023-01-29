@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
       const { data: dataTexts, error: errorTexts } = await dbQuery(escape`
         select id, title, number_of_reviews, number_of_sales
-        from texts where is_released = true and
+        from texts where is_public = true and
         author_id = ${req.headers.user_id}
       `);
 

@@ -10,7 +10,7 @@ const AddNewTextButton = () => {
   };
 
   return (
-    <DefaultButton onClick={handleNewText} exSx={{ ml: 1, width: '76px' }}>
+    <DefaultButton onClick={handleNewText} sx={{ ml: 1, width: '76px' }}>
       作成
     </DefaultButton>
   );

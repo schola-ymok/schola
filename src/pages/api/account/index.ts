@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   switch (req.method) {
     case 'GET':
       const selectPhrase =
-        req.query.prl !== undefined ? 'id, display_name, account_name, photo_id' : '*';
+        req.query.prl !== undefined ? 'id, display_name, banned, account_name, photo_id' : '*';
 
       const { data, error } = await dbQuery(`
       select ${selectPhrase} 

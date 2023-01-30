@@ -6,6 +6,7 @@ export const getMyBriefAccount = async (authAxios) => {
     return {
       data: {
         userId: res.data.id,
+        banned: res.data.banned,
         accountName: res.data.account_name,
         displayName: res.data.display_name,
         photoId: res.data.photo_id,

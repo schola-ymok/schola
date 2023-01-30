@@ -24,6 +24,11 @@ export const reducer = (state: Store, action: Action): Store => {
       ...state,
       isLoggedin: false,
     };
+  } else if (action.type == 'Banned') {
+    return {
+      ...state,
+      banned: true,
+    };
   } else if (action.type == 'SetProfilePhoto') {
     return {
       ...state,

@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       const selectValues =
         req.query.brf !== undefined
           ? escape`texts.id, title, state, users.photo_id as author_photo_id, texts.photo_id as photo_id, abstract, explanation, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, updated_at, is_public, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5`
-          : escape`texts.id, title, state, users.photo_id as author_photo_id,texts.photo_id as photo_id, abstract, explanation, author_id, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, created_at, updated_at, number_of_updated, category1, category2, chapter_order, learning_contents, learning_requirements, is_public, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5`;
+          : escape`texts.id, title, state, users.photo_id as author_photo_id,texts.photo_id as photo_id, abstract, explanation, author_id, notice, users.display_name as author_display_name, price, number_of_sales, number_of_reviews, created_at, updated_at, number_of_updated, category1, category2, chapter_order, learning_contents, learning_requirements, is_public, is_best_seller, rate, rate_ratio_1, rate_ratio_2, rate_ratio_3, rate_ratio_4, rate_ratio_5`;
 
       const selectQuery = escape`select `.append(selectValues).append(escape`
         from texts
@@ -47,7 +47,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         const { data: dataReqReview, error: errorReqReview } = await dbQuery(escape`
         update texts
         set
-        state = ${Consts.TEXTSTATE.UnderReview}
+        state = ${Consts.TEXTSTATE.UnderReview},
+        is_public = true
         where
         id = ${req.query.text_id}
         and

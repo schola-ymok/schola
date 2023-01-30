@@ -10,6 +10,7 @@ export interface Store {
   userId: string;
   displayName: string;
   accountName: string;
+  banned: boolean;
   photoId: string;
   emailVerified: boolean;
   email: string;
@@ -23,6 +24,7 @@ const initialState: Store = {
   accountName: null,
   photoId: null,
   emailVerified: false,
+  banned: false,
   logTagID: Math.random().toString(32).substring(2),
 };
 

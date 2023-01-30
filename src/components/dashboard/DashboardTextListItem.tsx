@@ -1,5 +1,6 @@
 import StarIcon from '@mui/icons-material/Star';
 import { Box, Divider, IconButton, Rating } from '@mui/material';
+import { border, color } from '@mui/system';
 import router from 'next/router';
 
 import Consts from 'utils/Consts';
@@ -18,6 +19,18 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
   const imageUrl = text.photo_id
     ? Consts.IMAGE_STORE_URL + text.photo_id + '.png'
     : '/cover-default.svg';
+
+  let stateLabel = '下書き中';
+  if (text.state == Consts.TEXTSTATE.DraftBanned || text.state == Consts.TEXTSTATE.DraftRejected) {
+    stateLabel = '下書き中（事務局コメントあり）';
+  } else if (
+    text.state == Consts.TEXTSTATE.Selling ||
+    text.state == Consts.TEXTSTATE.SellingWithReader
+  ) {
+    stateLabel = '販売中';
+  } else if (text.state == Consts.TEXTSTATE.UnderReview) {
+    stateLabel = '審査中';
+  }
 
   return (
     <>
@@ -53,9 +66,6 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
                   {text.title?.substring(0, 40)}
                   {text.title?.length > 40 && <>...</>}
                 </Box>
-                <Box sx={{ mx: 1, fontSize: '0.8em', my: 'auto', color: Consts.COLOR.Grey }}>
-                  {text.is_public ? '公開中' : '下書き中'}
-                </Box>
               </Box>
 
               <Box sx={{ display: 'flex' }}>
@@ -75,6 +85,18 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
                   emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
                 />
                 {text.number_of_reviews}
+              </Box>
+              <Box
+                sx={{
+                  fontSize: '0.8em',
+                  color: Consts.COLOR.PrimaryDark,
+                  borderRadius: '5px',
+                  px: 0.5,
+                  width: 'fit-content',
+                  border: '1px solid ' + Consts.COLOR.PrimaryDark,
+                }}
+              >
+                {stateLabel}
               </Box>
             </Box>
             <Box>

@@ -9,11 +9,13 @@ import {
   MenuItem,
   Select,
   Slider,
+  Snackbar,
   Tab,
   Tabs,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Container } from '@mui/system';
+import htmlParse from 'html-react-parser';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
@@ -51,7 +53,10 @@ const EditText = () => {
   const router = useRouter();
   const { authAxios } = useContext(AuthContext);
 
-  const [tab, setTab] = useState(router.query.chp !== undefined ? 1 : 0);
+  let _tab = 0;
+  if (router.query.chp !== undefined) _tab = 1;
+  if (router.query.ntc !== undefined) _tab = 2;
+  const [tab, setTab] = useState(_tab);
 
   const textId = router.query.text_id;
 
@@ -101,6 +106,8 @@ const EditText = () => {
   const photoId = genid(8);
 
   const [isReleaseToggleLoading, setIsReleaseToggleLoading] = useState(false);
+
+  const [snack, setSnack] = useState({ open: false, message: '' });
 
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
@@ -242,6 +249,8 @@ const EditText = () => {
   const handleTabChange = (event, newNumber) => {
     if (newNumber == 1) {
       router.replace(`/texts/${textId}/edit?chp`);
+    } else if (newNumber == 2) {
+      router.replace(`/texts/${textId}/edit?ntc`);
     } else {
       router.replace(`/texts/${textId}/edit`);
     }
@@ -256,6 +265,7 @@ const EditText = () => {
 
   useEffect(() => {
     if (data) {
+      console.log(data);
       setTextState(data.state);
 
       if (data.price) {
@@ -356,7 +366,9 @@ const EditText = () => {
   async function handleApplicationClick() {
     setIsReleaseToggleLoading(true);
     const { error } = await submitApplication(textId, authAxios);
-    setIsReleaseToggleLoading(false);
+
+    setSnack({ open: true, message: '審査を提出しました' });
+    router.reload(`/texts/${textId}/edit`);
   }
 
   async function handleReleaseToggle(release) {
@@ -382,6 +394,14 @@ const EditText = () => {
 
   return (
     <>
+      <Snackbar
+        open={snack.open}
+        message={snack.message}
+        autoHideDuration={1000}
+        onClose={() => setSnack({ open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
+
       {isReleaseToggleLoading && <LoadingBackDrop />}
       <EditTextHeader
         state={data.state}
@@ -396,8 +416,20 @@ const EditText = () => {
           <Tabs value={tab} onChange={handleTabChange}>
             <Tab label={<Box sx={{ fontWeight: 'bold' }}>テキスト情報</Box>} />
             <Tab label={<Box sx={{ fontWeight: 'bold' }}>チャプター</Box>} />
+            {(textState == Consts.TEXTSTATE.DraftBanned ||
+              textState == Consts.TEXTSTATE.DraftRejected) && (
+              <Tab
+                label={<Box sx={{ fontWeight: 'bold', color: 'red' }}>事務局からの伝達事項</Box>}
+              />
+            )}
           </Tabs>
         </Box>
+
+        {textState == Consts.TEXTSTATE.UnderReview && (
+          <Box sx={{ mt: 2, p: 2, display: 'flex', justifyContent: 'center', fontWeight: 'bold' }}>
+            ただいま販売審査中です。公開までしばらくお待ちください。
+          </Box>
+        )}
 
         <TabPanel value={tab} index={0}>
           <Box
@@ -723,18 +755,35 @@ const EditText = () => {
           </Box>
         </TabPanel>
         <TabPanel value={tab} index={1}>
-          <Box sx={{ display: 'flex' }}>
-            <Box sx={{ mt: 1.5, mx: { xs: 'auto', md: 2 } }}>
-              <h5>Chapters</h5>
+          <Box sx={{ position: 'relative' }}>
+            {textState == Consts.TEXTSTATE.UnderReview && <LimitedBackdrop open={open} />}
+            <Box sx={{ display: 'flex' }}>
+              <Box sx={{ mt: 1.5, mx: { xs: 'auto', md: 2 } }}>
+                <h5>Chapters</h5>
+              </Box>
+            </Box>
+            <Box fullWidth sx={{ p: 1 }}>
+              <ChapterList />
             </Box>
           </Box>
-          <Box fullWidth sx={{ p: 1 }}>
-            <ChapterList />
+        </TabPanel>
+
+        <TabPanel value={tab} index={2}>
+          <Box sx={{ display: 'flex' }}>
+            <Box sx={{ mt: 1.5, mx: { xs: 'auto', md: 2 } }}>
+              <Notice message={data.notice} />
+            </Box>
           </Box>
         </TabPanel>
       </Container>
     </>
   );
+};
+
+const Notice = ({ message }) => {
+  const html = htmlParse(message);
+
+  return <Box className='richtext'>{html}</Box>;
 };
 
 const ItemAddButton = ({ onClick }) => {

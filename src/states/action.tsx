@@ -19,6 +19,10 @@ export type PreLogin = {
   isEmailVerified: boolean;
 };
 
+export type Banned = {
+  type: 'Banned';
+};
+
 export type SetProfilePhoto = {
   type: 'SetProfilePhoto';
   photoId: string;

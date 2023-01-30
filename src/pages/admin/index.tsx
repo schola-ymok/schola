@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 
 import AdminApplcationList from 'components/admin/AdminApplicationList';
+import AdminBanText from 'components/admin/AdminBanText';
+import AdminBanUser from 'components/admin/AdminBanUser';
 import { AuthContext } from 'components/auth/AuthContext';
 import DashboardPerformance from 'components/dashboard/DashboardPerformance';
 import DashboardRevenue from 'components/dashboard/DashboardRevenue';
@@ -53,13 +55,10 @@ const Home: NextPage = () => {
           <AdminApplcationList />
         </TabPanel>
         <TabPanel value={tab} index={1}>
-          <DashboardReviews />
+          <AdminBanText />
         </TabPanel>
         <TabPanel value={tab} index={2}>
-          <DashboardPerformance />
-        </TabPanel>
-        <TabPanel value={tab} index={3}>
-          <DashboardRevenue />
+          <AdminBanUser />
         </TabPanel>
       </Container>
     </>

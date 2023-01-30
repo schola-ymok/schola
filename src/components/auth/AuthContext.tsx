@@ -1,12 +1,13 @@
-import Box from '@mui/material/Box';
+import { Dialog, Box, DialogContent, Button, DialogActions } from '@mui/material';
 import axios from 'axios';
-import { getAuth } from 'firebase/auth';
-import { useRouter } from 'next/router';
+import { getAuth, signOut } from 'firebase/auth';
+import router, { useRouter } from 'next/router';
 import { createContext, memo, useContext, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { getMyBriefAccount } from 'api/getMyBriefAccount';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import DefaultButton from 'components/DefaultButton';
 import { SignUpForm } from 'components/auth/SignUpForm';
 import Header from 'components/headers/Header';
 import { AppContext } from 'states/store';
@@ -35,6 +36,8 @@ const Root = memo((props) => {
     return CGuest();
   } else if (cstate == 'profile') {
     return CProfile();
+  } else if (cstate == 'banned') {
+    return CBanned();
   }
 
   function CLoading() {
@@ -56,6 +59,27 @@ const Root = memo((props) => {
           <SignUpForm />
         </Box>
       </AuthContext.Provider>
+    );
+  }
+
+  function CBanned() {
+    console.log('##banned');
+    const logout = () => {
+      signOut(getAuth());
+      router.reload();
+    };
+    return (
+      <>
+        <Header authLoading />
+        <Dialog fullWidth='xs' maxWidth='xs' open={true} onClose={logout} sx={{ mx: 'auto' }}>
+          <DialogContent>
+            <Box sx={{ fontWeight: 'bold', width: '70%' }}>このアカウントは凍結されています</Box>
+          </DialogContent>
+          <DialogActions>
+            <DefaultButton onClick={logout}>戻る</DefaultButton>
+          </DialogActions>
+        </Dialog>
+      </>
     );
   }
 
@@ -88,6 +112,8 @@ export const AuthProvider = ({ children }) => {
   const [firebaseUser, firebaseUserLoading, firebaseError] = useAuthState(getAuth());
   const { state, dispatch } = useContext(AppContext);
   const [accountChecking, setAccountChecking] = useState(true);
+
+  const router = useRouter();
 
   const reSetAxiosInterceptor = ({ interceptor, token, firebaseId, userId }) => {
     authAxios.interceptors.request.eject(interceptor);
@@ -162,20 +188,24 @@ export const AuthProvider = ({ children }) => {
         // if error then signup form is displayed
 
         if (data) {
-          reSetAxiosInterceptor({
-            interceptor: handleAxiosInterceper,
-            ...authAxiosParams,
-            userId: data.userId,
-          });
+          if (data.banned) {
+            dispatch({ type: 'Banned' });
+          } else {
+            reSetAxiosInterceptor({
+              interceptor: handleAxiosInterceper,
+              ...authAxiosParams,
+              userId: data.userId,
+            });
 
-          //console.log(data);
-          dispatch({
-            type: 'Login',
-            userId: data.userId,
-            accountName: data.accountName,
-            displayName: data.displayName,
-            photoId: data.photoId,
-          });
+            //console.log(data);
+            dispatch({
+              type: 'Login',
+              userId: data.userId,
+              accountName: data.accountName,
+              displayName: data.displayName,
+              photoId: data.photoId,
+            });
+          }
         }
 
         setAccountChecking(false);
@@ -191,6 +221,8 @@ export const AuthProvider = ({ children }) => {
   } else if (firebaseUser) {
     if (state.isLoggedin) {
       cstate = 'member';
+    } else if (state.banned) {
+      cstate = 'banned';
     } else {
       cstate = 'profile';
     }

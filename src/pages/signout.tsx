@@ -5,7 +5,6 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 const Signout = () => {
   const [firebaseUser, firebaseUserLoading, firebaseError] = useAuthState(getAuth());
 
-  console.log('qqqqqq');
   if (firebaseUser) {
     signOut(getAuth());
     router.reload();

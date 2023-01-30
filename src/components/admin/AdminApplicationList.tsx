@@ -1,4 +1,4 @@
-import { Box, Pagination } from '@mui/material';
+import { Box, Pagination, Snackbar } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext, useState, useEffect } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
@@ -28,6 +28,8 @@ const AdminApplcationList = () => {
     },
   );
 
+  const [snack, setSnack] = useState({ open: false, message: '' });
+
   const [loading, setLoading] = useState(false);
 
   if (error) return <h1>error</h1>;
@@ -41,6 +43,7 @@ const AdminApplcationList = () => {
       return;
     }
 
+    setSnack({ open: true, message: '承認しました' });
     mutate(`/admin/applications?page=${page}`);
   };
 
@@ -53,6 +56,7 @@ const AdminApplcationList = () => {
       return;
     }
 
+    setSnack({ open: true, message: '差し戻しました' });
     mutate(`/admin/applications?page=${page}`);
   };
 
@@ -100,6 +104,13 @@ const AdminApplcationList = () => {
         <Box sx={{ fontSize: '1.2em', fontWeight: 'bold', mb: 1 }}>査読申請一覧</Box>
         <DataContent data={data} />
       </Box>
+      <Snackbar
+        open={snack.open}
+        message={snack.message}
+        autoHideDuration={1000}
+        onClose={() => setSnack({ open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </Box>
   );
 };

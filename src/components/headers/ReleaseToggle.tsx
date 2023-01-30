@@ -60,7 +60,7 @@ const ReleaseToggle = ({ release, handleReleaseToggle, disabled }) => {
           handleReleaseToggle(false);
         }}
       >
-        下書き
+        非公開
       </ToggleButton>
       <ToggleButton
         disabled={disabled}

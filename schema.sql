@@ -16,6 +16,7 @@ create table users (
   twitter varchar(64),
   web varchar(255),
   facebook varchar(64),
+  banned boolean,
   fulltext (display_name,profile_message,majors) with parser ngram
 ) engine=innodb character set utf8mb4;
 

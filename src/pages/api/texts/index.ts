@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             : 5;
       }
 
-      let wherePhrase = escape` where is_public = true`;
+      let wherePhrase = escape` where is_public = true and ( state=${Consts.TEXTSTATE.Selling} or state=${Consts.TEXTSTATE.SellingWithReader})`;
       let joinPhrase = escape` inner join users on texts.author_id = users.id`;
       let orderPhrase = escape` order by texts.updated_at desc`;
 

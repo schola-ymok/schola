@@ -46,7 +46,7 @@ const EditTextHeader = ({
             alignItems: 'center',
           }}
         >
-          {state > 300 && (
+          {(state == Consts.TEXTSTATE.Selling || state == Consts.TEXTSTATE.SellingWithReader) && (
             <ReleaseToggle release={release} handleReleaseToggle={handleReleaseToggle} />
           )}
           <PreviewButton

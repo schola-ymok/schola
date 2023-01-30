@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       if (dataGet.length > 0) {
         if (!dataGet[0].is_public) {
           if (!verify || (verify && dataGet[0].author_id != req.headers.user_id)) {
-            return res.status(Consts.HTTP_BAD_REQUEST).end('text not released');
+            return res.status(Consts.HTTP_BAD_REQUEST).end('text is not public');
           }
         }
         return res.status(Consts.HTTP_OK).json(dataGet[0]);
@@ -65,12 +65,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
         data = dataReqReview;
         error = errorReqReview;
-      } else if (req.query.release) {
-        const release = req.query.release == 1 ? true : false;
+      } else if (req.query.rls) {
+        const isPublic = req.body.is_public;
         const { data: dataRelease, error: errorRelease } = await dbQuery(escape`
         update texts
         set
-        is_public = ${release}
+        is_public = ${isPublic}
         where
         id = ${req.query.text_id}
         and

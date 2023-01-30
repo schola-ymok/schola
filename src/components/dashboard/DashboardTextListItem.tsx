@@ -27,7 +27,11 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
     text.state == Consts.TEXTSTATE.Selling ||
     text.state == Consts.TEXTSTATE.SellingWithReader
   ) {
-    stateLabel = '販売中';
+    if (text.is_public) {
+      stateLabel = '販売中(公開)';
+    } else {
+      stateLabel = '販売中(非公開)';
+    }
   } else if (text.state == Consts.TEXTSTATE.UnderReview) {
     stateLabel = '審査中';
   }

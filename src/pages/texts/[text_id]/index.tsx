@@ -30,6 +30,7 @@ import ViewTextAbstractLayout from 'components/layouts/ViewTextAbstractLayout';
 import chapters from 'pages/api/texts/[text_id]/chapters';
 import Consts from 'utils/Consts';
 import { extractToc } from 'utils/extractToc';
+import { genid } from 'utils/genid';
 
 import type { NextPage } from 'next';
 
@@ -42,6 +43,7 @@ const Text: NextPage = () => {
 
   const router = useRouter();
   const textId = router.query.text_id;
+  const [swrKey] = useState(genid(4));
 
   const mq = useMediaQuery('(min-width:1000px)');
 
@@ -51,7 +53,7 @@ const Text: NextPage = () => {
     }
   }, []);
 
-  const { data, error } = useSWR(`texts/${textId}`, () => getText(textId), {
+  const { data, error } = useSWR(`texts/${textId}?_${swrKey}`, () => getText(textId), {
     revalidateOnFocus: false,
   });
 
@@ -571,7 +573,7 @@ const Text: NextPage = () => {
   );
 
   const Explanation = () => {
-    const html = htmlParse(data.explanation);
+    const html = htmlParse(data.explanation ? data.explanation : '');
     return (
       <>
         <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>解説</Box>
@@ -595,9 +597,35 @@ const Text: NextPage = () => {
     </>
   );
 
+  const NoticeBanner = () => {
+    if (
+      (data.state == Consts.TEXTSTATE.Selling ||
+        data.state == Consts.TEXTSTATE.SellingWithReader) &&
+      data.is_public
+    )
+      return null;
+
+    let message = 'これはプレビューです';
+    return (
+      <Box
+        sx={{
+          p: 1,
+          width: '100%',
+          backgroundColor: '#ffaaaa',
+          fontWeight: 'bold',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        {message}
+      </Box>
+    );
+  };
+
   if (mq) {
     return (
       <>
+        <NoticeBanner />
         <Box
           sx={{
             background: `linear-gradient(180deg, ${COLOR_BANNER} 0px, ${COLOR_BANNER} ${bannerBackgroundHeight}, ${COLOR_BANNER} ${bannerBackgroundHeight}, #ffffff ${bannerBackgroundHeight})`,

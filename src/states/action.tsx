@@ -5,6 +5,7 @@ export type Login = {
   userId: string;
   accountName: string;
   displayName: string;
+  noticeCount: number;
   photoId: string;
 };
 

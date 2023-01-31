@@ -7,7 +7,7 @@ import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 
 const HeaderAvatarButton = () => {
-  const { state, dispatch } = useContext(AppContext);
+  const { state } = useContext(AppContext);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClose = () => {

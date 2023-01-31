@@ -14,6 +14,7 @@ export interface Store {
   photoId: string;
   emailVerified: boolean;
   email: string;
+  noticeCount: number;
   logTagID: String;
 }
 
@@ -23,6 +24,7 @@ const initialState: Store = {
   displayName: null,
   accountName: null,
   photoId: null,
+  noticeCount: 0,
   emailVerified: false,
   banned: false,
   logTagID: Math.random().toString(32).substring(2),

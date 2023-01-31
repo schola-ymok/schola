@@ -6,6 +6,7 @@ import { createContext, memo, useContext, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { getMyBriefAccount } from 'api/getMyBriefAccount';
+import { getNotificationCount } from 'api/getNotificationCount';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import DefaultButton from 'components/DefaultButton';
 import { SignUpForm } from 'components/auth/SignUpForm';
@@ -137,7 +138,7 @@ export const AuthProvider = ({ children }) => {
       };
     }
 
-    authAxios.interceptors.request.use(makeDelayAxios(100, 500));
+    authAxios.interceptors.request.use(makeDelayAxios(500, 500));
 
     return authAxios.interceptors.request.use(
       (config) => {
@@ -197,12 +198,14 @@ export const AuthProvider = ({ children }) => {
               userId: data.userId,
             });
 
-            //console.log(data);
+            const { data: noticeCount } = await getNotificationCount(authAxios);
+
             dispatch({
               type: 'Login',
               userId: data.userId,
               accountName: data.accountName,
               displayName: data.displayName,
+              noticeCount: noticeCount.total,
               photoId: data.photoId,
             });
           }

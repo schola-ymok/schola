@@ -101,7 +101,7 @@ create table reviews (
 
 create table notices (
   id varchar(8) unique not null,
-  user_id varchar(8) unique not null,
+  user_id varchar(8) not null,
   message varchar(512) not null,
   url varchar(256) not null,
   created_at timestamp not null default current_timestamp,

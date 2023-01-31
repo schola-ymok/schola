@@ -99,6 +99,15 @@ create table reviews (
   primary key(user_id, text_id)
 ) engine=innodb character set utf8mb4;
 
+create table notices (
+  id varchar(8) unique not null,
+  user_id varchar(8) unique not null,
+  message varchar(512) not null,
+  url varchar(256) not null,
+  created_at timestamp not null default current_timestamp,
+  readed boolean
+) engine=innodb character set utf8mb4;
+
 create table accesslogs (
   created_at timestamp not null default current_timestamp,
   host varchar(255) not null,

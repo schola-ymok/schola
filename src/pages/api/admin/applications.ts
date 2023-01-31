@@ -2,6 +2,8 @@ import escape from 'sql-template-strings';
 
 import dbQuery from 'libs/db';
 import { verifyFirebaseToken } from 'libs/firebase/verifyFirebaseToken';
+import { getAuthorIdFromTextId } from 'libs/getAuthorIdFromTextId';
+import { notify } from 'libs/notify';
 import Consts from 'utils/Consts';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -50,6 +52,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           state = ${Consts.TEXTSTATE.Selling}
           where id = ${req.query.id}
           `);
+
+        const { authorId } = await getAuthorIdFromTextId(req.query.id);
+        if (authorId) {
+          notify(authorId, 'noticeCheck', 'http://schola.jp');
+        }
 
         data = dataApprove;
         error = errorApprove;

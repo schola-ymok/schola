@@ -2,6 +2,7 @@ import escape from 'sql-template-strings';
 
 import dbQuery from 'libs/db';
 import { verifyFirebaseToken } from 'libs/firebase/verifyFirebaseToken';
+import { notifyBanned } from 'libs/notify';
 import Consts from 'utils/Consts';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -30,6 +31,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
         data = dataTextBan;
         error = errorTextBan;
+
+        notifyBanned(req.query.text_id);
       } else if (req.query.user_id !== undefined) {
         const { data: dataUserBan, error: errorUserBan } = await dbQuery(escape`
           update users

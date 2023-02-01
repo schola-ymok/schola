@@ -2,8 +2,7 @@ import escape from 'sql-template-strings';
 
 import dbQuery from 'libs/db';
 import { verifyFirebaseToken } from 'libs/firebase/verifyFirebaseToken';
-import { getAuthorIdFromTextId } from 'libs/getAuthorIdFromTextId';
-import { notify } from 'libs/notify';
+import { notifyApproved, notifyRejected } from 'libs/notify';
 import Consts from 'utils/Consts';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -53,10 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           where id = ${req.query.id}
           `);
 
-        const { authorId } = await getAuthorIdFromTextId(req.query.id);
-        if (authorId) {
-          notify(authorId, 'noticeCheck', 'http://schola.jp');
-        }
+        notifyApproved(req.query.id);
 
         data = dataApprove;
         error = errorApprove;
@@ -71,6 +67,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           notice = ${req.body.reason_text}
           where id = ${req.query.id}
           `);
+
+        notifyRejected(req.query.id);
 
         data = dataReject;
         error = errorReject;

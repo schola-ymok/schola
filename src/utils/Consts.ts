@@ -6,11 +6,21 @@ namespace Consts {
   export const HTTP_INTERNAL_SERVER_ERROR = 500;
 
   export const SELECT_LIMIT = 30;
+  export const NOTICE_MENU_LIST_NUM = 5;
 
   export const IMAGE_STORE_URL =
     'https://storage.googleapis.com/' +
     process.env.NEXT_PUBLIC_FIREBASE_STORAGEBUCKET +
     '/user_upload/';
+
+  export const NOTICE_MESSAGE = {
+    approved: 'の審査が承認され販売が開始しました。',
+    rejected: 'の審査が差し戻されました。',
+    banned: 'の販売が停止されました。',
+    sold: 'が購入されました。',
+    reviewed: 'に対するレビューが投稿されました',
+    reviewUpdated: 'に対するレビューが更新されました',
+  };
 
   export const COLOR = {
     Primary: '#008080',

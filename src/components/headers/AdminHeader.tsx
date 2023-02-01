@@ -22,7 +22,6 @@ const AdminHeader = () => {
         }}
       >
         {mq ? <Logo /> : <SLogo />}
-        <Box sx={{ mt: 'auto', fontSize: '1.3em', fontWeight: 'bold', mx: 'auto' }}>管理者画面</Box>
       </Box>
     </>
   );

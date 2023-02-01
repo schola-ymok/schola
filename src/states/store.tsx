@@ -1,7 +1,5 @@
 import { createContext, Dispatch, useReducer } from 'react';
 
-import { AuthUser } from 'types/AuthUser';
-
 import { Action } from './action';
 import { reducer } from './reducer';
 
@@ -14,7 +12,6 @@ export interface Store {
   photoId: string;
   emailVerified: boolean;
   email: string;
-  noticeCount: number;
   logTagID: String;
 }
 
@@ -24,7 +21,6 @@ const initialState: Store = {
   displayName: null,
   accountName: null,
   photoId: null,
-  noticeCount: 0,
   emailVerified: false,
   banned: false,
   logTagID: Math.random().toString(32).substring(2),

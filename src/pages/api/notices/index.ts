@@ -1,11 +1,8 @@
-import error from 'next/error';
 import escape from 'sql-template-strings';
 
 import dbQuery from 'libs/db';
 import { verifyFirebaseToken } from 'libs/firebase/verifyFirebaseToken';
 import Consts from 'utils/Consts';
-import { genid } from 'utils/genid';
-import { isEmptyString } from 'utils/isEmptyString';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -29,7 +26,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           Number.isInteger(Number(req.query.page)) && req.query.page > 0 ? req.query.page - 1 : 0;
 
         const offset = req.query.latest !== undefined ? 0 : page * Consts.SELECT_LIMIT;
-        const limit = req.query.latest !== undefined ? 5 : Consts.SELECT_LIMIT;
+        const limit =
+          req.query.latest !== undefined ? Consts.NOTICE_MENU_LIST_NUM : Consts.SELECT_LIMIT;
 
         const countQuery = escape`select count(*) as cnt from notices where user_id = ${req.headers.user_id}`;
 

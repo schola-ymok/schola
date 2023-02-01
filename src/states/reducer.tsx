@@ -9,7 +9,6 @@ export const reducer = (state: Store, action: Action): Store => {
       isLoggedin: true,
       accountName: action.accountName,
       displayName: action.displayName,
-      noticeCount: action.noticeCount,
       userId: action.userId,
       photoId: action.photoId,
     };

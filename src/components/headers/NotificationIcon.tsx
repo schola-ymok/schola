@@ -1,17 +1,20 @@
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import { IconButton, Menu, Box } from '@mui/material';
+import { IconButton, Menu, Box, Divider, Link } from '@mui/material';
 import Badge from '@mui/material/Badge';
 import htmlParse from 'html-react-parser';
-import { useContext, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useContext, useEffect, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 
 import { getLatestNotification } from 'api/getLatestNotification';
+import { getNotificationCount } from 'api/getNotificationCount';
 import { AuthContext } from 'components/auth/AuthContext';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 
-const LatestNotificationList = () => {
+const LatestNotificationList = ({ setShowBadge, handleClose }) => {
   const { authAxios } = useContext(AuthContext);
+  const router = useRouter();
 
   const { data, error } = useSWR(`api/notices?latest`, () => getLatestNotification(authAxios), {
     revalidateOnFocus: false,
@@ -20,15 +23,48 @@ const LatestNotificationList = () => {
   if (error) return <>error</>;
   if (!data) return <>loading</>;
 
-  console.log(error);
-  console.log(data);
+  setShowBadge(false);
 
   return (
     <>
-      {data.notices.map((item) => {
-        const html = htmlParse('<p><b>線形代数入門</b>の販売申請が承認されました</p>');
-        return <NoticeItem onClick={() => {}}>{html}</NoticeItem>;
+      {data.notices.map((item, index) => {
+        const html = htmlParse(item.message);
+        const date = new Date(item.created_at).toLocaleString('ja');
+        return (
+          <>
+            {index > 0 && <Divider />}
+            <NoticeItem
+              onClick={() => {
+                router.push(item.url);
+              }}
+            >
+              <Box sx={{ fontSize: '0.9em' }}>{html}</Box>
+              <Box sx={{ ml: 'auto', fontSize: '0.7em', color: '#999999' }}>{date}</Box>
+            </NoticeItem>
+          </>
+        );
       })}
+      {data.total > Consts.NOTICE_MENU_LIST_NUM && (
+        <Box sx={{ fontSize: '0.9em', display: 'flex', justifyContent: 'center' }}>
+          <Box
+            onClick={() => {
+              handleClose();
+              router.push('/notices');
+            }}
+            sx={{
+              fontSize: '0.9em',
+              pt: 0.4,
+              '&:hover': {
+                color: Consts.COLOR.Primary,
+                textDecoration: 'underline',
+                cursor: 'pointer',
+              },
+            }}
+          >
+            通知一覧を見る
+          </Box>
+        </Box>
+      )}
     </>
   );
 };
@@ -38,10 +74,9 @@ const NoticeItem = ({ children, onClick }) => (
     onClick={onClick}
     sx={{
       display: 'flex',
+      flexFlow: 'column',
       p: 1,
-      fontSize: '0.9em',
       alignItems: 'center',
-      height: '54px',
       '&:hover': {
         backgroundColor: '#efefef',
         cursor: 'pointer',
@@ -52,7 +87,19 @@ const NoticeItem = ({ children, onClick }) => (
   </Box>
 );
 
-const NotificationIcon = ({}) => {
+const NotificationIcon = () => {
+  const { authAxios } = useContext(AuthContext);
+  const [showBadge, setShowBadge] = useState(false);
+
+  useEffect(() => {
+    if (authAxios) {
+      (async () => {
+        const { data } = await getNotificationCount(authAxios);
+        if (data.total > 0) setShowBadge(true);
+      })();
+    }
+  }, [authAxios]);
+
   const { state } = useContext(AppContext);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -64,7 +111,7 @@ const NotificationIcon = ({}) => {
   };
 
   const _NotificationIcon = () => {
-    if (state.noticeCount > 0) {
+    if (showBadge) {
       return (
         <Badge
           variant='dot'
@@ -117,7 +164,9 @@ const NotificationIcon = ({}) => {
           },
         }}
       >
-        {state.isLoggedin === true && <LatestNotificationList />}
+        {state.isLoggedin === true && (
+          <LatestNotificationList setShowBadge={setShowBadge} handleClose={handleClose} />
+        )}
       </Menu>
     </>
   );

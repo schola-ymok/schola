@@ -2,6 +2,7 @@ import escape from 'sql-template-strings';
 
 import dbQuery from 'libs/db';
 import { verifyFirebaseToken } from 'libs/firebase/verifyFirebaseToken';
+import { notifyPurchase } from 'libs/notify';
 import Consts from 'utils/Consts';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -59,6 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           await dbQuery(
             escape`update texts set number_of_sales = ${dataCount[0].cnt} where id = ${req.query.text_id}`,
           );
+          notifyPurchase(req.query.text_id);
         }
       }
 

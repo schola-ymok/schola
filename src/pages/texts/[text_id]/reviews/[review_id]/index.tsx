@@ -103,17 +103,16 @@ const Review: NextPage = () => {
           {state.userId === dataReview.user_id && (
             <Box sx={{ display: 'flex', mb: 2 }}>
               <DefaultButton
-                sx={{ width: '20%', fontWeight: 'bold', minWidth: '150px' }}
-                onClick={handleWriteReviewClick}
-              >
-                レビューを編集
-              </DefaultButton>
-
-              <DefaultButton
-                sx={{ fontWeight: 'bold', width: '20%', minWidth: '150px', ml: 1 }}
+                sx={{ fontWeight: 'bold', width: '20%', minWidth: '150px' }}
                 onClick={handleDeleteReviewClick}
               >
                 レビューを削除
+              </DefaultButton>
+              <DefaultButton
+                sx={{ width: '20%', fontWeight: 'bold', minWidth: '150px', ml: 1 }}
+                onClick={handleWriteReviewClick}
+              >
+                レビューを編集
               </DefaultButton>
             </Box>
           )}

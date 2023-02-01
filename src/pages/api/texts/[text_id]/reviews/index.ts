@@ -2,6 +2,7 @@ import escape from 'sql-template-strings';
 
 import dbQuery from 'libs/db';
 import { verifyFirebaseToken } from 'libs/firebase/verifyFirebaseToken';
+import { notifyReviewed } from 'libs/notify';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
 import { isEmptyString } from 'utils/isEmptyString';
@@ -175,10 +176,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         ${rate}
       )
       on duplicate key update
+      id = ${reviewId},
       title = ${title},
       comment = ${comment},
       rate = ${rate}
       `);
+
+      notifyReviewed(req.query.text_id, reviewId);
 
       error = errorPost;
       data = dataPost;

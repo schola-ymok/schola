@@ -239,14 +239,6 @@ const EditReview: NextPage = () => {
         <FormItemState validation={commentValidation} />
 
         <Box sx={{ display: 'flex', mt: 3 }}>
-          <DefaultButton
-            disabled={!checkChange() || !checkValidation()}
-            sx={{ width: '30%', minWidth: '150px', fontSize: '1.0em', fontWeight: 'bold' }}
-            onClick={handleEditReviewClick}
-          >
-            レビューを{dataReview.exists ? '更新' : '投稿'}
-          </DefaultButton>
-
           {dataReview.exists && (
             <DefaultButton
               sx={{
@@ -254,13 +246,20 @@ const EditReview: NextPage = () => {
                 minWidth: '150px',
                 fontSize: '1.0em',
                 fontWeight: 'bold',
-                ml: 1,
               }}
               onClick={handleDeleteReviewClick}
             >
               レビューを削除
             </DefaultButton>
           )}
+
+          <DefaultButton
+            disabled={!checkChange() || !checkValidation()}
+            sx={{ ml: 1, width: '30%', minWidth: '150px', fontSize: '1.0em', fontWeight: 'bold' }}
+            onClick={handleEditReviewClick}
+          >
+            レビューを{dataReview.exists ? '更新' : '投稿'}
+          </DefaultButton>
         </Box>
       </Box>
       <Snackbar

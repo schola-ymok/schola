@@ -1,5 +1,5 @@
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import { IconButton, Menu, Box, Divider, Link } from '@mui/material';
+import { IconButton, Menu, Box, Divider, Skeleton } from '@mui/material';
 import Badge from '@mui/material/Badge';
 import htmlParse from 'html-react-parser';
 import { useRouter } from 'next/router';
@@ -8,6 +8,7 @@ import useSWR, { useSWRConfig } from 'swr';
 
 import { getLatestNotification } from 'api/getLatestNotification';
 import { getNotificationCount } from 'api/getNotificationCount';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
@@ -21,7 +22,18 @@ const LatestNotificationList = ({ setShowBadge, handleClose }) => {
   });
 
   if (error) return <>error</>;
-  if (!data) return <>loading</>;
+
+  if (!data) {
+    return <CenterLoadingSpinner />;
+  }
+
+  if (data.notices.length == 0) {
+    return (
+      <Box sx={{ fontSize: '0.8em', textAlign: 'center' }} onClick={handleClose}>
+        通知はありません
+      </Box>
+    );
+  }
 
   setShowBadge(false);
 

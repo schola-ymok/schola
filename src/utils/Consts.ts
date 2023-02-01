@@ -17,9 +17,8 @@ namespace Consts {
     approved: 'の審査が承認され販売が開始しました。',
     rejected: 'の審査が差し戻されました。',
     banned: 'の販売が停止されました。',
-    sold: 'が購入されました。',
+    purchased: 'が売れました。',
     reviewed: 'に対するレビューが投稿されました',
-    reviewUpdated: 'に対するレビューが更新されました',
   };
 
   export const COLOR = {

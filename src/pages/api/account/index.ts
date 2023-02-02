@@ -123,6 +123,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         if (error) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
 
         return res.status(Consts.HTTP_OK).json({ status: 'ok' });
+      } else if (req.query.changeaccount != undefined) {
+        const accountName = req.body.account_name;
+
+        if (isEmptyString(accountName))
+          return res.status(Consts.HTTP_BAD_REQUEST).end('bad parameter');
+
+        // check account name is not used
+        const { data: used, error: errorUsed } = await dbQuery(escape`
+          select exists (select 1 from users
+            where account_name = ${accountName}) as cnt`);
+
+        if (errorUsed) return res.status(Conts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+
+        if (used[0].cnt != 0) return res.status(Consts.HTTP_OK).json({ status: 'duplicate' });
+
+        const { error } = await dbQuery(escape`
+        update users
+        set account_name = ${accountName} 
+        where firebase_id = ${req.headers.firebase_id}
+        `);
+
+        if (error) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+
+        return res.status(Consts.HTTP_OK).json({ status: 'ok' });
       } else {
         // update profile
         const displayName = req.body.display_name;

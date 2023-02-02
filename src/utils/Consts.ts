@@ -119,6 +119,10 @@ namespace Consts {
       min: 1,
       max: 500,
     },
+    accountName: {
+      min: 2,
+      max: 24,
+    },
   };
 
   export const CATEGORY = {

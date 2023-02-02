@@ -12,6 +12,7 @@ import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
 import { setNotifyOnReview } from 'api/setNotifyOnReview';
 import { setProfilePhotoId } from 'api/setProfilePhotoId';
 import { updateProfile } from 'api/updateProfile';
+import AccountNameSettingDialog from 'components/AccountNameSettingDialog';
 import AvatarButton from 'components/AvatarButton';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import DefaultButton from 'components/DefaultButton';
@@ -122,6 +123,8 @@ const AccountSetting = ({
   handleNotifyOnReviewChange,
   notifyOnReviewCheck,
 }) => {
+  const [accountNameSettingOpen, setAccountNameSettingOpen] = useState(false);
+
   const emailVerify = emailVerified ? (
     <>確認済み</>
   ) : (
@@ -134,24 +137,53 @@ const AccountSetting = ({
     return (
       <Box sx={{ display: 'flex' }}>
         <Box sx={{ my: 2, width: '40%', minWidth: '120px', textAlign: 'right' }}>{label}</Box>
-        <Box sx={{ ml: 2, my: 'auto', fontWeight: 'bold' }}>{children}</Box>
+        <Box sx={{ ml: 2, my: 'auto', fontWeight: 'bold', display: 'flex' }}>{children}</Box>
       </Box>
     );
   };
 
   return (
-    <Box sx={{ display: 'flex', flexFlow: 'column', pt: { sx: 0, sm: 3 } }}>
-      <Item label='アカウント名'>{accountName}</Item>
-      <Item label='アカウントID'>{userId}</Item>
-      <Item label='メール'>{email}</Item>
-      <Item label='メール確認'>{emailVerify}</Item>
-      <Item label='テキストが購入された時に通知'>
-        <Checkbox onChange={handleNotifyOnPurchaseChange} checked={notifyOnPurchaseCheck} />
-      </Item>
-      <Item label='テキストのレビューが投稿された時に通知'>
-        <Checkbox onChange={handleNotifyOnReviewChange} checked={notifyOnReviewCheck} />
-      </Item>
-    </Box>
+    <>
+      <Box sx={{ display: 'flex', flexFlow: 'column', pt: { sx: 0, sm: 3 } }}>
+        <Item label='アカウント名'>
+          {accountName}{' '}
+          <Box
+            onClick={() => {
+              setAccountNameSettingOpen(true);
+            }}
+            sx={{
+              ml: 2,
+              fontWeight: 'normal',
+              color: Consts.COLOR.Primary,
+              '&:hover': {
+                cursor: 'pointer',
+                textDecoration: 'underline',
+              },
+            }}
+          >
+            変更
+          </Box>
+        </Item>
+        <Item label='アカウントID'>{userId}</Item>
+        <Item label='メール'>{email}</Item>
+        <Item label='メール確認'>{emailVerify}</Item>
+        <Item label='テキストが購入された時に通知'>
+          <Checkbox onChange={handleNotifyOnPurchaseChange} checked={notifyOnPurchaseCheck} />
+        </Item>
+        <Item label='テキストのレビューが投稿された時に通知'>
+          <Checkbox onChange={handleNotifyOnReviewChange} checked={notifyOnReviewCheck} />
+        </Item>
+      </Box>
+      <AccountNameSettingDialog
+        key={Math.random()}
+        name={accountName}
+        open={accountNameSettingOpen}
+        onChange={() => {}}
+        onClose={() => {
+          setAccountNameSettingOpen(false);
+        }}
+      />
+    </>
   );
 };
 
@@ -582,7 +614,7 @@ const ProfileSetting = () => {
 
         <DefaultButton
           disabled={!checkChange() || !checkValidation()}
-          exSx={{
+          sx={{
             width: '150px',
             mt: 4,
           }}

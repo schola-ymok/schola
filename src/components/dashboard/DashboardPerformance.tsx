@@ -36,6 +36,7 @@ const DashboardPerformance = () => {
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
+      whiteSpace: 'nowrap',
       backgroundColor: '#888888',
       color: theme.palette.common.white,
       fontWeight: 'bold',
@@ -74,7 +75,7 @@ const DashboardPerformance = () => {
           </Box>
         </Box>
 
-        <TableContainer sx={{ mt: 2 }}>
+        <TableContainer sx={{ mt: 2, width: '100%' }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -111,7 +112,7 @@ const DashboardPerformance = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%', maxWidth: '700px' }}>
+    <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%' }}>
       <DataContent data={data} />
     </Box>
   );

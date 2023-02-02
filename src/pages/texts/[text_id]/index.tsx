@@ -713,7 +713,7 @@ const Text: NextPage = () => {
               mt: 4,
               p: 0.2,
               width: '205px',
-              height: '408px',
+              height: 'fit-content',
               position: 'sticky',
               top: '30px',
               backgroundColor: '#ffffff',

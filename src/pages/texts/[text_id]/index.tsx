@@ -196,6 +196,7 @@ const Text: NextPage = () => {
   };
 
   const COLOR_PURPLE = '#aaaaff';
+  const COLOR_DARK_PURPLE = '#6f6fa6';
   const COLOR_BANNER = '#1c1d1f';
   const COLOR_BANNER_TEXT = '#ffffff';
 
@@ -220,15 +221,23 @@ const Text: NextPage = () => {
     return (
       <>
         <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>読者からのレビュー</Box>
-        <Box sx={{ pl: 1, py: 1 }}>
-          <RatingReportPanel text={data} />
-        </Box>
-        <Box sx={{ p: 1, width: '100%' }}>
-          {reviews.map((item) => {
-            return <Review review={item} onUserClick={() => handleReviewerClick(item.user_id)} />;
-          })}
-          {more && <ShowMore onClick={handleReviewListClick}>全てのレビューを参照</ShowMore>}
-        </Box>
+        {dataReviews.reviews.length > 0 ? (
+          <>
+            <Box sx={{ pl: 1, py: 1 }}>
+              <RatingReportPanel text={data} />
+            </Box>
+            <Box sx={{ p: 1, width: '100%' }}>
+              {reviews.map((item) => {
+                return (
+                  <Review review={item} onUserClick={() => handleReviewerClick(item.user_id)} />
+                );
+              })}
+              {more && <ShowMore onClick={handleReviewListClick}>全てのレビューを参照</ShowMore>}
+            </Box>
+          </>
+        ) : (
+          <Box sx={{ p: 1 }}>まだレビューはありません</Box>
+        )}
       </>
     );
   };
@@ -426,89 +435,103 @@ const Text: NextPage = () => {
     }
   };
 
-  const RateAndAuthorInfo = () => (
-    <>
-      <Box sx={{ display: 'flex', width: '100%', mt: 1.5 }}>
-        <Box sx={{ cursor: 'pointer', display: 'flex' }}>
-          <Box sx={{ fontWeight: 'bold', color: '#faaf00', my: 'auto', fontSize: '0.9em' }}>
-            {data.rate}
+  const RateAndAuthorInfo = () => {
+    const rateCursor = data.number_of_reviews > 0 ? 'pointer' : 'unset';
+    const textDecoration = data.number_of_reviews > 0 ? 'underline' : 'none';
+    const reviewNumString =
+      data.number_of_reviews > 0 ? data.number_of_reviews + '件の評価' : 'まだレビューはありません';
+    const color = data.number_of_reviews > 0 ? COLOR_PURPLE : COLOR_DARK_PURPLE;
+
+    return (
+      <>
+        <Box sx={{ display: 'flex', width: '100%', mt: 1.5 }}>
+          <Box
+            sx={{ cursor: rateCursor, display: 'flex' }}
+            onClick={() => {
+              if (data.number_of_reviews > 0) handleReviewListClick();
+            }}
+          >
+            <Box sx={{ fontWeight: 'bold', color: '#faaf00', my: 'auto', fontSize: '0.9em' }}>
+              {data.rate}
+            </Box>
+
+            <Rating
+              sx={{ mt: 1, my: 'auto', ml: 0.5 }}
+              value={data.rate}
+              readOnly
+              size='small'
+              precision={0.5}
+              emptyIcon={
+                <StarBorderIcon style={{ opacity: 0.55, color: '#ffd269' }} fontSize='inherit' />
+              }
+            />
+            <Box
+              sx={{
+                color: color,
+                my: 'auto',
+                textDecoration: textDecoration,
+                ml: 1,
+                fontSize: '0.9em',
+              }}
+            >
+              {reviewNumString}
+            </Box>
           </Box>
 
-          <Rating
-            sx={{ mt: 1, my: 'auto', ml: 0.5 }}
-            value={data.rate}
-            readOnly
-            size='small'
-            precision={0.5}
-            emptyIcon={
-              <StarBorderIcon style={{ opacity: 0.55, color: '#ffd269' }} fontSize='inherit' />
-            }
-          />
+          {data.number_of_sales > 0 && (
+            <Box sx={{ my: 'auto', ml: 2, color: COLOR_BANNER_TEXT, fontSize: '0.9em' }}>
+              販売数:{data.number_of_sales}
+            </Box>
+          )}
+        </Box>
+
+        <Box sx={{ display: 'flex', width: '100%', mt: 0.6 }}>
+          <Box sx={{ my: 'auto', color: COLOR_BANNER_TEXT, fontSize: '0.9em' }}>作成者:</Box>
           <Box
-            onClick={handleReviewListClick}
+            onClick={handleAuthorClick}
             sx={{
-              color: COLOR_PURPLE,
               my: 'auto',
+              ml: 0.4,
+              color: COLOR_PURPLE,
+              fontSize: '0.9em',
               textDecoration: 'underline',
-              ml: 1,
+              cursor: 'pointer',
+            }}
+          >
+            {data.author_display_name}
+          </Box>
+        </Box>
+
+        <Box sx={{ display: 'flex', width: '100%', mt: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              color: COLOR_BANNER_TEXT,
               fontSize: '0.9em',
             }}
           >
-            {data.number_of_reviews}件の評価
+            <UpdateIcon sx={{ my: 'auto', transform: 'scale(0.9)' }} />
+          </Box>
+          <Box
+            sx={{
+              my: 'auto',
+              ml: 0.4,
+              color: '#fefefe',
+              fontSize: '0.9em',
+              alignItems: 'center',
+            }}
+          >
+            {data.updated_at !== null && (
+              <span style={{ verticalAlign: 'middle' }}>
+                最終更新日：{new Date(data.updated_at).toLocaleDateString('jp')}
+              </span>
+            )}
           </Box>
         </Box>
-
-        <Box sx={{ my: 'auto', ml: 2, color: COLOR_BANNER_TEXT, fontSize: '0.9em' }}>
-          販売数:{data.number_of_sales}
-        </Box>
-      </Box>
-
-      <Box sx={{ display: 'flex', width: '100%', mt: 0.6 }}>
-        <Box sx={{ my: 'auto', color: COLOR_BANNER_TEXT, fontSize: '0.9em' }}>作成者:</Box>
-        <Box
-          onClick={handleAuthorClick}
-          sx={{
-            my: 'auto',
-            ml: 0.4,
-            color: COLOR_PURPLE,
-            fontSize: '0.9em',
-            textDecoration: 'underline',
-            cursor: 'pointer',
-          }}
-        >
-          {data.author_display_name}
-        </Box>
-      </Box>
-
-      <Box sx={{ display: 'flex', width: '100%', mt: 1 }}>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            color: COLOR_BANNER_TEXT,
-            fontSize: '0.9em',
-          }}
-        >
-          <UpdateIcon sx={{ my: 'auto', transform: 'scale(0.9)' }} />
-        </Box>
-        <Box
-          sx={{
-            my: 'auto',
-            ml: 0.4,
-            color: '#fefefe',
-            fontSize: '0.9em',
-            alignItems: 'center',
-          }}
-        >
-          {data.updated_at !== null && (
-            <span style={{ verticalAlign: 'middle' }}>
-              最終更新日：{new Date(data.updated_at).toLocaleString('jp')}
-            </span>
-          )}
-        </Box>
-      </Box>
-    </>
-  );
+      </>
+    );
+  };
 
   const Toc = ({ xs }) => {
     if (xs) {
@@ -584,18 +607,26 @@ const Text: NextPage = () => {
     );
   };
 
-  const ElseText = () => (
-    <>
-      <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>著者によるその他のテキスト</Box>
-      <Box sx={{ pl: 1, py: 0.5 }}>
-        {dataAuthorTexts ? (
-          <AuthorTexts data={dataAuthorTexts} authorId={data.author_id} textId={textId} />
-        ) : (
-          <CenterLoadingSpinner />
-        )}
-      </Box>
-    </>
-  );
+  const ElseText = () => {
+    const texts = dataAuthorTexts.texts.filter((item) => {
+      return item.id !== textId;
+    });
+
+    if (texts.length == 0) return null;
+
+    return (
+      <>
+        <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>著者によるその他のテキスト</Box>
+        <Box sx={{ pl: 1, py: 0.5 }}>
+          {dataAuthorTexts ? (
+            <AuthorTexts data={dataAuthorTexts} authorId={data.author_id} textId={textId} />
+          ) : (
+            <CenterLoadingSpinner />
+          )}
+        </Box>
+      </>
+    );
+  };
 
   const NoticeBanner = () => {
     if (
@@ -621,6 +652,11 @@ const Text: NextPage = () => {
       </Box>
     );
   };
+
+  let numOfChapter = 0;
+  if (data.chapter_order != null) {
+    numOfChapter = JSON.parse(data.chapter_order).length;
+  }
 
   if (mq) {
     return (
@@ -677,7 +713,7 @@ const Text: NextPage = () => {
               mt: 4,
               p: 0.2,
               width: '205px',
-              height: '400px',
+              height: '408px',
               position: 'sticky',
               top: '30px',
               backgroundColor: '#ffffff',
@@ -712,9 +748,11 @@ const Text: NextPage = () => {
 
             {dataPurchasedInfo.yours && <EditTextButton />}
 
-            <Box sx={{ p: 0.5, mt: 1 }}>
+            <Box sx={{ p: 0.5, mt: 0.5, fontSize: '0.9em' }}>
               <Box sx={{ fontWeight: 'bold' }}>このテキストについて</Box>
-              <Box sx={{ mt: 1 }}>初版：{new Date(data.created_at).toLocaleDateString('ja')}</Box>
+              <Box sx={{ mt: 0.5 }}>初版：{new Date(data.created_at).toLocaleDateString('ja')}</Box>
+              <Box sx={{}}>改版回数：{data.number_of_updated}</Box>
+              <Box sx={{}}>チャプチャー数：{numOfChapter}</Box>
             </Box>
           </Box>
         </Box>
@@ -836,14 +874,12 @@ const ChapterList = () => {
     revalidateOnFocus: false,
   });
 
-  /*
-  const { data, error } = useSWR(`/texts/${textId}/chapters/`, () => getChapterList(textId), {
-    revalidateOnFocus: false,
-  });
-  */
-
   if (error) return <div>failed to load</div>;
   if (!data) return <CenterLoadingSpinner />;
+
+  if (Object.keys(data.chapters).length == 0) {
+    return <Box>チャプターが存在していません</Box>;
+  }
 
   var tocs = {};
   Object.keys(data.chapters).map((id) => {
@@ -857,14 +893,6 @@ const ChapterList = () => {
       query: { article_id: id },
     });
   }
-
-  /*
-          {data.chapters.((item) => (
-            <Box key={item.id} onClick={() => handleChapterClick(item)}>
-              {item.title}-[{item.id}]
-            </Box>
-          ))}
-          */
 
   return (
     <ReadMoreText height={200} id={textId} fontSize={'0.9em'}>

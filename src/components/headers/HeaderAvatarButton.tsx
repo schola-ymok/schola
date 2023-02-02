@@ -27,11 +27,27 @@ const HeaderAvatarButton = () => {
         type='button'
         sx={{
           p: '7px',
-          '&:hover': Consts.SX.IconButtonHover,
+          '&:hover': {
+            backgroundColor: 'inherit',
+          },
+          '&:hover .child': {
+            filter: 'brightness(90%)',
+          },
+          // Consts.SX.IconButtonHover,
         }}
         onClick={handleMenu}
       >
-        <Avatar sx={{ width: 40, height: 40 }} src={imageUrl} />
+        <Avatar
+          className='child'
+          sx={{
+            width: 40,
+            height: 40,
+            //            '&:hover': {
+            //              filter: 'brightness(90%)',
+            //            },
+          }}
+          src={imageUrl}
+        />
       </IconButton>
 
       <Menu

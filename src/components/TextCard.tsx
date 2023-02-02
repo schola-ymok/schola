@@ -13,8 +13,20 @@ const TextCard = ({ text }) => {
     <Box sx={{ p: 1 }}>
       <Link href={`/texts/${text.id}`}>
         <a className='no-hover'>
-          <Box sx={{ backgroundColor: '#ffffff', width: { xs: 150, sm: 200 } }}>
+          <Box
+            sx={{
+              backgroundColor: '#ffffff',
+              width: {
+                xs: 150,
+                sm: 200,
+                '&:hover .child': {
+                  filter: 'brightness(95%)',
+                },
+              },
+            }}
+          >
             <Box
+              className='child'
               component='img'
               sx={{
                 display: 'block',

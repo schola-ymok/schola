@@ -47,7 +47,7 @@ namespace Consts {
   export const SX = {
     IconButtonHover: {
       color: Consts.COLOR.IconDarkGrey,
-      backgroundColor: Consts.COLOR.IconButtonBackGround,
+      backgroundColor: 'inherit',
     },
     DashedButton: {
       backgroundColor: Consts.COLOR.LightPrimary,

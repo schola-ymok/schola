@@ -144,7 +144,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           category2 = ${category2},
           learning_contents = ${learningContents},
           learning_requirements = ${learningRequirements},
-          state= ${state}
+          state = ${state},
+          number_of_updated = number_of_updated + 1
           where
           id = ${req.query.text_id}
           and

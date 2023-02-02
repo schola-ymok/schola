@@ -11,8 +11,9 @@ const RatingReportPanel = ({ text }) => {
       <LinearProgress
         variant='determinate'
         sx={{
+          flexShrink: 0,
           height: '12px',
-          width: '110px',
+          width: { xs: '60px', sm: '110px' },
           my: 'auto',
           [`&.${linearProgressClasses.colorPrimary}`]: {
             backgroundColor: '#cccccc',

@@ -86,13 +86,15 @@ const AdminApplcationList = () => {
             />
           );
         })}
-        <Pagination
-          sx={{ mt: 2 }}
-          count={count}
-          color='primary'
-          onChange={(e, page) => router.replace(`/dashboard/?page=${page}`)}
-          page={+page}
-        />
+        {count > 1 && (
+          <Pagination
+            sx={{ mt: 2 }}
+            count={count}
+            color='primary'
+            onChange={(e, page) => router.replace(`/dashboard/?page=${page}`)}
+            page={+page}
+          />
+        )}
       </>
     );
   };

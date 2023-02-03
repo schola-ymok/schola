@@ -29,6 +29,9 @@ const DashboardReviews = () => {
 
   const DataContent = ({ data }) => {
     if (!data) return <CenterLoadingSpinner />;
+
+    if (data.total == 0) return <Box>レビューはありません</Box>;
+
     const { count, from, to } = pagenation(data.total, page, data.reviews.length);
     return (
       <>
@@ -38,13 +41,15 @@ const DashboardReviews = () => {
         {data.reviews.map((item) => {
           return <Review key={item.id} review={item} />;
         })}
-        <Pagination
-          sx={{ mt: 2 }}
-          count={count}
-          color='primary'
-          onChange={(e, page) => router.replace(`/dashboard/reviews?page=${page}`)}
-          page={+page}
-        />
+        {count > 1 && (
+          <Pagination
+            sx={{ mt: 2 }}
+            count={count}
+            color='primary'
+            onChange={(e, page) => router.replace(`/dashboard/reviews?page=${page}`)}
+            page={+page}
+          />
+        )}
       </>
     );
   };

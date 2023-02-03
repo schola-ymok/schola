@@ -11,9 +11,19 @@ const TextListItem = ({ text }) => {
   return (
     <Link href={`/texts/${text.id}`}>
       <a className='no-hover' sx={{ display: 'block', width: '100%' }}>
-        <Box sx={{ width: '100%', p: { xs: 0.4, sm: 1 }, display: 'flex' }}>
+        <Box
+          sx={{
+            width: '100%',
+            p: { xs: 0.4, sm: 1 },
+            '&:hover .child': {
+              filter: 'brightness(95%)',
+            },
+            display: 'flex',
+          }}
+        >
           <Box sx={{ width: 100, mr: 0.5 }}>
             <Box
+              className='child'
               component='img'
               sx={{
                 display: 'block',

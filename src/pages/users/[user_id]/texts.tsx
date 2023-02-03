@@ -59,12 +59,14 @@ const UserTexts = () => {
             })}
           </Box>
         )}
-        <Pagination
-          count={count}
-          color='primary'
-          onChange={(e, page) => router.replace(`/users/${userId}/texts?page=${page}`)}
-          page={+page}
-        />
+        {count > 1 && (
+          <Pagination
+            count={count}
+            color='primary'
+            onChange={(e, page) => router.replace(`/users/${userId}/texts?page=${page}`)}
+            page={+page}
+          />
+        )}
       </Box>
     );
   };

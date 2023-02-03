@@ -43,10 +43,14 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
           width: '100%',
           p: { xs: 0.4, sm: 1 },
           display: 'flex',
+          '&:hover .child': {
+            filter: 'brightness(95%)',
+          },
         }}
       >
         <Box sx={{ width: 100, mr: 0.5 }}>
           <Box
+            className='child'
             component='img'
             sx={{
               display: 'block',
@@ -58,9 +62,28 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
             src={imageUrl}
             onClick={handleTextClick}
           />
+          <Box
+            sx={{
+              mx: 'auto',
+              fontSize: '0.8em',
+              color: Consts.COLOR.PrimaryDark,
+              borderRadius: '5px',
+              mt: 0.5,
+              width: '90px',
+              textAlign: 'center',
+              border: '1px solid ' + Consts.COLOR.PrimaryDark,
+            }}
+          >
+            {stateLabel}
+          </Box>
         </Box>
         <Box fullWidth sx={{ width: '100%' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <Box
               sx={{ display: 'flex', flexFlow: 'column', width: '90%', cursor: 'pointer' }}
               onClick={handleEditText}
@@ -90,18 +113,6 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
                 />
                 {text.number_of_reviews}
               </Box>
-              <Box
-                sx={{
-                  fontSize: '0.8em',
-                  color: Consts.COLOR.PrimaryDark,
-                  borderRadius: '5px',
-                  px: 0.5,
-                  width: 'fit-content',
-                  border: '1px solid ' + Consts.COLOR.PrimaryDark,
-                }}
-              >
-                {stateLabel}
-              </Box>
             </Box>
             <Box>
               <Box sx={{ display: 'flex', flexFlow: 'column', height: '100%' }}>
@@ -118,7 +129,6 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
           </Box>
         </Box>
       </Box>
-      <Divider />
     </>
   );
 };

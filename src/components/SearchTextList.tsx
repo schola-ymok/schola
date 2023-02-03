@@ -68,16 +68,18 @@ const SearchTextList = () => {
         </Box>
       )}
 
-      <Pagination
-        count={count}
-        color='primary'
-        onChange={(e, page) => {
-          delete params.category1;
-          delete params.category2;
-          router.replace('/search?' + new URLSearchParams({ ...params, page: page }).toString());
-        }}
-        page={+page}
-      />
+      {count > 1 && (
+        <Pagination
+          count={count}
+          color='primary'
+          onChange={(e, page) => {
+            delete params.category1;
+            delete params.category2;
+            router.replace('/search?' + new URLSearchParams({ ...params, page: page }).toString());
+          }}
+          page={+page}
+        />
+      )}
     </>
   );
 };

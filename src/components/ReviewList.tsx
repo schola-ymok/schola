@@ -59,17 +59,19 @@ const ReviewList: NextPage = ({ data, params }) => {
         {data.reviews.map((item) => {
           return <Review key={item.id} review={item} />;
         })}
-        <Pagination
-          count={count}
-          color='primary'
-          onChange={(e, page) => {
-            router.push(
-              `/texts/${textId}/reviews?` +
-                new URLSearchParams({ ...params, page: page }).toString(),
-            );
-          }}
-          page={+page}
-        />
+        {count > 1 && (
+          <Pagination
+            count={count}
+            color='primary'
+            onChange={(e, page) => {
+              router.push(
+                `/texts/${textId}/reviews?` +
+                  new URLSearchParams({ ...params, page: page }).toString(),
+              );
+            }}
+            page={+page}
+          />
+        )}
       </Box>
     </Box>
   );

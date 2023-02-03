@@ -89,14 +89,16 @@ const Notices: NextPage = () => {
           })}
         </Box>
 
-        <Pagination
-          count={count}
-          color='primary'
-          onChange={(e, page) => {
-            router.push(`/notices?` + new URLSearchParams({ ...params, page: page }).toString());
-          }}
-          page={+page}
-        />
+        {count > 1 && (
+          <Pagination
+            count={count}
+            color='primary'
+            onChange={(e, page) => {
+              router.push(`/notices?` + new URLSearchParams({ ...params, page: page }).toString());
+            }}
+            page={+page}
+          />
+        )}
       </Container>
     </>
   );

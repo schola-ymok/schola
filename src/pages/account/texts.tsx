@@ -29,6 +29,8 @@ const PurchasedTexts = () => {
   const DataContent = ({ data }) => {
     if (!data) return <CenterLoadingSpinner />;
 
+    if (data.total == 0) return <Box sx={{ p: 1 }}>購入したテキストはありません</Box>;
+
     const { count, from, to } = pagenation(data.total, page, data.texts.length);
     return (
       <>
@@ -38,13 +40,15 @@ const PurchasedTexts = () => {
         {data.texts.map((item) => {
           return <TextListItem text={item} />;
         })}
-        <Pagination
-          sx={{ mt: 2 }}
-          count={count}
-          color='primary'
-          onChange={(e, page) => router.replace(`/account/texts?page=${page}`)}
-          page={+page}
-        />
+        {count > 1 && (
+          <Pagination
+            sx={{ mt: 2 }}
+            count={count}
+            color='primary'
+            onChange={(e, page) => router.replace(`/account/texts?page=${page}`)}
+            page={+page}
+          />
+        )}
       </>
     );
   };

@@ -1,4 +1,4 @@
-import { Box, Pagination } from '@mui/material';
+import { Box, Divider, Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
@@ -9,6 +9,7 @@ import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
 import DashboardTextListItem from 'components/dashboard/DashboardTextListItem';
 import { pagenation } from 'utils/pagenation';
+import { count } from 'console';
 
 const DashboardTextList = () => {
   const router = useRouter();
@@ -44,6 +45,10 @@ const DashboardTextList = () => {
   const DataContent = ({ data }) => {
     if (!data) return <CenterLoadingSpinner />;
 
+    if (data.total == 0) {
+      return <Box>執筆テキストはありません</Box>;
+    }
+
     const { count, from, to } = pagenation(data.total, page, data.texts.length);
 
     return (
@@ -51,22 +56,27 @@ const DashboardTextList = () => {
         <Box>
           {data.total}件 （{from} - {to} を表示）
         </Box>
-        {data.texts.map((item) => {
+        {data.texts.map((item, index) => {
           return (
-            <DashboardTextListItem
-              text={item}
-              handleDeleteText={() => handleDeleteText(item.id)}
-              handleEditText={() => handleEditText(item.id)}
-            />
+            <>
+              {index > 0 && <Divider />}
+              <DashboardTextListItem
+                text={item}
+                handleDeleteText={() => handleDeleteText(item.id)}
+                handleEditText={() => handleEditText(item.id)}
+              />
+            </>
           );
         })}
-        <Pagination
-          sx={{ mt: 2 }}
-          count={count}
-          color='primary'
-          onChange={(e, page) => router.replace(`/dashboard/?page=${page}`)}
-          page={+page}
-        />
+        {count > 1 && (
+          <Pagination
+            sx={{ mt: 2 }}
+            count={count}
+            color='primary'
+            onChange={(e, page) => router.replace(`/dashboard/?page=${page}`)}
+            page={+page}
+          />
+        )}
       </>
     );
   };

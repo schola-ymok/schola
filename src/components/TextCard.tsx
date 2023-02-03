@@ -19,9 +19,9 @@ const TextCard = ({ text }) => {
               width: {
                 xs: 150,
                 sm: 200,
-                '&:hover .child': {
-                  filter: 'brightness(95%)',
-                },
+              },
+              '&:hover .child': {
+                filter: 'brightness(95%)',
               },
             }}
           >

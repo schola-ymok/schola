@@ -99,19 +99,19 @@ const HeaderAvatarButton = () => {
         <Divider sx={{ my: 0.5 }} />
         <SMenuItem
           onClick={() => {
-            router.push('/dashboard');
-            handleClose();
-          }}
-        >
-          ダッシュボード
-        </SMenuItem>
-        <SMenuItem
-          onClick={() => {
             router.push('/account/texts');
             handleClose();
           }}
         >
           購入済みテキスト
+        </SMenuItem>
+        <SMenuItem
+          onClick={() => {
+            router.push('/dashboard');
+            handleClose();
+          }}
+        >
+          ダッシュボード
         </SMenuItem>
         <SMenuItem
           onClick={() => {

@@ -41,10 +41,11 @@ const Account = () => {
   const [notifyOnPurchaseMailCheck, setNotifyOnPurchaseMailCheck] = useState(false);
   const [notifyOnReviewMailCheck, setNotifyOnReviewMailCheck] = useState(false);
   const [notifyOnUpdateMailCheck, setNotifyOnUpdateMailCheck] = useState(false);
+  const [swrKey] = useState(genid(4));
 
   const [tab, setTab] = useState(0);
 
-  const { data, error } = useSWR(`getMyAccount`, () => getMyAccount(authAxios), {
+  const { data, error } = useSWR(`getMyAccount_${swrKey}`, () => getMyAccount(authAxios), {
     revalidateOnFocus: false,
   });
 

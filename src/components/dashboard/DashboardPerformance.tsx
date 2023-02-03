@@ -45,6 +45,13 @@ const DashboardPerformance = () => {
 
   const DataContent = ({ data }) => {
     if (!data) return <CenterLoadingSpinner />;
+    if (
+      data.number_of_total_reviews == 0 &&
+      data.number_of_total_sales == 0 &&
+      data.number_of_total_texts == 0
+    ) {
+      return <Box>表示する情報はありません</Box>;
+    }
 
     return (
       <>

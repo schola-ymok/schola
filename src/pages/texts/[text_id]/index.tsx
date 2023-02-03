@@ -608,6 +608,10 @@ const Text: NextPage = () => {
   };
 
   const ElseText = () => {
+    if (!dataAuthorTexts) {
+      return <CenterLoadingSpinner />;
+    }
+
     const texts = dataAuthorTexts.texts.filter((item) => {
       return item.id !== textId;
     });

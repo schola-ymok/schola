@@ -87,25 +87,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
 
     case 'PUT':
-      if (req.query.notifypurchase) {
-        // change notify on purchase flag
-        const notifyOnPurchase = req.query.notifypurchase == 1 ? true : false;
+      const mail = req.query.mail == 1 ? true : false;
+      let query;
 
-        const { error } = await dbQuery(escape`
-        update users
-        set notify_on_purchase = ${notifyOnPurchase} 
-        where firebase_id = ${req.headers.firebase_id}
-        `);
-
-        if (error) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
-
-        return res.status(Consts.HTTP_OK).json({ status: 'ok' });
-      } else if (req.query.photo_id) {
+      if (req.query.photo_id) {
         const { error } = await dbQuery(escape`
         update users
         set photo_id = ${req.query.photo_id}
         where firebase_id = ${req.headers.firebase_id}
         `);
+        if (error) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+        return res.status(Consts.HTTP_OK).json({ status: 'ok' });
+      } else if (req.query.notifypurchase) {
+        // change notify on purchase flag
+        const notifyOnPurchase = req.query.notifypurchase == 1 ? true : false;
+
+        query = mail
+          ? escape`update users set notify_on_purchase_mail = ${notifyOnPurchase}`
+          : escape`update users set notify_on_purchase_web = ${notifyOnPurchase} where firebase_id=${req.headers.firebase_id}`;
+
+        const { error } = await dbQuery(query);
 
         if (error) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
 
@@ -114,11 +115,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         // change notify on review flag
         const notifyOnReview = req.query.notifyreview == 1 ? true : false;
 
-        const { error } = await dbQuery(escape`
-        update users
-        set notify_on_review = ${notifyOnReview} 
-        where firebase_id = ${req.headers.firebase_id}
-        `);
+        query = mail
+          ? escape`update users set notify_on_review_mail = ${notifyOnReview}`
+          : escape`update users set notify_on_review_web = ${notifyOnReview} where firebase_id=${req.headers.firebase_id}`;
+
+        const { error } = await dbQuery(query);
+
+        if (error) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+
+        return res.status(Consts.HTTP_OK).json({ status: 'ok' });
+      } else if (req.query.notifyupdate) {
+        // change notify on update flag
+        const notifyOnUpdate = req.query.notifyupdate == 1 ? true : false;
+
+        query = mail
+          ? escape`update users set notify_on_update_mail = ${notifyOnUpdate}`
+          : escape`update users set notify_on_update_web = ${notifyOnUpdate} where firebase_id=${req.headers.firebase_id}`;
+
+        const { error } = await dbQuery(query);
 
         if (error) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
 

@@ -8,6 +8,7 @@ import {
   DialogContent,
   CircularProgress,
 } from '@mui/material';
+import { useRouter } from 'next/router';
 import { useEffect, useContext, useState } from 'react';
 
 import { changeAccount } from 'api/changeAccount';
@@ -19,7 +20,6 @@ import DefaultButton from './DefaultButton';
 import FormItemLabel from './FormItemLabel';
 import FormItemState from './FormItemState';
 import FormItemSubLabel from './FormItemSubLabel';
-import { useRouter } from 'next/router';
 
 const AccountNameSettingDialog = ({ key, open, onClose, name, onChange }) => {
   const router = useRouter();
@@ -68,16 +68,17 @@ const AccountNameSettingDialog = ({ key, open, onClose, name, onChange }) => {
     setResult(null);
   };
 
-  const Button = () => {
+  const SubmitButton = () => {
     if (loading) {
       return (
-        <DefaultButton>
-          <CircularProgress size={28} sx={{ color: 'white' }} />
+        <DefaultButton sx={{ width: '90px' }}>
+          <CircularProgress size={24} sx={{ p: 0, m: 0, color: 'white' }} />
         </DefaultButton>
       );
     } else {
       return (
         <DefaultButton
+          sx={{ width: '90px' }}
           disabled={!nameValidation?.ok || oldName == newName}
           onClick={() => {
             change();
@@ -121,7 +122,7 @@ const AccountNameSettingDialog = ({ key, open, onClose, name, onChange }) => {
           />
         </Box>
         {result == 'duplicate' || result == 'error' ? (
-          <Box sx={{ fontSize: '0.9em', color: '#aa0000' }}>{errorLabels[result]}</Box>
+          <Box sx={{ fontSize: '0.8em', color: '#aa0000' }}>{errorLabels[result]}</Box>
         ) : (
           <FormItemState validation={nameValidation} />
         )}
@@ -134,7 +135,7 @@ const AccountNameSettingDialog = ({ key, open, onClose, name, onChange }) => {
         >
           キャンセル
         </DefaultButton>
-        <Button />
+        <SubmitButton />
       </DialogActions>
     </Dialog>
   );

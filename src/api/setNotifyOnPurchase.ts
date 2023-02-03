@@ -1,7 +1,10 @@
-export const setNotifyOnPurchase = async (authAxios, notifyOnPurchase) => {
+export const setNotifyOnPurchase = async (authAxios, notifyOnPurchase, mail) => {
   try {
-    const query = notifyOnPurchase ? 1 : 0;
-    const res = await authAxios.put('/api/account/?notifypurchase=' + query);
+    const queryNotifyOnPurchase = notifyOnPurchase ? 1 : 0;
+    const queryMail = mail ? 1 : 0;
+    const res = await authAxios.put(
+      '/api/account/?notifypurchase=' + queryNotifyOnPurchase + '&mail=' + queryMail,
+    );
 
     if (res.data.status == 'ok') {
       return;

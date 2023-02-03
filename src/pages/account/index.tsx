@@ -1,15 +1,17 @@
 import CheckIcon from '@mui/icons-material/Check';
-import { Checkbox, CircularProgress, Container, InputBase, Snackbar } from '@mui/material';
+import { Checkbox, CircularProgress, Container, Divider, InputBase, Snackbar } from '@mui/material';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { getAuth, sendEmailVerification } from 'firebase/auth';
+import error from 'next/error';
 import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
 import { getMyAccount } from 'api/getMyAccount';
 import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
 import { setNotifyOnReview } from 'api/setNotifyOnReview';
+import { setNotifyOnUpdate } from 'api/setNotifyOnUpdate';
 import { setProfilePhotoId } from 'api/setProfilePhotoId';
 import { updateProfile } from 'api/updateProfile';
 import AccountNameSettingDialog from 'components/AccountNameSettingDialog';
@@ -31,9 +33,15 @@ import { validate } from 'utils/validate';
 
 const Account = () => {
   const { authAxios } = useContext(AuthContext);
-  const { state, dispatch } = useContext(AppContext);
-  const [notifyOnPurchaseCheck, setNotifyOnPurchaseCheck] = useState(false);
-  const [notifyOnReviewCheck, setNotifyOnReviewCheck] = useState(false);
+  const { state } = useContext(AppContext);
+  const [notifyOnPurchaseWebCheck, setNotifyOnPurchaseWebCheck] = useState(false);
+  const [notifyOnReviewWebCheck, setNotifyOnReviewWebCheck] = useState(false);
+  const [notifyOnUpdateWebCheck, setNotifyOnUpdateWebCheck] = useState(false);
+
+  const [notifyOnPurchaseMailCheck, setNotifyOnPurchaseMailCheck] = useState(false);
+  const [notifyOnReviewMailCheck, setNotifyOnReviewMailCheck] = useState(false);
+  const [notifyOnUpdateMailCheck, setNotifyOnUpdateMailCheck] = useState(false);
+
   const [tab, setTab] = useState(0);
 
   const { data, error } = useSWR(`getMyAccount`, () => getMyAccount(authAxios), {
@@ -45,8 +53,12 @@ const Account = () => {
 
   useEffect(() => {
     if (data) {
-      if (data.notifyOnPurchase) setNotifyOnPurchaseCheck(true);
-      if (data.notifyOnReview) setNotifyOnReviewCheck(true);
+      if (data.notifyOnPurchaseWeb) setNotifyOnPurchaseWebCheck(true);
+      if (data.notifyOnReviewWeb) setNotifyOnReviewWebCheck(true);
+      if (data.notifyOnUpdateWeb) setNotifyOnUpdateWebCheck(true);
+      if (data.notifyOnPurchaseMail) setNotifyOnPurchaseMailCheck(true);
+      if (data.notifyOnReviewMail) setNotifyOnReviewMailCheck(true);
+      if (data.notifyOnUpdateMail) setNotifyOnUpdateMailCheck(true);
     }
   }, [data]);
 
@@ -56,18 +68,39 @@ const Account = () => {
 
   if (!data) return <CenterLoadingSpinner />;
 
-  const handleNotifyOnPurchaseChange = (event) => {
-    setNotifyOnPurchaseCheck(event.target.checked);
-    setNotifyOnPurchase(authAxios, event.target.checked)
+  const handleNotifyOnPurchaseChange = (event, mail) => {
+    if (mail) {
+      setNotifyOnPurchaseMailCheck(event.target.checked);
+    } else {
+      setNotifyOnPurchaseWebCheck(event.target.checked);
+    }
+    setNotifyOnPurchase(authAxios, event.target.checked, mail)
       .then(() => {})
       .catch((error) => {
         console.log(error);
       });
   };
 
-  const handleNotifyOnReviewChange = (event) => {
-    setNotifyOnReviewCheck(event.target.checked);
-    setNotifyOnReview(authAxios, event.target.checked)
+  const handleNotifyOnReviewChange = (event, mail) => {
+    if (mail) {
+      setNotifyOnReviewMailCheck(event.target.checked);
+    } else {
+      setNotifyOnReviewWebCheck(event.target.checked);
+    }
+    setNotifyOnReview(authAxios, event.target.checked, mail)
+      .then(() => {})
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleNotifyOnUpdateChange = (event, mail) => {
+    if (mail) {
+      setNotifyOnUpdateMailCheck(event.target.checked);
+    } else {
+      setNotifyOnUpdateWebCheck(event.target.checked);
+    }
+    setNotifyOnUpdate(authAxios, event.target.checked, mail)
       .then(() => {})
       .catch((error) => {
         console.log(error);
@@ -100,9 +133,14 @@ const Account = () => {
           handleSendEmailVerificationClick={handleSendEmailVerificationClick}
           userId={data.userId}
           handleNotifyOnPurchaseChange={handleNotifyOnPurchaseChange}
-          notifyOnPurchaseCheck={notifyOnPurchaseCheck}
           handleNotifyOnReviewChange={handleNotifyOnReviewChange}
-          notifyOnReviewCheck={notifyOnReviewCheck}
+          handleNotifyOnUpdateChange={handleNotifyOnUpdateChange}
+          notifyOnReviewWebCheck={notifyOnReviewWebCheck}
+          notifyOnReviewMailCheck={notifyOnReviewMailCheck}
+          notifyOnUpdateWebCheck={notifyOnUpdateWebCheck}
+          notifyOnUpdateMailCheck={notifyOnUpdateMailCheck}
+          notifyOnPurchaseWebCheck={notifyOnPurchaseWebCheck}
+          notifyOnPurchaseMailCheck={notifyOnPurchaseMailCheck}
         />
       </TabPanel>
       <TabPanel value={tab} index={1}>
@@ -119,9 +157,14 @@ const AccountSetting = ({
   handleSendEmailVerificationClick,
   userId,
   handleNotifyOnPurchaseChange,
-  notifyOnPurchaseCheck,
   handleNotifyOnReviewChange,
-  notifyOnReviewCheck,
+  handleNotifyOnUpdateChange,
+  notifyOnPurchaseWebCheck,
+  notifyOnReviewWebCheck,
+  notifyOnUpdateWebCheck,
+  notifyOnPurchaseMailCheck,
+  notifyOnReviewMailCheck,
+  notifyOnUpdateMailCheck,
 }) => {
   const [accountNameSettingOpen, setAccountNameSettingOpen] = useState(false);
 
@@ -133,46 +176,136 @@ const AccountSetting = ({
     </>
   );
 
-  const Item = ({ label, children }) => {
-    return (
-      <Box sx={{ display: 'flex' }}>
-        <Box sx={{ my: 2, width: '40%', minWidth: '120px', textAlign: 'right' }}>{label}</Box>
-        <Box sx={{ ml: 2, my: 'auto', fontWeight: 'bold', display: 'flex' }}>{children}</Box>
-      </Box>
-    );
-  };
+  const ItemLabel = ({ label }) => (
+    <Box
+      sx={{
+        my: 'auto',
+        width: { sm: '100%', md: '50%' },
+        minWidth: '130px',
+        textAlign: { sm: 'left', md: 'right' },
+        fontWeight: 'bold',
+      }}
+    >
+      {label}
+    </Box>
+  );
+
+  const ItemValue = ({ children }) => (
+    <Box sx={{ ml: 2, my: 'auto', display: 'flex', mt: { xs: 1, md: 0 } }}>{children}</Box>
+  );
+
+  const ItemBox = ({ children, sx }) => (
+    <Box sx={{ display: 'flex', mb: 4, flexFlow: { xs: 'column', md: 'unset' }, ...sx }}>
+      {children}
+    </Box>
+  );
+
+  const SimpleCheckbox = ({ checked, onChange }) => (
+    <Checkbox disableRipple sx={{ p: 0 }} onChange={onChange} checked={checked} />
+  );
 
   return (
     <>
       <Box sx={{ display: 'flex', flexFlow: 'column', pt: { sx: 0, sm: 3 } }}>
-        <Item label='アカウント名'>
-          {accountName}{' '}
-          <Box
-            onClick={() => {
-              setAccountNameSettingOpen(true);
-            }}
-            sx={{
-              ml: 2,
-              fontWeight: 'normal',
-              color: Consts.COLOR.Primary,
-              '&:hover': {
-                cursor: 'pointer',
-                textDecoration: 'underline',
-              },
-            }}
-          >
-            変更
-          </Box>
-        </Item>
-        <Item label='アカウントID'>{userId}</Item>
-        <Item label='メール'>{email}</Item>
-        <Item label='メール確認'>{emailVerify}</Item>
-        <Item label='テキストが購入された時に通知'>
-          <Checkbox onChange={handleNotifyOnPurchaseChange} checked={notifyOnPurchaseCheck} />
-        </Item>
-        <Item label='テキストのレビューが投稿された時に通知'>
-          <Checkbox onChange={handleNotifyOnReviewChange} checked={notifyOnReviewCheck} />
-        </Item>
+        <ItemBox>
+          <ItemLabel label='アカウント名' />
+          <ItemValue>
+            {accountName}{' '}
+            <Box
+              onClick={() => {
+                setAccountNameSettingOpen(true);
+              }}
+              sx={{
+                ml: 2,
+                fontWeight: 'normal',
+                color: Consts.COLOR.Primary,
+                '&:hover': {
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                },
+              }}
+            >
+              変更
+            </Box>
+          </ItemValue>
+        </ItemBox>
+
+        <ItemBox>
+          <ItemLabel label='アカウントID' />
+          <ItemValue>{userId}</ItemValue>
+        </ItemBox>
+
+        <ItemBox>
+          <ItemLabel label='メール' />
+          <ItemValue>{email}</ItemValue>
+        </ItemBox>
+
+        <ItemBox>
+          <ItemLabel label='メール確認' />
+          <ItemValue>{emailVerify}</ItemValue>
+        </ItemBox>
+
+        <ItemBox sx={{ mt: 2 }}>
+          <ItemLabel label='購入したテキストが更新された時に通知' />
+          <ItemValue>
+            <Box sx={{ my: 'auto' }}>メール：</Box>
+            <SimpleCheckbox
+              onChange={(e) => {
+                handleNotifyOnUpdateChange(e, true);
+              }}
+              checked={notifyOnUpdateMailCheck}
+            />
+            <Box sx={{ ml: 4, my: 'auto' }}>Web：</Box>
+            <SimpleCheckbox
+              onChange={(e) => {
+                handleNotifyOnUpdateChange(e, false);
+              }}
+              checked={notifyOnUpdateWebCheck}
+            />
+          </ItemValue>
+        </ItemBox>
+
+        <ItemBox>
+          <ItemLabel label='販売中のテキストが売れた時に通知' />
+          <ItemValue>
+            <Box sx={{ display: 'flex' }}>
+              <Box sx={{ my: 'auto' }}>メール：</Box>
+              <SimpleCheckbox
+                onChange={(e) => {
+                  handleNotifyOnPurchaseChange(e, true);
+                }}
+                checked={notifyOnPurchaseMailCheck}
+              />
+              <Box sx={{ ml: 4, my: 'auto' }}>Web：</Box>
+              <SimpleCheckbox
+                onChange={(e) => {
+                  handleNotifyOnPurchaseChange(e, false);
+                }}
+                checked={notifyOnPurchaseWebCheck}
+              />
+            </Box>
+          </ItemValue>
+        </ItemBox>
+
+        <ItemBox>
+          <ItemLabel label='テキストのレビューが投稿された時に通知' />
+          <ItemValue>
+            <Box sx={{ my: 'auto' }}>メール：</Box>
+            <SimpleCheckbox
+              onChange={(e) => {
+                handleNotifyOnReviewChange(e, true);
+              }}
+              checked={notifyOnReviewMailCheck}
+            />
+            <Box sx={{ ml: 4, my: 'auto' }}>Web：</Box>
+            <SimpleCheckbox
+              onChange={(e) => {
+                handleNotifyOnReviewChange(e, false);
+              }}
+              checked={notifyOnReviewWebCheck}
+            />
+          </ItemValue>
+        </ItemBox>
       </Box>
       <AccountNameSettingDialog
         key={Math.random()}

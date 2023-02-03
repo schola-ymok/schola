@@ -1,10 +1,10 @@
-export const setNotifyOnReview = async (authAxios, notifyOnReview, mail) => {
+export const setNotifyOnUpdate = async (authAxios, notifyOnUpdate, mail) => {
   try {
-    const queryNotifyOnReview = notifyOnReview ? 1 : 0;
+    const queryNotifyOnUpdate = notifyOnUpdate ? 1 : 0;
     const queryMail = mail ? 1 : 0;
 
     const res = await authAxios.put(
-      '/api/account/?notifyreview=' + queryNotifyOnReview + '&mail=' + queryMail,
+      '/api/account/?notifyupdate=' + queryNotifyOnUpdate + '&mail=' + queryMail,
     );
 
     if (res.data.status == 'ok') {

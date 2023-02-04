@@ -50,7 +50,7 @@ const LatestNotificationList = ({ setShowBadge, handleClose }) => {
                 router.push(item.url);
               }}
             >
-              <Box sx={{ fontSize: '0.9em' }}>{html}</Box>
+              <Box sx={{ fontSize: '0.9em', mr: 'auto' }}>{html}</Box>
               <Box sx={{ ml: 'auto', fontSize: '0.7em', color: '#999999' }}>{date}</Box>
             </NoticeItem>
           </>

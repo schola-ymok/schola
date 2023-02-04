@@ -26,6 +26,7 @@ import { deleteChapter } from 'api/deleteChapter';
 import { getChapterList } from 'api/getChapterList';
 import { getMyText } from 'api/getMyText';
 import { releaseText } from 'api/releaseText';
+import { setChapterTrialReading } from 'api/setChapterTrialReading';
 import { setTextCoverPhotoId } from 'api/setTextCoverPhotoId';
 import { submitApplication } from 'api/submitApplication';
 import { updateChapterOrder } from 'api/updateChapterOrder';
@@ -40,6 +41,7 @@ import FormItemState from 'components/FormItemState';
 import FormItemSubLabel from 'components/FormItemSubLabel';
 import ImageCropDialog from 'components/ImageCropDialog';
 import LoadingBackDrop from 'components/LoadingBackDrop';
+import TrialReadingAvailableLabel from 'components/TrialReadingAvailableLabel';
 import { AuthContext } from 'components/auth/AuthContext';
 import EditTextHeader from 'components/headers/EditTextHeader';
 import EditTextLayout from 'components/layouts/EditTextLayout';
@@ -988,6 +990,19 @@ const ChapterList = () => {
     mutate(`/texts/${textId}/chapters/`);
   }
 
+  async function handleToggleTrialReadingAvailable(item) {
+    setIsLoading(true);
+    const available = item.is_trial_reading_available;
+    const { error } = await setChapterTrialReading(item.id, !available, authAxios);
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    mutate(`/texts/${textId}/chapters/`);
+  }
+
   function handleChapterClick(item) {
     router.push({
       pathname: `/chapters/${item.id}/edit`,
@@ -1042,16 +1057,21 @@ const ChapterList = () => {
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
+                      display: 'flex',
                     }}
                     onClick={() => {
                       handleChapterClick(keyedChapterList[chapterId]);
                     }}
                   >
-                    {keyedChapterList[chapterId]?.title}
+                    {keyedChapterList[chapterId]?.title}{' '}
+                    {keyedChapterList[chapterId]?.is_trial_reading_available == 1 && (
+                      <TrialReadingAvailableLabel sx={{ ml: 1 }} />
+                    )}
                   </Box>
                   <ChapterListMenuButton
                     key={chapterId + keyedChapterList[chapterId]?.title}
                     item={keyedChapterList[chapterId]}
+                    handleToggleTrialReadingAvailable={handleToggleTrialReadingAvailable}
                     handleDelete={handleDeleteChapterClick}
                     handleEdit={handleChapterClick}
                     handleTitleChange={(title) => {

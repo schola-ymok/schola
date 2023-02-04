@@ -5,6 +5,7 @@ import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import UpdateIcon from '@mui/icons-material/Update';
 import { Box, CircularProgress, colors, Grid, Rating, Stack, useMediaQuery } from '@mui/material';
+import { color } from '@mui/system';
 import htmlParse from 'html-react-parser';
 import router, { useRouter } from 'next/router';
 import { useCallback, useContext, useState } from 'react';
@@ -25,6 +26,7 @@ import RatingReportPanel from 'components/RatingReportPanel';
 import ReadMoreText from 'components/ReadMoreText';
 import Review from 'components/ReviewItem';
 import ShowMore from 'components/ShowMore';
+import TrialReadingAvailableLabel from 'components/TrialReadingAvailableLabel';
 import { AuthContext } from 'components/auth/AuthContext';
 import ViewTextAbstractLayout from 'components/layouts/ViewTextAbstractLayout';
 import chapters from 'pages/api/texts/[text_id]/chapters';
@@ -892,12 +894,91 @@ const ChapterList = () => {
   });
 
   function handleChapterClick(item) {
-    router.push({
-      pathname: `/dashboard/chapters/${item.id}`,
-      query: { article_id: id },
-    });
+    //    router.push(``);
   }
 
+  const ChapterTitleRow = ({ chapter, eol }) => {
+    const rHeight = 40;
+
+    let rSx = {
+      display: 'flex',
+      width: '100%',
+      height: `${rHeight}px`,
+      position: 'relative',
+      color: '#aaaaaa',
+    };
+
+    if (chapter.is_trial_reading_available == 1) {
+      rSx = {
+        ...rSx,
+        color: 'black',
+        '&:hover': {
+          cursor: 'pointer',
+          color: Consts.COLOR.Primary,
+        },
+      };
+    }
+
+    return (
+      <>
+        <Box sx={rSx}>
+          <Box
+            sx={{
+              width: '11px',
+              height: '11px',
+              borderRadius: '5px',
+              border: '2px solid #bccfcf',
+              position: 'absolute',
+              top: '10px',
+              left: '4px',
+            }}
+          />
+          {eol == false && (
+            <Box
+              sx={{
+                height: `${rHeight - 10}px`,
+                position: 'absolute',
+                top: '20px',
+                left: '8px',
+                width: '2px',
+                borderRight: '2px solid #bccfcf',
+              }}
+            />
+          )}
+          <Box
+            sx={{
+              fontWeight: 'bold',
+              position: 'absolute',
+              top: '5px',
+              left: '25px',
+              display: 'flex',
+            }}
+          >
+            <Box className='child'>{chapter.title} </Box>
+            {chapter.is_trial_reading_available == 1 && (
+              <TrialReadingAvailableLabel sx={{ ml: 1 }} />
+            )}
+          </Box>
+        </Box>
+      </>
+    );
+  };
+
+  const chapters = Object.keys(data.chapters);
+  return (
+    <>
+      {chapters.map((id, index) => {
+        return (
+          <ChapterTitleRow
+            onClick={handleChapterClick}
+            chapter={data.chapters[id]}
+            eol={index == chapters.length - 1}
+          />
+        );
+      })}
+    </>
+  );
+  /*
   return (
     <ReadMoreText height={200} id={textId} fontSize={'0.9em'}>
       {Object.keys(data.chapters).map((id) => {
@@ -912,7 +993,9 @@ const ChapterList = () => {
       })}
     </ReadMoreText>
   );
+  */
 };
 
 Text.getLayout = (page) => <ViewTextAbstractLayout>{page}</ViewTextAbstractLayout>;
+
 export default Text;

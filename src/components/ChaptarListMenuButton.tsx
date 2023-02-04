@@ -7,7 +7,13 @@ import Consts from 'utils/Consts';
 
 import SMenuItem from './SMenuItem';
 
-const ChapterListMenuButton = ({ item, handleDelete, handleEdit, handleTitleChange }) => {
+const ChapterListMenuButton = ({
+  item,
+  handleDelete,
+  handleEdit,
+  handleToggleTrialReadingAvailable,
+  handleTitleChange,
+}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [chapterNameSettingOpen, setChapterMenuSettingOpen] = useState(false);
 
@@ -58,6 +64,14 @@ const ChapterListMenuButton = ({ item, handleDelete, handleEdit, handleTitleChan
         >
           <SMenuItem
             onClick={() => {
+              handleEdit(item);
+              handleClose();
+            }}
+          >
+            編集
+          </SMenuItem>
+          <SMenuItem
+            onClick={() => {
               setChapterMenuSettingOpen(true);
               handleClose();
             }}
@@ -66,19 +80,11 @@ const ChapterListMenuButton = ({ item, handleDelete, handleEdit, handleTitleChan
           </SMenuItem>
           <SMenuItem
             onClick={() => {
-              handleEdit();
+              handleToggleTrialReadingAvailable(item);
               handleClose();
             }}
           >
-            編集
-          </SMenuItem>
-          <SMenuItem
-            onClick={() => {
-              handleEdit();
-              handleClose();
-            }}
-          >
-            試し読み可能に
+            {item.is_trial_reading_available == 1 ? '無料公開を解除' : '無料公開'}
           </SMenuItem>
           <SMenuItem
             onClick={() => {

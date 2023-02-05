@@ -30,7 +30,13 @@ namespace Consts {
     IconButtonBackGround: '#fefefe',
     IconDarkGrey: '#333333',
     VIEW: {
+      Title: '#111111',
+      Author: '#999999',
+      AuthorHover: '#555555',
+      TocTitle: '#888888',
+      TocTitleHover: '#333333',
       Primary: '#000080',
+      ChapteUpdateDate: '#888888',
     },
   };
 

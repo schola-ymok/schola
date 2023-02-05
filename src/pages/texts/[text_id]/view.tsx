@@ -1,35 +1,25 @@
-import { Box, Drawer, IconButton, useMediaQuery } from '@mui/material';
+import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
+import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
+import Edit from '@mui/icons-material/Edit';
+import { Box, Divider, Drawer, IconButton, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import rehypeKatex from 'rehype-katex';
-import rehypeSlug from 'rehype-slug';
-import { remark } from 'remark';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
 import useSWR, { useSWRConfig } from 'swr';
 
 import { getPurchasedInfo } from 'api/getPurchasedInfo';
 import { getViewText } from 'api/getViewText';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
-import 'katex/dist/katex.min.css';
-import 'github-markdown-css/github-markdown.css';
-
 import Logo from 'components/headers/Logo';
 import SLogo from 'components/headers/SLogo';
-import SideMenuIcon from 'components/sidemenu/SideMenuIcon';
+import CodeBlock from 'components/markdown/CodeBlock';
+import Markdown from 'components/markdown/Markdown';
 import MenuCloseButton from 'components/sidemenu/MenuCloseButton';
+import SideMenuIcon from 'components/sidemenu/SideMenuIcon';
 import Consts from 'utils/Consts';
 import { extractToc } from 'utils/extractToc';
 
-import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
-import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
-
 import type { NextPage } from 'next';
-
-import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
-
-import Edit from '@mui/icons-material/Edit';
 
 const TextView: NextPage = () => {
   const router = useRouter();
@@ -166,6 +156,7 @@ const ChapterContent = ({ data, chapterOrder }) => {
 
   const content = data.chapters[chapterId]?.content;
   const title = data.chapters[chapterId]?.title;
+  const date = data.chapters[chapterId]?.updated_at;
 
   let chapterNo = 0;
 
@@ -302,7 +293,9 @@ const ChapterContent = ({ data, chapterOrder }) => {
           }}
         >
           <Box sx={{ fontWeight: 'bold', fontSize: '2.1em' }}>{title}</Box>
-          <Box>更新日: 2022.12212.</Box>
+          <Box sx={{ fontSize: '0.8em', color: Consts.COLOR.VIEW.ChapteUpdateDate }}>
+            更新日: {new Date(date).toLocaleDateString('ja')}
+          </Box>
         </Box>
       </Box>
 
@@ -317,13 +310,7 @@ const ChapterContent = ({ data, chapterOrder }) => {
           overflowY: 'hidden',
         }}
       >
-        <ReactMarkdown
-          className='markdown-body p-3'
-          remarkPlugins={[remarkGfm, remarkMath]}
-          rehypePlugins={[rehypeKatex, rehypeSlug]}
-        >
-          {content}
-        </ReactMarkdown>
+        <Markdown>{content}</Markdown>
       </Box>
 
       <Box
@@ -367,27 +354,6 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
     router.push(`/texts/${textId}/view?cid=${chapterId}#${sectionId}`);
   }
 
-  const NestItem = ({ item, chapterId }) => {
-    const ml = item.depth * 2;
-    return (
-      <Box
-        sx={{
-          ml: ml,
-          cursor: 'pointer',
-          fontSize: '0.8em',
-          my: 0.4,
-          '&:hover': {
-            color: Consts.COLOR.VIEW.Primary,
-            textDecoration: 'underline',
-          },
-        }}
-        onClick={() => handleSectionClick(chapterId, item.id)}
-      >
-        {item.text}
-      </Box>
-    );
-  };
-
   const sx = mobile
     ? {
         p: 1,
@@ -412,6 +378,10 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
         {mobile && <MenuCloseButton onClick={onClose} />}
 
         <Box sx={{ display: 'flex', flexFlow: 'column' }}>
+          <Box sx={{ width: 'fit-content', my: 1 }}>
+            <Logo sx={{ width: 90 }} />
+          </Box>
+          <Divider />
           <Box sx={{ display: 'flex', my: 3 }}>
             <Box
               component='img'
@@ -430,10 +400,8 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
                 sx={{
                   fontSize: '0.9em',
                   cursor: 'pointer',
-                  '&:hover': {
-                    textDecoration: 'underline',
-                    color: Consts.COLOR.Primary,
-                  },
+                  fontWeight: 'bold',
+                  color: Consts.COLOR.VIEW.Title,
                 }}
                 onClick={() => router.push(`/texts/${textId}`)}
               >
@@ -442,11 +410,11 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
               <Box
                 sx={{
                   fontSize: '0.8em',
-                  color: '#888888',
+                  color: Consts.COLOR.VIEW.Author,
                   cursor: 'pointer',
+                  fontWeight: 'bold',
                   '&:hover': {
-                    textDecoration: 'underline',
-                    color: Consts.COLOR.Primary,
+                    color: Consts.COLOR.VIEW.AuthorHover,
                   },
                 }}
                 onClick={() => router.push(`/texts/${textId}`)}
@@ -473,30 +441,30 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
         </IconButton>
 
         <Box sx={{ display: 'flex', flexFlow: 'column', mb: 3 }}>
-          {chapterOrder.map((id) => {
+          {chapterOrder.map((id, index) => {
+            const color =
+              (router.query.cid == undefined && index == 0) || id == router.query.cid
+                ? Consts.COLOR.VIEW.TocTitleHover
+                : Consts.COLOR.VIEW.TocTitle;
             return (
               <>
                 <Box
                   key={id}
                   sx={{
-                    my: 0.4,
+                    my: 0.9,
                     cursor: 'pointer',
                     fontSize: '0.8em',
                     fontWeight: 'bold',
-                    color: '#000000',
+                    color: color,
 
                     '&:hover': {
-                      color: Consts.COLOR.Primary,
-                      textDecoration: 'underline',
+                      color: Consts.COLOR.VIEW.TocTitleHover,
                     },
                   }}
                   onClick={() => handleChapterClick(id)}
                 >
                   {data.chapters[id].title}
                 </Box>
-                {tocs[id].map((item) => {
-                  return <NestItem item={item} chapterId={id} />;
-                })}
               </>
             );
           })}

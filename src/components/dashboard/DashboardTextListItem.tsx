@@ -69,7 +69,8 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
               color: Consts.COLOR.PrimaryDark,
               borderRadius: '5px',
               mt: 0.5,
-              width: '90px',
+              px: 0.5,
+              width: 'fit-content',
               textAlign: 'center',
               border: '1px solid ' + Consts.COLOR.PrimaryDark,
             }}

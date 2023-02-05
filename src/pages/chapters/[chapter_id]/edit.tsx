@@ -5,10 +5,6 @@ import InsertPhotoIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { ref, uploadBytes } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import rehypeKatex from 'rehype-katex';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
 import useSWR, { useSWRConfig } from 'swr';
 
 import { getChapter } from 'api/getChapter';
@@ -17,12 +13,12 @@ import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
 import EditChapterHeader from 'components/headers/EditChapterHeader';
 import EditChapterLayout from 'components/layouts/EditChapterLayout';
+import Markdown from 'components/markdown/Markdown';
 import { storage } from 'libs/firebase/firebase';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
 
 import type { NextPage } from 'next';
-import 'github-markdown-css/github-markdown.css';
 
 const EditChapter: NextPage = () => {
   const router = useRouter();
@@ -158,13 +154,7 @@ const EditChapter: NextPage = () => {
               p: 1,
             }}
           >
-            <ReactMarkdown
-              className='markdown-body p-3'
-              remarkPlugins={[remarkGfm, remarkMath]}
-              rehypePlugins={[rehypeKatex]}
-            >
-              {content}
-            </ReactMarkdown>
+            <Markdown>{content}</Markdown>
           </Box>
         )}
       </Box>

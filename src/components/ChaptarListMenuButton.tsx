@@ -84,7 +84,7 @@ const ChapterListMenuButton = ({
               handleClose();
             }}
           >
-            {item.is_trial_reading_available == 1 ? '無料公開を解除' : '無料公開'}
+            {item?.is_trial_reading_available == 1 ? '無料公開を解除' : '無料公開'}
           </SMenuItem>
           <SMenuItem
             onClick={() => {

@@ -13,7 +13,8 @@ import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
 import EditChapterHeader from 'components/headers/EditChapterHeader';
 import EditChapterLayout from 'components/layouts/EditChapterLayout';
-import Markdown from 'components/markdown/Markdown';
+import Markdown from 'components/markdown/ScholaMarkdownViewer';
+import ScholaMarkdownViewer from 'components/markdown/ScholaMarkdownViewer';
 import { storage } from 'libs/firebase/firebase';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
@@ -99,7 +100,6 @@ const EditChapter: NextPage = () => {
     const percentage =
       event.currentTarget.scrollTop /
       (event.currentTarget.scrollHeight - event.currentTarget.offsetHeight);
-    console.log(percentage);
 
     viewerRef?.current?.scrollTo(
       0,
@@ -154,7 +154,7 @@ const EditChapter: NextPage = () => {
               p: 1,
             }}
           >
-            <Markdown>{content}</Markdown>
+            <ScholaMarkdownViewer>{content}</ScholaMarkdownViewer>
           </Box>
         )}
       </Box>

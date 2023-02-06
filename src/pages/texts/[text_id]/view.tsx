@@ -13,7 +13,8 @@ import { AuthContext } from 'components/auth/AuthContext';
 import Logo from 'components/headers/Logo';
 import SLogo from 'components/headers/SLogo';
 import CodeBlock from 'components/markdown/CodeBlock';
-import Markdown from 'components/markdown/Markdown';
+import Markdown from 'components/markdown/ScholaMarkdownViewer';
+import ScholaMarkdownViewer from 'components/markdown/ScholaMarkdownViewer';
 import MenuCloseButton from 'components/sidemenu/MenuCloseButton';
 import SideMenuIcon from 'components/sidemenu/SideMenuIcon';
 import Consts from 'utils/Consts';
@@ -310,7 +311,7 @@ const ChapterContent = ({ data, chapterOrder }) => {
           overflowY: 'hidden',
         }}
       >
-        <Markdown>{content}</Markdown>
+        <ScholaMarkdownViewer>{content}</ScholaMarkdownViewer>
       </Box>
 
       <Box

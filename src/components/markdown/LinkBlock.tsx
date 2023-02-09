@@ -26,9 +26,10 @@ const LinkBlock = ({ href, children }) => {
       return <YoutubeBlock id={id} />;
     }
   } else if (href.startsWith('https://twitter.com/')) {
-    if (href.match('/(https|http)://(twitter.com)/([A-Za-z0-9_]*)/(status|statues)/(d+)/')) {
-      return <TwitterTweetEmbed tweetId={'1623358387810336767'} />;
-    }
+    const match = href.match(/(https):\/\/(twitter.com)\/([A-Za-z0-9_]*)\/(status|statues)\/(\d+)/);
+
+    const tweetId = match[5];
+    return <TwitterTweetEmbed tweetId={tweetId} />;
   }
 
   return <a href={href}>{children}</a>;

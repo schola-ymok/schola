@@ -26,6 +26,7 @@ import RatingReportPanel from 'components/RatingReportPanel';
 import ReadMoreText from 'components/ReadMoreText';
 import Review from 'components/ReviewItem';
 import ShowMore from 'components/ShowMore';
+import TocLine from 'components/TocLine';
 import TrialReadingAvailableLabel from 'components/TrialReadingAvailableLabel';
 import { AuthContext } from 'components/auth/AuthContext';
 import ViewTextAbstractLayout from 'components/layouts/ViewTextAbstractLayout';
@@ -887,97 +888,19 @@ const ChapterList = () => {
     return <Box>チャプターが存在していません</Box>;
   }
 
+  /*
   var tocs = {};
   Object.keys(data.chapters).map((id) => {
     const toc = extractToc(data.chapters[id].content);
     tocs[id] = toc;
   });
+  */
 
-  function handleChapterClick(item) {
-    //    router.push(``);
-  }
-
-  const ChapterTitleRow = ({ chapter, eol }) => {
-    const rHeight = 40;
-
-    let rSx = {
-      display: 'flex',
-      width: '100%',
-      height: `${rHeight}px`,
-      position: 'relative',
-      color: '#aaaaaa',
-    };
-
-    if (chapter.is_trial_reading_available == 1) {
-      rSx = {
-        ...rSx,
-        color: 'black',
-        '&:hover': {
-          cursor: 'pointer',
-          color: Consts.COLOR.Primary,
-        },
-      };
-    }
-
-    return (
-      <>
-        <Box sx={rSx}>
-          <Box
-            sx={{
-              width: '11px',
-              height: '11px',
-              borderRadius: '5px',
-              border: '2px solid #bccfcf',
-              position: 'absolute',
-              top: '10px',
-              left: '4px',
-            }}
-          />
-          {eol == false && (
-            <Box
-              sx={{
-                height: `${rHeight - 10}px`,
-                position: 'absolute',
-                top: '20px',
-                left: '8px',
-                width: '2px',
-                borderRight: '2px solid #bccfcf',
-              }}
-            />
-          )}
-          <Box
-            sx={{
-              fontWeight: 'bold',
-              position: 'absolute',
-              top: '5px',
-              left: '25px',
-              display: 'flex',
-            }}
-          >
-            <Box className='child'>{chapter.title} </Box>
-            {chapter.is_trial_reading_available == 1 && (
-              <TrialReadingAvailableLabel sx={{ ml: 1 }} />
-            )}
-          </Box>
-        </Box>
-      </>
-    );
-  };
-
-  const chapters = Object.keys(data.chapters);
-  return (
-    <>
-      {chapters.map((id, index) => {
-        return (
-          <ChapterTitleRow
-            onClick={handleChapterClick}
-            chapter={data.chapters[id]}
-            eol={index == chapters.length - 1}
-          />
-        );
-      })}
-    </>
-  );
+  const chapterOrder = JSON.parse(data.chapter_order);
+  const chapters = chapterOrder.map((id) => {
+    return data.chapters[id];
+  });
+  return <TocLine chapters={chapters} />;
   /*
   return (
     <ReadMoreText height={200} id={textId} fontSize={'0.9em'}>

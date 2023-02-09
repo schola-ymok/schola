@@ -33,7 +33,7 @@ import { updateChapterOrder } from 'api/updateChapterOrder';
 import { updateChapterTitle } from 'api/updateChapterTitle';
 import { updateText } from 'api/updateText';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
-import ChapterListMenuButton from 'components/ChaptarListMenuButton';
+import ChapterListMenuButton from 'components/ChapterListMenuButton';
 import ChapterTitleSettingDialog from 'components/ChapterTitleSettingDialog';
 import DefaultButton from 'components/DefaultButton';
 import FormItemLabel from 'components/FormItemLabel';

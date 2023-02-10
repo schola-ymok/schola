@@ -1,24 +1,16 @@
+import { match } from 'assert';
+
 import { Box } from '@mui/material';
+import { useEffect } from 'react';
+import Embed from 'react-embed';
 import { TwitterTweetEmbed } from 'react-twitter-embed';
 
-const TwitterBlock = ({ id }) => <TwitterTweetEmbed tweetId={id} />;
-
-const YoutubeBlock = ({ id }) => (
-  <Box sx={{ width: '70%', aspectRatio: '16/9' }}>
-    <iframe
-      style={{ width: '100%', height: '100%' }}
-      width='560'
-      height='315'
-      src={'https://www.youtube.com/embed/' + id}
-      title='YouTube video player'
-      frameBorder='0'
-      allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-      allowFullScreen
-    ></iframe>
-  </Box>
-);
+import GoogleMapBlock from './GoogleMapBlock';
+import YoutubeBlock from './YoutubeBlock';
 
 const LinkBlock = ({ href, children }) => {
+  useEffect(() => {}, []);
+
   if (href.startsWith('https://www.youtube.com/watch?v=')) {
     const hrefSplit = href.split('=');
     if (hrefSplit.length > 0) {
@@ -26,10 +18,15 @@ const LinkBlock = ({ href, children }) => {
       return <YoutubeBlock id={id} />;
     }
   } else if (href.startsWith('https://twitter.com/')) {
-    const match = href.match(/(https):\/\/(twitter.com)\/([A-Za-z0-9_]*)\/(status|statues)\/(\d+)/);
-
-    const tweetId = match[5];
-    return <TwitterTweetEmbed tweetId={tweetId} />;
+    const matches = href.match(
+      /(https):\/\/(twitter.com)\/([A-Za-z0-9_]*)\/(status|statues)\/(\d+)/,
+    );
+    if (matches) {
+      const tweetId = matches[5];
+      return <TwitterTweetEmbed tweetId={tweetId} />;
+    }
+  } else if (href.startsWith('https://stackblitz.com/')) {
+    return <iframe style={{ width: '100%', aspectRatio: '16/9' }} src={href}></iframe>;
   }
 
   return <a href={href}>{children}</a>;

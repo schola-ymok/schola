@@ -3,9 +3,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { NextPage } from 'next';
 import { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
 import NextNprogress from 'nextjs-progressbar';
 import PropTypes from 'prop-types';
-import { ReactElement, ReactNode } from 'react';
+import { ReactElement, ReactNode, useEffect } from 'react';
 
 import { AuthProvider } from 'components/auth/AuthContext';
 import createEmotionCache from 'components/mui/createEmotionCache';
@@ -33,10 +34,25 @@ interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
 
+function updateBody() {
+  const { pathname } = useRouter();
+  useEffect(() => {
+    let element = document.getElementById('schola');
+
+    if (pathname == '/chapters/[chapter_id]/edit') {
+      element.style.overflowY = 'hidden';
+    } else {
+      element.style.overflowY = 'unset';
+    }
+  }, [pathname]);
+}
+
 function MyApp(props: AppPropsWithLayout) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
   const getLayout = Component.getLayout ?? ((page) => page);
+
+  updateBody();
 
   return (
     <CacheProvider value={emotionCache}>

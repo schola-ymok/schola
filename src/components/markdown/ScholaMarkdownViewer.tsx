@@ -14,10 +14,15 @@ import TocLine from 'components/TocLine';
 import CodeBlock from 'components/markdown/CodeBlock';
 import { extractToc } from 'utils/extractToc';
 
+import CodeSandboxBlock from './CodeSandboxBlock';
+import FigmaBlock from './FigmaBlock';
+import GoogleMapBlock from './GoogleMapBlock';
 import ImageBlock from './ImageBlock';
 import LinkBlock from './LinkBlock';
-import AnnotationBlock from './NoteBlock';
+import NeortBlock from './NeortBlock';
 import NoteBlock from './NoteBlock';
+import SlideShareBlock from './SlideShareBlock';
+import SpeakerDeckBlock from './SpeakerDeckBlock';
 import TocLineBlock from './TocLineBlock';
 import WarningBlock from './WarningBlock';
 
@@ -46,12 +51,19 @@ const ScholaMarkdownViewer = ({ children }) => {
       className='markdown-body p-3'
       remarkPlugins={[remarkGfm, remarkMath, remarkDirective, remarkDirectiveRehype]}
       rehypePlugins={[rehypeKatex, rehypeSlug]}
+      allowDangerousHtml={true}
       components={{
         code: CodeBlock,
         img: ImageBlock,
         toc: TocBlock,
         note: NoteBlock,
+        gmap: GoogleMapBlock,
         warning: WarningBlock,
+        neort: NeortBlock,
+        slideshare: SlideShareBlock,
+        speakerdeck: SpeakerDeckBlock,
+        codesandbox: CodeSandboxBlock,
+        figma: FigmaBlock,
         a: LinkBlock,
       }}
     >

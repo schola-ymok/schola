@@ -121,7 +121,7 @@ const Account = () => {
   return (
     <Container maxWidth='md'>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={tab} onChange={handleTabChange}>
+        <Tabs value={tab} onChange={handleTabChange} TabIndicatorProps={{ sx: { top: 'unset' } }}>
           <Tab label={<Box sx={{ fontWeight: 'bold' }}>アカウント</Box>} />
           <Tab label={<Box sx={{ fontWeight: 'bold' }}>プロフィール</Box>} />
         </Tabs>

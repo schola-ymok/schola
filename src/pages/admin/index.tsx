@@ -45,7 +45,12 @@ const Home: NextPage = () => {
       <AdminHeader />
       <Container maxWidth='md'>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={tab} onChange={handleChange} variant='scrollable'>
+          <Tabs
+            value={tab}
+            onChange={handleChange}
+            variant='scrollable'
+            TabIndicatorProps={{ sx: { top: 'unset' } }}
+          >
             <Tab label={<Box sx={{ fontWeight: 'bold' }}>テキスト査読</Box>} />
             <Tab label={<Box sx={{ fontWeight: 'bold' }}>テキスト公開停止</Box>} />
             <Tab label={<Box sx={{ fontWeight: 'bold' }}>アカウント凍結</Box>} />

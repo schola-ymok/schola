@@ -39,7 +39,12 @@ const Dashboard = () => {
   return (
     <Container maxWidth='md'>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={tab} onChange={handleChange} variant='scrollable'>
+        <Tabs
+          TabIndicatorProps={{ sx: { top: 'unset' } }}
+          value={tab}
+          onChange={handleChange}
+          variant='scrollable'
+        >
           <Tab label={<Box sx={{ fontWeight: 'bold' }}>テキスト一覧</Box>} />
           <Tab label={<Box sx={{ fontWeight: 'bold' }}>レビュー</Box>} />
           <Tab label={<Box sx={{ fontWeight: 'bold' }}>パフォーマンス</Box>} />

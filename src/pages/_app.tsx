@@ -41,8 +41,10 @@ function updateBody() {
 
     if (pathname == '/chapters/[chapter_id]/edit') {
       element.style.overflowY = 'hidden';
+      element.style.top = '0';
     } else {
-      element.style.overflowY = 'unset';
+      element.style.top = 'unset';
+      element.style.overflowY = 'scroll';
     }
   }, [pathname]);
 }

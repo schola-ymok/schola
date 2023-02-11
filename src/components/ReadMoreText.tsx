@@ -29,7 +29,12 @@ const ReadMoreText = ({ children, id, height, fontSize = '1.0em' }) => {
 
   if (!overFlow) {
     return (
-      <Box key={id} ref={ref} className='richtext' sx={{ fontSize: fontSize }}>
+      <Box
+        key={id}
+        ref={ref}
+        className='richtext'
+        sx={{ fontSize: fontSize, wordWrap: 'break-word' }}
+      >
         {children}
       </Box>
     );

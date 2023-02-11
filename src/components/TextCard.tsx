@@ -3,6 +3,7 @@ import { Box, Rating } from '@mui/material';
 import Link from 'next/link';
 
 import Consts from 'utils/Consts';
+import { omitstr } from 'utils/omitstr';
 
 const TextCard = ({ text }) => {
   const imageUrl = text.photo_id
@@ -37,11 +38,10 @@ const TextCard = ({ text }) => {
               src={imageUrl}
             />
 
-            <Box sx={{ fontWeight: 'bold', fontSize: '1.0em' }}>
-              {text.title?.substring(0, 23)}
-              {text.title?.length > 23 && <>...</>}
+            <Box sx={{ fontWeight: 'bold', fontSize: '1.0em', wordBreak: 'break-all' }}>
+              {omitstr(text.title, 19, '...')}
             </Box>
-            <Box sx={{ fontSize: '0.8em' }}>{text.author_display_name}</Box>
+            <Box sx={{ fontSize: '0.8em' }}>{omitstr(text.author_display_name, 14, '...')}</Box>
             <Box sx={{ fontSize: '0.8em', color: '#555555', display: 'flex' }}>
               <Rating
                 name='size-small'

@@ -5,7 +5,6 @@ import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import UpdateIcon from '@mui/icons-material/Update';
 import { Box, CircularProgress, colors, Grid, Rating, Stack, useMediaQuery } from '@mui/material';
-import { color } from '@mui/system';
 import htmlParse from 'html-react-parser';
 import router, { useRouter } from 'next/router';
 import { useCallback, useContext, useState } from 'react';
@@ -264,11 +263,12 @@ const Text: NextPage = () => {
               color: Consts.COLOR.Primary,
               cursor: 'pointer',
               '&:hover': { color: Consts.COLOR.PrimaryDark },
+              wordBreak: 'break-all',
             }}
           >
             {dataAuthor.display_name}
           </Box>
-          <Box sx={{ color: '#666666' }}>{dataAuthor.majors}</Box>
+          <Box sx={{ color: '#666666', wordBreak: 'break-all' }}>{dataAuthor.majors}</Box>
 
           <Box sx={{ width: '100%', display: 'flex', mt: 1 }}>
             <AvatarButton photoId={dataAuthor.photo_id} onClick={handleAuthorClick} size={100} />
@@ -603,7 +603,7 @@ const Text: NextPage = () => {
     return (
       <>
         <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>解説</Box>
-        <Box sx={{ pl: 1, py: { xs: 0.2, sm: 1 } }}>
+        <Box sx={{ pl: 1, py: { xs: 0.2, sm: 1 }, fontSize: '0.9em' }}>
           <ReadMoreText height='220'>{html}</ReadMoreText>
         </Box>
       </>
@@ -679,7 +679,7 @@ const Text: NextPage = () => {
         >
           <Box sx={{ p: 2, mt: 2, minWidth: '800px', width: 'calc(60% - 210px)' }}>
             <Box ref={ref}>
-              <Box sx={{ color: COLOR_BANNER_TEXT }}>
+              <Box sx={{ color: COLOR_BANNER_TEXT, wordWrap: 'break-word' }}>
                 <h1>{data.title}</h1>
                 <Box sx={{ fontSize: '1.3em' }}>{abstract}</Box>
               </Box>
@@ -739,7 +739,9 @@ const Text: NextPage = () => {
               }}
               src={imageUrl}
             />
-            <Box sx={{ fontSize: '0.8em', fontWeight: 'bold', px: 0.5 }}>{data.title}</Box>
+            <Box sx={{ fontSize: '0.8em', fontWeight: 'bold', px: 0.5, wordWrap: 'break-word' }}>
+              {data.title}
+            </Box>
             {!dataPurchasedInfo.purchased && (
               <Box sx={{ fontSize: '2em', fontWeight: 'bold', pl: 1, height: '40px' }}>
                 &yen;{data.price.toLocaleString()}
@@ -759,7 +761,7 @@ const Text: NextPage = () => {
               <Box sx={{ fontWeight: 'bold' }}>このテキストについて</Box>
               <Box sx={{ mt: 0.5 }}>初版：{new Date(data.created_at).toLocaleDateString('ja')}</Box>
               <Box sx={{}}>改版回数：{data.number_of_updated}</Box>
-              <Box sx={{}}>チャプチャー数：{numOfChapter}</Box>
+              <Box sx={{}}>チャプター数：{numOfChapter}</Box>
             </Box>
           </Box>
         </Box>
@@ -770,7 +772,13 @@ const Text: NextPage = () => {
       <>
         <Box sx={{ backgroundColor: COLOR_BANNER, width: '100%', p: { xs: 0.4, sm: 2 } }}>
           <Box sx={{ color: COLOR_BANNER_TEXT }}>
-            <Box sx={{ fontSize: { xs: '2.0em', sm: '2.5em' }, fontWeight: 'bold' }}>
+            <Box
+              sx={{
+                fontSize: { xs: '2.0em', sm: '2.5em' },
+                fontWeight: 'bold',
+                wordBreak: 'break-all',
+              }}
+            >
               {data.title}
             </Box>
             <Box display='flex'>
@@ -819,6 +827,7 @@ const Text: NextPage = () => {
               fontSize: '1.0em',
               fontWeight: 'bold',
               width: '100%',
+              wordBreak: 'break-all',
             }}
           >
             {data.title}
@@ -888,35 +897,11 @@ const ChapterList = () => {
     return <Box>チャプターが存在していません</Box>;
   }
 
-  /*
-  var tocs = {};
-  Object.keys(data.chapters).map((id) => {
-    const toc = extractToc(data.chapters[id].content);
-    tocs[id] = toc;
-  });
-  */
-
   const chapterOrder = JSON.parse(data.chapter_order);
   const chapters = chapterOrder.map((id) => {
     return data.chapters[id];
   });
   return <TocLine chapters={chapters} />;
-  /*
-  return (
-    <ReadMoreText height={200} id={textId} fontSize={'0.9em'}>
-      {Object.keys(data.chapters).map((id) => {
-        return (
-          <>
-            <Box>{data.chapters[id].title}</Box>
-            {tocs[id].map((item) => {
-              return <Box sx={{ ml: item.depth }}>{item.text}</Box>;
-            })}
-          </>
-        );
-      })}
-    </ReadMoreText>
-  );
-  */
 };
 
 Text.getLayout = (page) => <ViewTextAbstractLayout>{page}</ViewTextAbstractLayout>;

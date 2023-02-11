@@ -115,7 +115,7 @@ namespace Consts {
     },
     chapterTitle: {
       min: 1,
-      max: 60,
+      max: 30,
     },
     reviewTitle: {
       min: 1,

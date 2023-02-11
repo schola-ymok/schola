@@ -34,7 +34,7 @@ const SearchBox = ({ fullWidth }) => {
   return (
     <Box
       sx={{
-        border: '1px solid #aaaaaa',
+        border: '2px solid #aaaaaa',
         width: { width },
         '&:hover': {
           border: '2px solid #000000',
@@ -49,6 +49,7 @@ const SearchBox = ({ fullWidth }) => {
           height: '30px',
         }}
         id='query'
+        autoComplete='off'
         inputRef={inputRef}
         placeholder='検索'
         value={searchQuery}

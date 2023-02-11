@@ -1,10 +1,9 @@
-import { text } from 'stream/consumers';
-
 import escape from 'sql-template-strings';
 
 import dbQuery from 'libs/db';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
+import { omitstr } from 'utils/omitstr';
 
 async function notify(textId, message, url) {
   const { data } = await dbQuery(escape`
@@ -14,11 +13,11 @@ async function notify(textId, message, url) {
     const authorId = data[0].author_id;
     const title = data[0].title;
     if (authorId) {
-      const sliceTitle = title.length > 20 ? title.slice(0, 20) + '...' : title;
+      const omitTite = omitstr(title, 10, '...');
 
       const id = genid(8);
 
-      const msg = `<p><b>${sliceTitle}</b>${message}</p>`;
+      const msg = `<p><b>${omitTite}</b>${message}</p>`;
 
       await dbQuery(escape`
             insert into notices ( id, readed, message, url, user_id )

@@ -2,6 +2,7 @@ import { Box, Rating } from '@mui/material';
 import { useRouter } from 'next/router';
 
 import Consts from 'utils/Consts';
+import { omitstr } from 'utils/omitstr';
 
 import AvatarButton from './AvatarButton';
 import ReadMoreText from './ReadMoreText';
@@ -50,6 +51,7 @@ const ReviewItem = ({ review, height = '100' }) => {
               color: Consts.COLOR.Primary,
               textDecoration: 'underline',
             },
+            wordBreak: 'break-all',
           }}
           onClick={handleReviewClick}
         >

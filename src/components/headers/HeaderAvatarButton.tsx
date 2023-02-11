@@ -5,6 +5,7 @@ import { useContext, useState } from 'react';
 import SMenuItem from 'components/SMenuItem';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
+import { omitstr } from 'utils/omitstr';
 
 const HeaderAvatarButton = () => {
   const { state } = useContext(AppContext);
@@ -89,7 +90,7 @@ const HeaderAvatarButton = () => {
                 whiteSpace: 'normal',
               }}
             >
-              {state.displayName}
+              {omitstr(state.displayName, 10, '...')}
             </Box>
             <Box sx={{ fontSize: '0.6em', typography: 'subtitle2', color: '#aaaaaa' }}>
               {state.accountName}

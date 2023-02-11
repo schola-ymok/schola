@@ -1,7 +1,6 @@
 import { Box, Link } from '@mui/material';
-import { height } from '@mui/system';
 
-import TrialReadingAvailableLabel from 'components/TrialReadingAvailableLabel';
+const querystring = require('querystring');
 
 const ChapterTitleRow = ({ chapter, eol }) => {
   const rHeight = 25;
@@ -83,17 +82,27 @@ const ChapterTitleRow = ({ chapter, eol }) => {
   );
 };
 
-const TocLineBlock = ({ chapters, depth }) => {
-  let lastChapterId = '';
+const TocLineBlock = ({ chapters, children }) => {
+  let depth = 2;
+  if (children?.length == 1) {
+    const parse = querystring.parse(children[0]);
+    if (!Number.isNaN(parseInt(parse.depth))) {
+      depth = parseInt(parse.depth);
+      if (depth < 1) depth = 1;
+      if (depth > 3) depth = 3;
+    }
+  }
+
+  let lastChapterIndex = 0;
   for (let i = 0; i < chapters.length; i++) {
-    if (chapters[i].depth <= depth) lastChapterId = chapters[i].id;
+    if (chapters[i].depth <= depth) lastChapterIndex = i;
   }
 
   return (
     <>
-      {chapters.map((item) => {
+      {chapters.map((item, index) => {
         if (item.depth <= depth)
-          return <ChapterTitleRow chapter={item} eol={item.id == lastChapterId} />;
+          return <ChapterTitleRow chapter={item} eol={index == lastChapterIndex} />;
       })}
     </>
   );

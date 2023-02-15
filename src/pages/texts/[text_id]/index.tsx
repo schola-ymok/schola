@@ -6,6 +6,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import UpdateIcon from '@mui/icons-material/Update';
 import { Box, CircularProgress, colors, Grid, Rating, Stack, useMediaQuery } from '@mui/material';
 import htmlParse from 'html-react-parser';
+import Link from 'next/link';
 import router, { useRouter } from 'next/router';
 import { useCallback, useContext, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
@@ -34,7 +35,9 @@ import Consts from 'utils/Consts';
 import { extractToc } from 'utils/extractToc';
 import { genid } from 'utils/genid';
 
-import type { NextPage } from 'next';
+import reviews from './reviews';
+
+import type { GetStaticPaths, NextPage } from 'next';
 
 const Text: NextPage = () => {
   const { authAxios } = useContext(AuthContext);
@@ -156,10 +159,11 @@ const Text: NextPage = () => {
           color: colors.text,
           border: '2px solid ' + colors.border,
           textAlign: 'center',
+          cursor: 'pointer',
+          textDecoration: 'none',
           '&:hover': {
             backgroundColor: colors.hoverBackground,
             borderColor: colors.hoverBorder,
-            cursor: 'pointer',
           },
         }}
       >
@@ -179,16 +183,17 @@ const Text: NextPage = () => {
           display: 'block',
           fontWeight: 'bold',
           fontSize: '1.0em',
+          cursor: 'pointer',
           mx: 'auto',
           backgroundColor: colors.backGround,
           color: colors.text,
           border: '2px solid ' + colors.border,
           textAlign: 'center',
+          textDecoration: 'none',
           p: 1,
           '&:hover': {
             backgroundColor: colors.hoverBackground,
             borderColor: colors.hoverBorder,
-            cursor: 'pointer',
           },
         }}
       >
@@ -216,9 +221,16 @@ const Text: NextPage = () => {
 
     const reviews = JSON.parse(JSON.stringify(dataReviews.reviews)); // deep copy
     const displayNum = 5;
-    const more = dataReviews.reviews.length > displayNum;
 
     reviews.splice(displayNum);
+
+    const _ShowMore = () => {
+      if (dataReviews.reviews.length > displayNum) {
+        return <ShowMore href={`/texts/${textId}/reviews`}>全てのレビューを参照</ShowMore>;
+      } else {
+        return null;
+      }
+    };
 
     return (
       <>
@@ -230,12 +242,10 @@ const Text: NextPage = () => {
             </Box>
             <Box sx={{ p: 1, width: '100%' }}>
               {reviews.map((item) => {
-                return (
-                  <Review review={item} onUserClick={() => handleReviewerClick(item.user_id)} />
-                );
+                return <Review review={item} />;
               })}
-              {more && <ShowMore onClick={handleReviewListClick}>全てのレビューを参照</ShowMore>}
             </Box>
+            <_ShowMore />
           </>
         ) : (
           <Box sx={{ p: 1 }}>まだレビューはありません</Box>
@@ -253,27 +263,32 @@ const Text: NextPage = () => {
       <>
         <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>著者</Box>
         <Box sx={{ px: 1 }}>
-          <Box
-            onClick={handleAuthorClick}
-            component='span'
-            sx={{
-              textDecoration: 'underline',
-              fontSize: '1.3em',
-              fontWeight: 'bold',
-              color: Consts.COLOR.Primary,
-              cursor: 'pointer',
-              '&:hover': { color: Consts.COLOR.PrimaryDark },
-              wordBreak: 'break-all',
-            }}
-          >
-            {dataAuthor.display_name}
-          </Box>
+          <a href={`/users/${data.author_id}`}>
+            <Box
+              component='span'
+              sx={{
+                textDecoration: 'underline',
+                fontSize: '1.3em',
+                fontWeight: 'bold',
+                color: Consts.COLOR.Primary,
+                cursor: 'pointer',
+                '&:hover': { color: Consts.COLOR.PrimaryDark },
+                wordBreak: 'break-all',
+              }}
+            >
+              {dataAuthor.display_name}
+            </Box>
+          </a>
           <Box sx={{ color: '#666666', wordBreak: 'break-all' }}>{dataAuthor.majors}</Box>
 
           <Box sx={{ width: '100%', display: 'flex', mt: 1 }}>
-            <AvatarButton photoId={dataAuthor.photo_id} onClick={handleAuthorClick} size={100} />
+            <Link href={`/users/${data.author_id}`}>
+              <a>
+                <AvatarButton photoId={dataAuthor.photo_id} size={100} />
+              </a>
+            </Link>
 
-            <Box sx={{ ml: 2, fontSize: '0.9em' }}>
+            <Box sx={{ ml: 2, fontSize: '0.9em', my: 'auto' }}>
               <Box sx={{ display: 'flex', width: '100%' }}>
                 <Box sx={{ my: 'auto' }}>
                   <MenuBookIcon sx={{ transform: 'scale(0.8)' }} />
@@ -364,13 +379,13 @@ const Text: NextPage = () => {
     };
     if (xs) {
       return (
-        <PanelButtonThin ml={'auto'} onClick={handleReadTextClick} colors={colors}>
+        <PanelButtonThin ml={'auto'} colors={colors} onClick={handleReadTextClick}>
           テキストを読む
         </PanelButtonThin>
       );
     } else {
       return (
-        <PanelButton mt={1} onClick={handleReadTextClick} colors={colors}>
+        <PanelButton mt={1} colors={colors} onClick={handleReadTextClick}>
           テキストを読む
         </PanelButton>
       );
@@ -431,7 +446,7 @@ const Text: NextPage = () => {
       );
     } else {
       return (
-        <PanelButton mt={1} onClick={handleEditTextClick} colors={colors}>
+        <PanelButton mt={1} colors={colors} onClick={handleEditTextClick}>
           編集
         </PanelButton>
       );
@@ -439,21 +454,29 @@ const Text: NextPage = () => {
   };
 
   const RateAndAuthorInfo = () => {
-    const rateCursor = data.number_of_reviews > 0 ? 'pointer' : 'unset';
+    const reviewExists = data.number_of_reviews > 0 ? true : false;
     const textDecoration = data.number_of_reviews > 0 ? 'underline' : 'none';
     const reviewNumString =
       data.number_of_reviews > 0 ? data.number_of_reviews + '件の評価' : 'まだレビューはありません';
     const color = data.number_of_reviews > 0 ? COLOR_PURPLE : COLOR_DARK_PURPLE;
 
+    const ReviewNum = () => (
+      <Box
+        sx={{
+          color: color,
+          my: 'auto',
+          textDecoration: textDecoration,
+          ml: 1,
+          fontSize: '0.9em',
+        }}
+      >
+        {reviewNumString}
+      </Box>
+    );
     return (
       <>
         <Box sx={{ display: 'flex', width: '100%', mt: 1.5 }}>
-          <Box
-            sx={{ cursor: rateCursor, display: 'flex' }}
-            onClick={() => {
-              if (data.number_of_reviews > 0) handleReviewListClick();
-            }}
-          >
+          <Box sx={{ display: 'flex' }}>
             <Box sx={{ fontWeight: 'bold', color: '#faaf00', my: 'auto', fontSize: '0.9em' }}>
               {data.rate}
             </Box>
@@ -468,17 +491,15 @@ const Text: NextPage = () => {
                 <StarBorderIcon style={{ opacity: 0.55, color: '#ffd269' }} fontSize='inherit' />
               }
             />
-            <Box
-              sx={{
-                color: color,
-                my: 'auto',
-                textDecoration: textDecoration,
-                ml: 1,
-                fontSize: '0.9em',
-              }}
-            >
-              {reviewNumString}
-            </Box>
+            {reviewExists ? (
+              <Link href={`/texts/${textId}/reviews`}>
+                <a>
+                  <ReviewNum />
+                </a>
+              </Link>
+            ) : (
+              <ReviewNum />
+            )}
           </Box>
 
           {data.number_of_sales > 0 && (
@@ -490,19 +511,21 @@ const Text: NextPage = () => {
 
         <Box sx={{ display: 'flex', width: '100%', mt: 0.6 }}>
           <Box sx={{ my: 'auto', color: COLOR_BANNER_TEXT, fontSize: '0.9em' }}>作成者:</Box>
-          <Box
-            onClick={handleAuthorClick}
-            sx={{
-              my: 'auto',
-              ml: 0.4,
-              color: COLOR_PURPLE,
-              fontSize: '0.9em',
-              textDecoration: 'underline',
-              cursor: 'pointer',
-            }}
-          >
-            {data.author_display_name}
-          </Box>
+          <Link href={`/users/${data.author_id}`}>
+            <a>
+              <Box
+                sx={{
+                  my: 'auto',
+                  ml: 0.4,
+                  color: COLOR_PURPLE,
+                  fontSize: '0.9em',
+                  textDecoration: 'underline',
+                }}
+              >
+                {data.author_display_name}
+              </Box>
+            </a>
+          </Link>
         </Box>
 
         <Box sx={{ display: 'flex', width: '100%', mt: 1 }}>
@@ -901,7 +924,7 @@ const ChapterList = () => {
   const chapters = chapterOrder.map((id) => {
     return data.chapters[id];
   });
-  return <TocLine chapters={chapters} />;
+  return <TocLine textId={textId} chapters={chapters} />;
 };
 
 Text.getLayout = (page) => <ViewTextAbstractLayout>{page}</ViewTextAbstractLayout>;

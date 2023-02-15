@@ -1,10 +1,19 @@
 import CheckIcon from '@mui/icons-material/Check';
-import { Checkbox, CircularProgress, Container, Divider, InputBase, Snackbar } from '@mui/material';
+import {
+  Checkbox,
+  CircularProgress,
+  Container,
+  Divider,
+  InputBase,
+  Link,
+  Snackbar,
+} from '@mui/material';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { getAuth, sendEmailVerification } from 'firebase/auth';
 import error from 'next/error';
+import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
@@ -32,6 +41,10 @@ import useCropImage from 'utils/useCropImage';
 import { validate } from 'utils/validate';
 
 const Account = () => {
+  const router = useRouter();
+  let _tab = 0;
+  if (router.query.prf !== undefined) _tab = 1;
+
   const { authAxios } = useContext(AuthContext);
   const { state } = useContext(AppContext);
   const [notifyOnPurchaseWebCheck, setNotifyOnPurchaseWebCheck] = useState(false);
@@ -43,7 +56,7 @@ const Account = () => {
   const [notifyOnUpdateMailCheck, setNotifyOnUpdateMailCheck] = useState(false);
   const [swrKey] = useState(genid(4));
 
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState(_tab);
 
   const { data, error } = useSWR(`getMyAccount_${swrKey}`, () => getMyAccount(authAxios), {
     revalidateOnFocus: false,
@@ -109,6 +122,9 @@ const Account = () => {
   };
 
   const handleTabChange = (event, newNumber) => {
+    if (newNumber == 1) {
+      router.replace(`account?prf`);
+    }
     setTab(newNumber);
   };
 
@@ -548,7 +564,27 @@ const ProfileSetting = () => {
 
   return (
     <Box sx={{ width: { xs: '98%', md: '90%' }, pt: { xs: 0, sm: 2 }, mx: 'auto' }}>
-      <FormItemLabel>プロフィール画像</FormItemLabel>
+      <Box sx={{ display: 'flex', width: '100%' }}>
+        <FormItemLabel>プロフィール画像</FormItemLabel>
+        <Link
+          href={`/users/${state.userId}`}
+          style={{
+            marginLeft: 'auto',
+          }}
+        >
+          <Box
+            sx={{
+              textDecoration: 'underline',
+              color: '#000000',
+              '&:hover': {
+                color: Consts.COLOR.Primary,
+              },
+            }}
+          >
+            プロフィール画面を確認
+          </Box>
+        </Link>
+      </Box>
       <Box sx={{ width: '128px' }}>
         {isUploadingImage ? (
           <>
@@ -685,14 +721,29 @@ const ProfileSetting = () => {
             },
           }}
         >
-          <InputBase
-            placeholder='ホームページ'
-            value={web}
-            sx={{ fontSize: '1.0em' }}
-            variant='outlined'
-            fullWidth
-            onChange={onWebChange}
-          />
+          <Box sx={{ display: 'flex' }}>
+            <Box
+              sx={{
+                my: 'auto',
+                fontWeight: 'bold',
+                color: '#aaaaaa',
+                mr: 0.5,
+                p: 0.5,
+                borderRadius: '5px',
+                backgroundColor: '#eeeeee',
+              }}
+            >
+              https://
+            </Box>
+            <InputBase
+              placeholder='ホームページアドレス'
+              value={web}
+              sx={{ fontSize: '1.0em' }}
+              variant='outlined'
+              fullWidth
+              onChange={onWebChange}
+            />
+          </Box>
         </Box>
         <FormItemState validation={webValidation} />
 
@@ -703,21 +754,36 @@ const ProfileSetting = () => {
           sx={{
             p: 1,
             width: '100%',
-            maxWidth: 300,
+            maxWidth: 400,
             border: '2px solid ' + Consts.COLOR.Grey,
             '&:hover': {
               border: '2px solid ' + Consts.COLOR.Primary,
             },
           }}
         >
-          <InputBase
-            placeholder='twitter'
-            value={twitter}
-            sx={{ fontSize: '1.0em' }}
-            variant='outlined'
-            fullWidth
-            onChange={onTwitterChange}
-          />
+          <Box sx={{ display: 'flex' }}>
+            <Box
+              sx={{
+                my: 'auto',
+                fontWeight: 'bold',
+                color: '#aaaaaa',
+                mr: 0.5,
+                p: 0.5,
+                borderRadius: '5px',
+                backgroundColor: '#eeeeee',
+              }}
+            >
+              https://twitter.com/
+            </Box>
+            <InputBase
+              placeholder='twitterアカウントID'
+              value={twitter}
+              sx={{ fontSize: '1.0em' }}
+              variant='outlined'
+              fullWidth
+              onChange={onTwitterChange}
+            />
+          </Box>
         </Box>
         <FormItemState validation={twitterValidation} />
 
@@ -728,21 +794,36 @@ const ProfileSetting = () => {
           sx={{
             p: 1,
             width: '100%',
-            maxWidth: 300,
+            maxWidth: 420,
             border: '2px solid ' + Consts.COLOR.Grey,
             '&:hover': {
               border: '2px solid ' + Consts.COLOR.Primary,
             },
           }}
         >
-          <InputBase
-            placeholder='facebook'
-            value={facebook}
-            sx={{ fontSize: '1.0em' }}
-            variant='outlined'
-            fullWidth
-            onChange={onFacebookChange}
-          />
+          <Box sx={{ display: 'flex' }}>
+            <Box
+              sx={{
+                my: 'auto',
+                fontWeight: 'bold',
+                color: '#aaaaaa',
+                mr: 0.5,
+                p: 0.5,
+                borderRadius: '5px',
+                backgroundColor: '#eeeeee',
+              }}
+            >
+              https://facebook.com/
+            </Box>
+            <InputBase
+              placeholder='facebookユーザネーム'
+              value={facebook}
+              sx={{ fontSize: '1.0em' }}
+              variant='outlined'
+              fullWidth
+              onChange={onFacebookChange}
+            />
+          </Box>
         </Box>
         <FormItemState validation={facebookValidation} />
 

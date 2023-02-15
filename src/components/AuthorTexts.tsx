@@ -22,15 +22,7 @@ const AuthorTexts = ({ data, authorId, textId }) => {
 
   const showMore = () => {
     if (!more) return null;
-    return (
-      <ShowMore
-        onClick={() => {
-          router.push(`/users/${authorId}/texts`);
-        }}
-      >
-        著者の全てのテキストを参照
-      </ShowMore>
-    );
+    return <ShowMore href={`/users/${authorId}/texts`}>著者の全てのテキストを参照</ShowMore>;
   };
 
   if (mq) {

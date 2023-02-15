@@ -31,7 +31,7 @@ const DefaultButton = ({ onClick, children, disabled, sx }) => {
   return (
     <Box
       onClick={() => {
-        if (!disabled) onClick();
+        if (!disabled && onClick !== undefined) onClick();
       }}
       sx={{ ..._sx, ...sx }}
     >

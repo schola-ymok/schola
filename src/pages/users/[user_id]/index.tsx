@@ -1,9 +1,9 @@
-import FacebookIcon from '@mui/icons-material/Facebook';
+import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
 import LinkIcon from '@mui/icons-material/Link';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import { Box, useMediaQuery } from '@mui/material';
+import { Avatar, Box, Button, Link, useMediaQuery } from '@mui/material';
 import htmlParse from 'html-react-parser';
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 import { getUser } from 'api/getUser';
@@ -14,6 +14,8 @@ import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import ReadMoreText from 'components/ReadMoreText';
 import Layout from 'components/layouts/Layout';
 import Consts from 'utils/Consts';
+
+import Texts from './texts';
 
 const User = () => {
   const router = useRouter();
@@ -35,7 +37,7 @@ const User = () => {
     console.log(error);
   }
 
-  const mq = useMediaQuery('(min-width:1000px)');
+  const mq = useMediaQuery('(min-width:600px)');
 
   if (!data || !userTextsData) return <CenterLoadingSpinner />;
 
@@ -46,13 +48,14 @@ const User = () => {
     </Box>
   );
 
-  const Button = ({ children, onClick }) => {
+  const PButton = ({ children, href }) => {
     const sx = {
       border: 'solid 1px #000000',
       mb: 1,
       display: 'flex',
       fontWeight: 'bold',
       height: '40px',
+      color: '#000000',
       '&:hover': {
         cursor: 'pointer',
         backgroundColor: Consts.COLOR.LightPrimarySelected,
@@ -64,13 +67,24 @@ const User = () => {
       sx['width'] = '170px';
     } else {
       sx['fontSize'] = '0.9em';
-      sx['width'] = '30%';
+      sx['width'] = '100%';
     }
 
     return (
-      <Box sx={sx} onClick={onClick}>
-        <Box sx={{ mx: 'auto', my: 'auto', display: 'flex' }}>{children}</Box>
-      </Box>
+      <Link href={href} sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'none' } }}>
+        <Box sx={sx}>
+          <Box
+            sx={{
+              mx: 'auto',
+              my: 'auto',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            {children}
+          </Box>
+        </Box>
+      </Link>
     );
   };
 
@@ -81,10 +95,10 @@ const User = () => {
 
     return (
       <>
-        <Box fontSize='2.2em' fontWeight='bold'>
+        <Box sx={{ fontSize: '2.2em', fontWeight: 'bold', wordBreak: 'break-all' }}>
           {data.display_name}
         </Box>
-        <Box fontWeight='bold'>{data.majors}</Box>
+        <Box sx={{ fontWeight: 'bold', wordBreak: 'break-all' }}>{data.majors}</Box>
         <Box sx={{ display: 'flex', mt: 1, mb: 1 }}>
           <NumberBox label='テキストの数' value={data.num_of_texts} />
           <NumberBox label='読者の数' value={data.num_of_sales} />
@@ -117,19 +131,34 @@ const User = () => {
     />
   );
 
-  const Buttons = () => (
-    <>
-      <Button>
-        <LinkIcon /> &nbsp;Webページ
-      </Button>
-      <Button>
-        <TwitterIcon /> &nbsp;Twitter
-      </Button>
-      <Button>
-        <FacebookIcon /> &nbsp;Facebook
-      </Button>
-    </>
-  );
+  const Buttons = () => {
+    const hasWeb = data.web != '' && data.web != null ? true : false;
+    const hasTwitter = data.twitter != '' && data.twitter != null ? true : false;
+    const hasFacebook = data.facebook != '' && data.facebook != null ? true : false;
+
+    return (
+      <>
+        {hasWeb && (
+          <PButton href={`https://${data.web}`}>
+            <LinkIcon sx={{ mb: 0.3, mr: 0.5 }} />
+            Webページ
+          </PButton>
+        )}
+        {hasTwitter && (
+          <PButton href={`https://twitter.com/${data.twitter}`}>
+            <TwitterIcon sx={{ mb: 0.3, mr: 0.5 }} />
+            Twitter
+          </PButton>
+        )}
+        {hasFacebook && (
+          <PButton href={`https://facebook.com/${data.facebook}`}>
+            <FacebookOutlinedIcon sx={{ mb: 0.3, mr: 0.5 }} />
+            Facebook
+          </PButton>
+        )}
+      </>
+    );
+  };
 
   if (mq) {
     return (

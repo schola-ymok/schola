@@ -544,7 +544,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     let avgRate = 0;
 
     for (var i = 0; i < USER_NUM; i++) {
-      if (Math.random() > 0.7) {
+      if (Math.random() > 0.1) {
         const uid = 'uid-' + ('0000' + i).slice(-4);
         const { error: error3 } = await dbQuery(escape`
             insert into purchases (
@@ -558,7 +558,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         numOfSales++;
         if (error3) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
 
-        if (Math.random() > 0.5) {
+        if (Math.random() > 0.2) {
           const rate = Math.floor(Math.random() * 5) + 1;
           const title = randomReview(true);
           const comment = randomReview(false);

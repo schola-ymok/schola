@@ -33,7 +33,7 @@ const ReadMoreText = ({ children, id, height, fontSize = '1.0em' }) => {
         key={id}
         ref={ref}
         className='richtext'
-        sx={{ fontSize: fontSize, wordWrap: 'break-word' }}
+        sx={{ fontSize: fontSize, wordBreak: 'break-all' }}
       >
         {children}
       </Box>
@@ -46,6 +46,7 @@ const ReadMoreText = ({ children, id, height, fontSize = '1.0em' }) => {
         key={id}
         ref={ref}
         sx={{
+          wordBreak: 'break-all',
           position: 'relative',
           maxHeight: height + 'px',
           overflowY: 'hidden',
@@ -55,6 +56,7 @@ const ReadMoreText = ({ children, id, height, fontSize = '1.0em' }) => {
         <Box className='richtext'>{children}</Box>
         <Box
           sx={{
+            wordBreak: 'break-all',
             position: 'absolute',
             bottom: 0,
             width: '100%',

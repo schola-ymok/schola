@@ -1,6 +1,8 @@
 import StarIcon from '@mui/icons-material/Star';
 import { Box, LinearProgress, linearProgressClasses, Rating } from '@mui/material';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { text } from 'stream/consumers';
 
 import Consts from 'utils/Consts';
 
@@ -32,22 +34,23 @@ const RatingReportPanel = ({ text }) => {
         sx={{ mx: 1, my: 'auto' }}
         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
       />
-      <Box
-        sx={{
-          fontSize: '0.8em',
-          color: Consts.COLOR.Primary,
-          '&:hover': {
-            textDecoration: 'underline',
-            color: Consts.COLOR.PrimaryDark,
-            cursor: 'pointer',
-          },
-        }}
-        onClick={() => {
-          router.push(`/texts/${text.id}/reviews?rate=` + rate);
-        }}
-      >
-        {value}%
-      </Box>
+      <Link style={{ textDecoration: 'none' }} href={`/texts/${text.id}/reviews?rate=` + rate}>
+        <a>
+          <Box
+            sx={{
+              fontSize: '0.8em',
+              color: Consts.COLOR.Primary,
+              '&:hover': {
+                textDecoration: 'underline',
+                color: Consts.COLOR.PrimaryDark,
+                cursor: 'pointer',
+              },
+            }}
+          >
+            {value}%
+          </Box>
+        </a>
+      </Link>
     </Box>
   );
 

@@ -1,3 +1,5 @@
+import { count } from 'console';
+
 import { Box, Divider, Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
@@ -9,7 +11,6 @@ import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
 import DashboardTextListItem from 'components/dashboard/DashboardTextListItem';
 import { pagenation } from 'utils/pagenation';
-import { count } from 'console';
 
 const DashboardTextList = () => {
   const router = useRouter();
@@ -50,6 +51,8 @@ const DashboardTextList = () => {
     }
 
     const { count, from, to } = pagenation(data.total, page, data.texts.length);
+
+    if (from > data.total) router.push(`/dashboard/`);
 
     return (
       <>

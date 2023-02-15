@@ -62,15 +62,13 @@ function MyApp(props: AppPropsWithLayout) {
         <CssBaseline />
         <GlobalStyles />
         <StateProvider>
-          <AuthProvider>
-            <NextNprogress
-              color={Consts.COLOR.Primary}
-              height={2}
-              showOnShallow={true}
-              options={{ showSpinner: false }}
-            />
-            {getLayout(<Component {...pageProps} />)}
-          </AuthProvider>
+          <NextNprogress
+            color={Consts.COLOR.Primary}
+            height={2}
+            showOnShallow={true}
+            options={{ showSpinner: false }}
+          />
+          <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
         </StateProvider>
       </ThemeProvider>
     </CacheProvider>

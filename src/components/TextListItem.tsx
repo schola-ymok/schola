@@ -3,6 +3,7 @@ import { Box, Rating, Skeleton } from '@mui/material';
 import Link from 'next/link';
 
 import Consts from 'utils/Consts';
+import { omitstr } from 'utils/omitstr';
 
 const TextListItem = ({ text }) => {
   const imageUrl = text.photo_id
@@ -35,9 +36,8 @@ const TextListItem = ({ text }) => {
             />
           </Box>
           <Box fullWidth sx={{ width: '100%' }}>
-            <Box sx={{ fontWeight: 'bold', fontSize: '0.9em' }}>
-              {text.title?.substring(0, 40)}
-              {text.title?.length > 40 && <>...</>}
+            <Box sx={{ fontWeight: 'bold', fontSize: '0.9em', wordBreak: 'break-all' }}>
+              {omitstr(text.title, 19, '...')}
             </Box>
             <Box sx={{ color: '#000000', fontWeight: 'bold', fontSize: '0.8em' }}>
               ￥{text.price}

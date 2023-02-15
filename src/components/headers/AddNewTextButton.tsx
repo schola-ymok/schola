@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button, Link } from '@mui/material';
 import router from 'next/router';
 
 import DefaultButton from 'components/DefaultButton';
@@ -10,7 +10,7 @@ const AddNewTextButton = () => {
   };
 
   return (
-    <DefaultButton onClick={handleNewText} sx={{ ml: 1, width: '76px' }}>
+    <DefaultButton sx={{ ml: 1, width: '76px' }} onClick={handleNewText}>
       作成
     </DefaultButton>
   );

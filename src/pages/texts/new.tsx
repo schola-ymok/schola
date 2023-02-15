@@ -69,7 +69,11 @@ const AddText: NextPage = () => {
       </Box>
 
       <Box sx={{ mx: 'auto', mt: 3 }}>
-        <DefaultButton onClick={handleAddText} sx={{ width: '200px' }}>
+        <DefaultButton
+          disabled={!titleValidation.ok}
+          onClick={handleAddText}
+          sx={{ width: '200px' }}
+        >
           {isLoading ? (
             <CircularProgress size={28} sx={{ color: 'white' }} />
           ) : (

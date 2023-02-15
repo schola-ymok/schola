@@ -1,35 +1,65 @@
-import { Box } from '@mui/material';
+import { Box, Link } from '@mui/material';
 import { useRouter } from 'next/router';
 
 import Consts from 'utils/Consts';
 
 import TrialReadingAvailableLabel from './TrialReadingAvailableLabel';
 
-const ChapterTitleRow = ({ chapter, eol }) => {
+const ChapterTitleRow = ({ chapter, eol, textId }) => {
   const rHeight = 40;
 
-  let rSx = {
-    display: 'flex',
-    width: '100%',
-    height: `${rHeight}px`,
-    position: 'relative',
-    color: '#aaaaaa',
-  };
-
-  if (chapter.is_trial_reading_available == 1) {
-    rSx = {
-      ...rSx,
+  const ChapterTitle = ({ chapter, textId }) => {
+    const readableSx = {
       color: 'black',
       '&:hover': {
-        cursor: 'pointer',
         color: Consts.COLOR.Primary,
+        cursor: 'pointer',
       },
     };
-  }
+
+    if (chapter.is_trial_reading_available) {
+      return (
+        <>
+          <Link
+            href={`/texts/${textId}/view?cid=${chapter.id}`}
+            sx={{
+              width: '100%',
+              display: 'flex',
+              textDecoration: 'none',
+              '&:hover .child': {
+                color: Consts.COLOR.Primary,
+                textDecoration: 'none',
+              },
+              '&:hover': {
+                textDecoration: 'none',
+              },
+            }}
+          >
+            <Box className='child' sx={readableSx}>
+              {chapter.title}{' '}
+            </Box>
+            {chapter.is_trial_reading_available == 1 && (
+              <TrialReadingAvailableLabel sx={{ ml: 1 }} />
+            )}
+          </Link>
+        </>
+      );
+    } else {
+      return <Box className='child'>{chapter.title} </Box>;
+    }
+  };
 
   return (
     <>
-      <Box sx={rSx}>
+      <Box
+        sx={{
+          display: 'flex',
+          width: '100%',
+          height: `${rHeight}px`,
+          position: 'relative',
+          color: '#aaaaaa',
+        }}
+      >
         <Box
           sx={{
             width: '10px',
@@ -55,26 +85,28 @@ const ChapterTitleRow = ({ chapter, eol }) => {
         )}
         <Box
           sx={{
+            width: '90%',
             fontWeight: 'bold',
             position: 'absolute',
-            top: '5px',
+            top: '4px',
             left: '25px',
             display: 'flex',
           }}
         >
-          <Box className='child'>{chapter.title} </Box>
-          {chapter.is_trial_reading_available == 1 && <TrialReadingAvailableLabel sx={{ ml: 1 }} />}
+          <ChapterTitle chapter={chapter} textId={textId} />
         </Box>
       </Box>
     </>
   );
 };
 
-const TocLine = ({ chapters }) => {
+const TocLine = ({ chapters, textId }) => {
   return (
     <>
       {chapters.map((item, index) => {
-        return <ChapterTitleRow chapter={item} eol={index == chapters.length - 1} />;
+        return (
+          <ChapterTitleRow textId={textId} chapter={item} eol={index == chapters.length - 1} />
+        );
       })}
     </>
   );

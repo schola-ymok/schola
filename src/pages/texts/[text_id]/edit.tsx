@@ -267,7 +267,6 @@ const EditText = () => {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       setTextState(data.state);
 
       if (data.price) {
@@ -1051,11 +1050,12 @@ const ChapterList = () => {
                     sx={{
                       fontSize: { xs: '1.0em', sm: '1.2em' },
                       fontWeight: 'bold',
-                      p: { xs: 0, md: 1.5 },
+                      p: { xs: 0.5, md: 1.5 },
                       width: '100%',
                       '&:hover': { color: Consts.COLOR.Primary },
                       cursor: 'pointer',
                       display: 'flex',
+                      wordBreak: 'break-all',
                       alignItems: 'center',
                       display: 'flex',
                     }}

@@ -46,7 +46,7 @@ const DashboardReviews = () => {
             sx={{ mt: 2 }}
             count={count}
             color='primary'
-            onChange={(e, page) => router.replace(`/dashboard/reviews?page=${page}`)}
+            onChange={(e, page) => router.push(`/dashboard?rev&page=${page}`)}
             page={+page}
           />
         )}

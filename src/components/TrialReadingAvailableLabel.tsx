@@ -12,6 +12,7 @@ const TrialReadingAvailableLabel = ({ sx }) => {
         fontWeight: 'normal',
         borderRadius: '5px',
         px: 0.5,
+        whiteSpace: 'nowrap',
         my: 'auto',
         ...sx,
       }}

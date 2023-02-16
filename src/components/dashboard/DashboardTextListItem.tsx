@@ -90,7 +90,9 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
               onClick={handleEditText}
             >
               <Box sx={{ display: 'flex' }}>
-                <Box sx={{ fontWeight: 'bold', fontSize: '1.0em', my: 'auto' }}>
+                <Box
+                  sx={{ fontWeight: 'bold', fontSize: '1.0em', my: 'auto', wordBreak: 'break-all' }}
+                >
                   {text.title?.substring(0, 40)}
                   {text.title?.length > 40 && <>...</>}
                 </Box>

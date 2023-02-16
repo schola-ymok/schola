@@ -15,8 +15,10 @@ const RTEditor = ({ placeholder, initialValue, onChange }) => {
       const module = await import('react-rte');
 
       if (initialValue) {
+        console.log('NOT EMPTY');
         setEditorState(module.createValueFromString(initialValue, 'html'));
       } else {
+        console.log('EMPTY');
         setEditorState(module.createEmptyValue());
       }
     };
@@ -36,10 +38,12 @@ const RTEditor = ({ placeholder, initialValue, onChange }) => {
   };
 
   const _onChange = (value) => {
+    /*
     if (init) {
       setInit(false);
       return;
     }
+    */
     setEditorState(value);
     onChange(value.toString('html'));
   };

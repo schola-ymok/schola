@@ -76,7 +76,7 @@ const DashboardTextList = () => {
             sx={{ mt: 2 }}
             count={count}
             color='primary'
-            onChange={(e, page) => router.replace(`/dashboard/?page=${page}`)}
+            onChange={(e, page) => router.push(`/dashboard/?page=${page}`)}
             page={+page}
           />
         )}

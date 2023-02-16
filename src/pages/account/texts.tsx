@@ -45,7 +45,7 @@ const PurchasedTexts = () => {
             sx={{ mt: 2 }}
             count={count}
             color='primary'
-            onChange={(e, page) => router.replace(`/account/texts?page=${page}`)}
+            onChange={(e, page) => router.push(`/account/texts?page=${page}`)}
             page={+page}
           />
         )}

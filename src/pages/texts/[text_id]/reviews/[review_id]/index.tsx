@@ -60,10 +60,6 @@ const Review: NextPage = () => {
     router.push(`/texts/${textId}/reviews/edit`);
   };
 
-  const handleAllReviewListClick = () => {
-    router.push(`/texts/${textId}/reviews`);
-  };
-
   async function handleDeleteReviewClick() {
     setLoading(true);
 
@@ -127,7 +123,7 @@ const Review: NextPage = () => {
               </DefaultButton>
             )}
             <RatingReportPanel text={dataText} />
-            <ShowMore onClick={handleAllReviewListClick}>
+            <ShowMore href={`/texts/${textId}/reviews`}>
               全てのレビューを参照（{dataReviews.total}）
             </ShowMore>
           </Stack>

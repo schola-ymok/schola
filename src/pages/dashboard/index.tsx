@@ -15,10 +15,23 @@ const Dashboard = () => {
 
   const { authAxios } = useContext(AuthContext);
 
-  const [tab, setTab] = useState(0);
+  let _tab = 0;
+  if (router.query.rev !== undefined) _tab = 1;
+  if (router.query.pfm !== undefined) _tab = 2;
+  if (router.query.rvn !== undefined) _tab = 3;
+  const [tab, setTab] = useState(_tab);
 
-  const handleChange = (event, newValue) => {
-    setTab(newValue);
+  const handleTabChange = (event, newNumber) => {
+    if (newNumber == 1) {
+      router.replace('dashboard?rev');
+    } else if (newNumber == 2) {
+      router.replace('dashboard?pfm');
+    } else if (newNumber == 3) {
+      router.replace('dashboard?rvn');
+    } else {
+      router.replace('dashboard');
+    }
+    setTab(newNumber);
   };
 
   function TabPanel({ children, value, index }) {
@@ -42,7 +55,9 @@ const Dashboard = () => {
         <Tabs
           TabIndicatorProps={{ sx: { top: 'unset' } }}
           value={tab}
-          onChange={handleChange}
+          onChange={handleTabChange}
+          scrollButtons
+          allowScrollButtonsMobile
           variant='scrollable'
         >
           <Tab label={<Box sx={{ fontWeight: 'bold' }}>テキスト一覧</Box>} />

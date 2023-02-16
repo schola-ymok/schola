@@ -7,9 +7,10 @@ const SMenuItem = ({ children, onClick, height = '36px' }) => (
     onClick={onClick}
     sx={{
       display: 'flex',
-      pl: 2,
+      px: 2,
+      py: 0.5,
       alignItems: 'center',
-      height: height,
+      minHeight: height,
       '&:hover': {
         color: Consts.COLOR.Primary,
         backgroundColor: '#efefef',

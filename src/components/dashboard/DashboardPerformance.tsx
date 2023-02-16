@@ -13,6 +13,7 @@ import { getPerformance } from 'api/getPerformance';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
+import { omitstr } from 'utils/omitstr';
 
 const DashboardPerformance = () => {
   const router = useRouter();
@@ -58,7 +59,14 @@ const DashboardPerformance = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
           <Box sx={{ display: 'flex', flexFlow: 'column' }}>
             <Box>
-              <Box sx={{ mx: 'auto', fontSize: '2.0em', fontWeight: 'bold', width: 'fit-content' }}>
+              <Box
+                sx={{
+                  mx: 'auto',
+                  fontSize: { xs: '1.5em', sm: '2.0em' },
+                  fontWeight: 'bold',
+                  width: 'fit-content',
+                }}
+              >
                 {data.number_of_total_texts}
               </Box>
               <Box sx={{ mx: 'auto', width: 'fit-content' }}>公開テキスト数</Box>
@@ -66,7 +74,14 @@ const DashboardPerformance = () => {
           </Box>
           <Box sx={{ display: 'flex', flexFlow: 'column' }}>
             <Box>
-              <Box sx={{ mx: 'auto', fontSize: '2.0em', fontWeight: 'bold', width: 'fit-content' }}>
+              <Box
+                sx={{
+                  mx: 'auto',
+                  fontSize: { xs: '1.5em', sm: '2.0em' },
+                  fontWeight: 'bold',
+                  width: 'fit-content',
+                }}
+              >
                 {data.number_of_total_reviews}
               </Box>
               <Box sx={{ mx: 'auto', width: 'fit-content' }}>レビュー数</Box>
@@ -74,7 +89,14 @@ const DashboardPerformance = () => {
           </Box>
           <Box sx={{ display: 'flex', flexFlow: 'column' }}>
             <Box>
-              <Box sx={{ mx: 'auto', fontSize: '2.0em', fontWeight: 'bold', width: 'fit-content' }}>
+              <Box
+                sx={{
+                  mx: 'auto',
+                  fontSize: { xs: '1.5em', sm: '2.0em' },
+                  fontWeight: 'bold',
+                  width: 'fit-content',
+                }}
+              >
                 {data.number_of_total_sales}
               </Box>
               <Box sx={{ mx: 'auto', width: 'fit-content' }}>販売数</Box>
@@ -96,7 +118,10 @@ const DashboardPerformance = () => {
                 return (
                   <StyledTableRow
                     key={item.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    sx={{
+                      '&:last-child td, &:last-child th': { border: 0 },
+                      wordBreak: 'break-all',
+                    }}
                   >
                     <TableCell component='th' scope='row'>
                       <Link

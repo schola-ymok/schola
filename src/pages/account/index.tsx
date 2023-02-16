@@ -124,6 +124,8 @@ const Account = () => {
   const handleTabChange = (event, newNumber) => {
     if (newNumber == 1) {
       router.replace(`account?prf`);
+    } else {
+      router.replace(`account`);
     }
     setTab(newNumber);
   };

@@ -35,23 +35,25 @@ const ReviewItem = ({ review, height = '100' }) => {
           style={{ textDecoration: 'none' }}
           href={`/texts/${review.text_id}/reviews/${review.id}`}
         >
-          <Box
-            sx={{
-              my: 'auto',
-              ml: 1,
-              fontWeight: 'bold',
-              fontSize: '0.9em',
-              color: '#000000',
-              cursor: 'pointer',
-              '&:hover': {
-                color: Consts.COLOR.Primary,
-                textDecoration: 'underline',
-              },
-              wordBreak: 'break-all',
-            }}
-          >
-            {review.title}
-          </Box>
+          <a>
+            <Box
+              sx={{
+                my: 'auto',
+                ml: 1,
+                fontWeight: 'bold',
+                fontSize: '0.9em',
+                color: '#000000',
+                cursor: 'pointer',
+                '&:hover': {
+                  color: Consts.COLOR.Primary,
+                  textDecoration: 'underline',
+                },
+                wordBreak: 'break-all',
+              }}
+            >
+              {review.title}
+            </Box>
+          </a>
         </Link>
       </Box>
       <Box sx={{ fontSize: '0.9em', color: '#777777' }}>
@@ -59,7 +61,13 @@ const ReviewItem = ({ review, height = '100' }) => {
       </Box>
       <Box sx={{ mb: 2 }}>
         <ReadMoreText id={review.id} height={height} fontSize={'0.9em'}>
-          {review.comment}
+          <Box
+            sx={{
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {review.comment}
+          </Box>
         </ReadMoreText>
       </Box>
     </>

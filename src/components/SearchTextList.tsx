@@ -75,7 +75,7 @@ const SearchTextList = () => {
           onChange={(e, page) => {
             delete params.category1;
             delete params.category2;
-            router.replace('/search?' + new URLSearchParams({ ...params, page: page }).toString());
+            router.push('/search?' + new URLSearchParams({ ...params, page: page }).toString());
           }}
           page={+page}
         />

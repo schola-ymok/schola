@@ -1,4 +1,5 @@
-import { Box, Link } from '@mui/material';
+import { Box } from '@mui/material';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import Consts from 'utils/Consts';
@@ -35,12 +36,14 @@ const ChapterTitleRow = ({ chapter, eol, textId }) => {
               },
             }}
           >
-            <Box className='child' sx={readableSx}>
-              {chapter.title}{' '}
+            <Box sx={{ display: 'flex' }}>
+              <Box className='child' sx={readableSx}>
+                {chapter.title}{' '}
+              </Box>
+              {chapter.is_trial_reading_available == 1 && (
+                <TrialReadingAvailableLabel sx={{ ml: 1 }} />
+              )}
             </Box>
-            {chapter.is_trial_reading_available == 1 && (
-              <TrialReadingAvailableLabel sx={{ ml: 1 }} />
-            )}
           </Link>
         </>
       );
@@ -103,6 +106,7 @@ const ChapterTitleRow = ({ chapter, eol, textId }) => {
 const TocLine = ({ chapters, textId }) => {
   return (
     <>
+      <></>
       {chapters.map((item, index) => {
         return (
           <ChapterTitleRow textId={textId} chapter={item} eol={index == chapters.length - 1} />

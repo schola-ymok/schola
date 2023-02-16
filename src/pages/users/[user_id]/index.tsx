@@ -15,8 +15,6 @@ import ReadMoreText from 'components/ReadMoreText';
 import Layout from 'components/layouts/Layout';
 import Consts from 'utils/Consts';
 
-import Texts from './texts';
-
 const User = () => {
   const router = useRouter();
   const authorId = router.query.user_id;
@@ -56,6 +54,7 @@ const User = () => {
       fontWeight: 'bold',
       height: '40px',
       color: '#000000',
+      mx: 'auto',
       '&:hover': {
         cursor: 'pointer',
         backgroundColor: Consts.COLOR.LightPrimarySelected,
@@ -67,11 +66,14 @@ const User = () => {
       sx['width'] = '170px';
     } else {
       sx['fontSize'] = '0.9em';
-      sx['width'] = '100%';
+      sx['width'] = '70%';
     }
 
     return (
-      <Link href={href} sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'none' } }}>
+      <Link
+        href={href}
+        sx={{ textDecoration: 'none', width: '100%', '&:hover': { textDecoration: 'none' } }}
+      >
         <Box sx={sx}>
           <Box
             sx={{
@@ -167,7 +169,7 @@ const User = () => {
           <Name />
           <Texts />
         </Box>
-        <Box sx={{ width: '200px', display: 'flex', flexFlow: 'column', mr: 'auto' }}>
+        <Box sx={{ width: '200px', display: 'flex', flexFlow: 'column', mr: 'auto', ml: 1 }}>
           <Box sx={{ mx: 'auto', mb: 3 }}>
             <Avatar />
           </Box>
@@ -181,7 +183,7 @@ const User = () => {
         <Box sx={{ maxWidth: '700px', display: 'flex', flexFlow: 'column', mx: 'auto' }}>
           <Avatar />
           <Name />
-          <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-around' }}>
+          <Box sx={{ display: 'flex', width: '100%', flexFlow: 'column', mb: 2 }}>
             <Buttons />
           </Box>
           <Texts />

@@ -27,7 +27,6 @@ import ReadMoreText from 'components/ReadMoreText';
 import Review from 'components/ReviewItem';
 import ShowMore from 'components/ShowMore';
 import TocLine from 'components/TocLine';
-import TrialReadingAvailableLabel from 'components/TrialReadingAvailableLabel';
 import { AuthContext } from 'components/auth/AuthContext';
 import ViewTextAbstractLayout from 'components/layouts/ViewTextAbstractLayout';
 import chapters from 'pages/api/texts/[text_id]/chapters';
@@ -35,9 +34,7 @@ import Consts from 'utils/Consts';
 import { extractToc } from 'utils/extractToc';
 import { genid } from 'utils/genid';
 
-import reviews from './reviews';
-
-import type { GetStaticPaths, NextPage } from 'next';
+import type { NextPage } from 'next';
 
 const Text: NextPage = () => {
   const { authAxios } = useContext(AuthContext);
@@ -48,7 +45,6 @@ const Text: NextPage = () => {
 
   const router = useRouter();
   const textId = router.query.text_id;
-  const [swrKey] = useState(genid(4));
 
   const mq = useMediaQuery('(min-width:1000px)');
 
@@ -58,7 +54,7 @@ const Text: NextPage = () => {
     }
   }, []);
 
-  const { data, error } = useSWR(`texts/${textId}?_${swrKey}`, () => getText(textId), {
+  const { data, error } = useSWR(`texts/${textId}`, () => getText(textId), {
     revalidateOnFocus: false,
   });
 
@@ -263,7 +259,7 @@ const Text: NextPage = () => {
       <>
         <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>著者</Box>
         <Box sx={{ px: 1 }}>
-          <a href={`/users/${data.author_id}`}>
+          <Link href={`/users/${data.author_id}`}>
             <Box
               component='span'
               sx={{
@@ -278,7 +274,7 @@ const Text: NextPage = () => {
             >
               {dataAuthor.display_name}
             </Box>
-          </a>
+          </Link>
           <Box sx={{ color: '#666666', wordBreak: 'break-all' }}>{dataAuthor.majors}</Box>
 
           <Box sx={{ width: '100%', display: 'flex', mt: 1 }}>

@@ -88,9 +88,10 @@ const HeaderAvatarButton = () => {
                 fontWeight: 'bold',
                 overflowWrap: 'anywhere',
                 whiteSpace: 'normal',
+                wordBreak: 'break-all',
               }}
             >
-              {omitstr(state.displayName, 10, '...')}
+              {omitstr(state.displayName, 15, '...')}
             </Box>
             <Box sx={{ fontSize: '0.6em', typography: 'subtitle2', color: '#aaaaaa' }}>
               {state.accountName}

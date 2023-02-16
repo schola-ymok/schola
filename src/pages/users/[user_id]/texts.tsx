@@ -1,4 +1,5 @@
 import { Box, Pagination, useMediaQuery } from '@mui/material';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -63,7 +64,7 @@ const UserTexts = () => {
           <Pagination
             count={count}
             color='primary'
-            onChange={(e, page) => router.replace(`/users/${userId}/texts?page=${page}`)}
+            onChange={(e, page) => router.push(`/users/${userId}/texts?page=${page}`)}
             page={+page}
           />
         )}
@@ -72,28 +73,30 @@ const UserTexts = () => {
   };
 
   return (
-    <Box>
-      <Box sx={{ display: 'flex', mb: 1 }}>
-        <Box
-          sx={{
-            fontSize: '1.7em',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            '&:hover': {
-              color: Consts.COLOR.Primary,
-              textDecoration: 'underline',
-            },
-          }}
-          onClick={() => {
-            router.push(`/users/${userId}`);
-          }}
-        >
-          {briefUserData.displayName}
-        </Box>
-        <Box sx={{ fontSize: '1.2em', mt: 1, ml: 0.5 }}>が執筆したテキスト一覧</Box>
+    <>
+      <Box sx={{ display: 'flex', mb: 1, flexFlow: 'column' }}>
+        <Link href={`/users/${userId}`}>
+          <a>
+            <Box
+              sx={{
+                fontSize: '1.7em',
+                fontWeight: 'bold',
+                wordBreak: 'break-all',
+                cursor: 'pointer',
+                '&:hover': {
+                  color: Consts.COLOR.Primary,
+                  textDecoration: 'underline',
+                },
+              }}
+            >
+              {briefUserData.displayName}
+            </Box>
+          </a>
+        </Link>
+        <Box sx={{ fontSize: '1.2em', ml: 0.5, mb: 1 }}>が執筆したテキスト一覧</Box>
       </Box>
       <DataContent data={userTextsData} />
-    </Box>
+    </>
   );
 };
 

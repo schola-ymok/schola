@@ -58,6 +58,8 @@ const TextView: NextPage = () => {
   if (error || errorPurchasedInfo) console.log('error');
   if (!data || !dataPurchasedInfo || !chapterOrder) return <CenterLoadingSpinner />;
 
+  const mine = dataPurchasedInfo.yours;
+
   if (mq) {
     return (
       <Box sx={{ display: 'flex', overflow: 'hidden' }}>
@@ -72,7 +74,7 @@ const TextView: NextPage = () => {
             flexFlow: 'column',
           }}
         >
-          <ChapterContent data={data} chapterOrder={chapterOrder} />
+          <ChapterContent mine={mine} data={data} chapterOrder={chapterOrder} />
         </Box>
       </Box>
     );
@@ -131,14 +133,14 @@ const TextView: NextPage = () => {
             width: '100%',
           }}
         >
-          <ChapterContent data={data} chapterOrder={chapterOrder} />
+          <ChapterContent mine={mine} data={data} chapterOrder={chapterOrder} />
         </Box>
       </>
     );
   }
 };
 
-const ChapterContent = ({ data, chapterOrder }) => {
+const ChapterContent = ({ mine, data, chapterOrder }) => {
   const router = useRouter();
   const textId = router.query.text_id;
 
@@ -255,6 +257,22 @@ const ChapterContent = ({ data, chapterOrder }) => {
 
   return (
     <>
+      {mine && (
+        <IconButton
+          type='button'
+          sx={{
+            position: 'fixed',
+            right: '10px',
+            top: '10px',
+            '&:hover': Consts.SX.IconButtonHover,
+          }}
+          onClick={() => {
+            router.push(`/chapters/${chapterId}/edit`);
+          }}
+        >
+          <Edit sx={{ my: 'auto', transform: 'scale(0.8)' }} />
+        </IconButton>
+      )}
       <Box
         sx={{
           display: 'flex',
@@ -266,21 +284,6 @@ const ChapterContent = ({ data, chapterOrder }) => {
           flexShrink: 0,
         }}
       >
-        <IconButton
-          type='button'
-          sx={{
-            position: 'fixed',
-            right: '10px',
-            bottom: '10px',
-            '&:hover': Consts.SX.IconButtonHover,
-          }}
-          onClick={() => {
-            router.push(`/chapters/${chapterId}/edit`);
-          }}
-        >
-          <Edit sx={{ my: 'auto', transform: 'scale(0.8)' }} />
-        </IconButton>
-
         <Box
           sx={{
             px: 2,
@@ -349,10 +352,6 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
 
   function handleChapterClick(id) {
     router.push(`/texts/${textId}/view?cid=${id}`);
-  }
-
-  function handleSectionClick(chapterId, sectionId) {
-    router.push(`/texts/${textId}/view?cid=${chapterId}#${sectionId}`);
   }
 
   const sx = mobile
@@ -430,8 +429,8 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
           type='button'
           sx={{
             position: 'fixed',
-            left: '280px',
-            bottom: '20px',
+            left: '290px',
+            top: '10px',
             '&:hover': Consts.SX.IconButtonHover,
           }}
           onClick={() => {

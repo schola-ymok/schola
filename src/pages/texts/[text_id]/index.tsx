@@ -29,7 +29,6 @@ import ShowMore from 'components/ShowMore';
 import TocLine from 'components/TocLine';
 import { AuthContext } from 'components/auth/AuthContext';
 import ViewTextAbstractLayout from 'components/layouts/ViewTextAbstractLayout';
-import chapters from 'pages/api/texts/[text_id]/chapters';
 import Consts from 'utils/Consts';
 import { extractToc } from 'utils/extractToc';
 import { genid } from 'utils/genid';
@@ -328,7 +327,7 @@ const Text: NextPage = () => {
           </Box>
 
           <Box sx={{ width: '100%', mt: 1.5 }}>
-            <ReadMoreText height='200' fontSize='0.9em'>
+            <ReadMoreText height='250' fontSize='0.9em'>
               {html}
             </ReadMoreText>
           </Box>
@@ -623,7 +622,7 @@ const Text: NextPage = () => {
       <>
         <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>解説</Box>
         <Box sx={{ pl: 1, py: { xs: 0.2, sm: 1 }, fontSize: '0.9em' }}>
-          <ReadMoreText height='220'>{html}</ReadMoreText>
+          <ReadMoreText height='250'>{html}</ReadMoreText>
         </Box>
       </>
     );
@@ -915,6 +914,8 @@ const ChapterList = () => {
   if (Object.keys(data.chapters).length == 0) {
     return <Box>チャプターが存在していません</Box>;
   }
+
+  console.log(data);
 
   const chapterOrder = JSON.parse(data.chapter_order);
   const chapters = chapterOrder.map((id) => {

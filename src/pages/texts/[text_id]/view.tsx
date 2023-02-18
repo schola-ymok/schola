@@ -2,6 +2,7 @@ import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 import Edit from '@mui/icons-material/Edit';
 import { Box, Divider, Drawer, IconButton, useMediaQuery } from '@mui/material';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
@@ -64,7 +65,7 @@ const TextView: NextPage = () => {
     return (
       <Box sx={{ display: 'flex', overflow: 'hidden' }}>
         <Box sx={{ width: '350px', position: 'fixed', top: 0, left: 0 }}>
-          <Toc data={data} chapterOrder={chapterOrder} />
+          <Toc data={data} chapterOrder={chapterOrder} mine={mine} />
         </Box>
         <Box
           sx={{
@@ -101,6 +102,7 @@ const TextView: NextPage = () => {
             sx={{
               my: 'auto',
               mx: 'auto',
+              width: '70%',
               fontSize: '0.9em',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
@@ -121,6 +123,7 @@ const TextView: NextPage = () => {
             data={data}
             chapterOrder={chapterOrder}
             mobile
+            mine={mine}
             onClose={() => {
               setMenuOpen(false);
             }}
@@ -149,9 +152,8 @@ const ChapterContent = ({ mine, data, chapterOrder }) => {
   if (router.query.cid) {
     chapterId = router.query.cid;
   } else {
-    const k = Object.keys(data.chapters);
-    if (k.length > 0) {
-      chapterId = k[0];
+    if (chapterOrder.length > 0) {
+      chapterId = chapterOrder[0];
     } else {
       return <>no chapter</>;
     }
@@ -267,7 +269,7 @@ const ChapterContent = ({ mine, data, chapterOrder }) => {
             '&:hover': Consts.SX.IconButtonHover,
           }}
           onClick={() => {
-            router.push(`/chapters/${chapterId}/edit`);
+            router.push(`/chapters/${chapterId}/edit?from=v`);
           }}
         >
           <Edit sx={{ my: 'auto', transform: 'scale(0.8)' }} />
@@ -335,7 +337,7 @@ const ChapterContent = ({ mine, data, chapterOrder }) => {
   );
 };
 
-const Toc = ({ data, mobile, onClose, chapterOrder }) => {
+const Toc = ({ data, mobile, onClose, chapterOrder, mine }) => {
   var tocs = {};
   Object.keys(data.chapters).map((id) => {
     const toc = extractToc(data.chapters[id].content);
@@ -344,7 +346,6 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
 
   const router = useRouter();
   const textId = router.query.text_id;
-  const cid = router.query.cid;
 
   const imageUrl = data.photo_id
     ? Consts.IMAGE_STORE_URL + data.photo_id + '.png'
@@ -378,8 +379,25 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
         {mobile && <MenuCloseButton onClick={onClose} />}
 
         <Box sx={{ display: 'flex', flexFlow: 'column' }}>
-          <Box sx={{ width: 'fit-content', my: 1 }}>
-            <Logo sx={{ width: 90 }} />
+          <Box sx={{ display: 'flex', width: '100%' }}>
+            <Box sx={{ width: 'fit-content', my: 1 }}>
+              <Logo sx={{ width: 90 }} />
+            </Box>
+            {mine && (
+              <IconButton
+                type='button'
+                sx={{
+                  '&:hover': Consts.SX.IconButtonHover,
+                  width: 'fit-content',
+                  ml: 'auto',
+                }}
+                onClick={() => {
+                  router.push(`/texts/${textId}/edit?chp`);
+                }}
+              >
+                <Edit sx={{ my: 'auto', transform: 'scale(0.8)' }} />
+              </IconButton>
+            )}
           </Box>
           <Divider />
           <Box sx={{ display: 'flex', my: 3 }}>
@@ -402,6 +420,7 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
                   cursor: 'pointer',
                   fontWeight: 'bold',
                   color: Consts.COLOR.VIEW.Title,
+                  wordBreak: 'break-all',
                 }}
                 onClick={() => router.push(`/texts/${textId}`)}
               >
@@ -425,21 +444,6 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
           </Box>
         </Box>
 
-        <IconButton
-          type='button'
-          sx={{
-            position: 'fixed',
-            left: '290px',
-            top: '10px',
-            '&:hover': Consts.SX.IconButtonHover,
-          }}
-          onClick={() => {
-            router.push(`/texts/${textId}/edit`);
-          }}
-        >
-          <Edit sx={{ my: 'auto', transform: 'scale(0.8)' }} />
-        </IconButton>
-
         <Box sx={{ display: 'flex', flexFlow: 'column', mb: 3 }}>
           {chapterOrder.map((id, index) => {
             const color =
@@ -447,25 +451,27 @@ const Toc = ({ data, mobile, onClose, chapterOrder }) => {
                 ? Consts.COLOR.VIEW.TocTitleHover
                 : Consts.COLOR.VIEW.TocTitle;
             return (
-              <>
-                <Box
-                  key={id}
-                  sx={{
-                    my: 0.9,
-                    cursor: 'pointer',
-                    fontSize: '0.8em',
-                    fontWeight: 'bold',
-                    color: color,
+              <Link href={`/texts/${textId}/view?cid=${id}`}>
+                <a style={{ textDecoration: 'none' }}>
+                  <Box
+                    key={id}
+                    sx={{
+                      my: 0.9,
+                      cursor: 'pointer',
+                      fontSize: '0.8em',
+                      fontWeight: 'bold',
+                      color: color,
 
-                    '&:hover': {
-                      color: Consts.COLOR.VIEW.TocTitleHover,
-                    },
-                  }}
-                  onClick={() => handleChapterClick(id)}
-                >
-                  {data.chapters[id].title}
-                </Box>
-              </>
+                      '&:hover': {
+                        color: Consts.COLOR.VIEW.TocTitleHover,
+                      },
+                    }}
+                    onClick={() => handleChapterClick(id)}
+                  >
+                    {data.chapters[id].title}
+                  </Box>
+                </a>
+              </Link>
             );
           })}
         </Box>

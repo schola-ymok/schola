@@ -12,10 +12,12 @@ import Consts from 'utils/Consts';
 const EditChapterHeader = ({
   handleSaveClick,
   handleSelectFile,
+  handleBackClick,
   handleModeChange,
   textId,
   chapterId,
   isSaving,
+  changed,
 }) => {
   const router = useRouter();
 
@@ -33,7 +35,7 @@ const EditChapterHeader = ({
       }}
     >
       <Box sx={{ display: 'flex' }}>
-        <BackButton onClick={() => router.back()} />
+        <BackButton onClick={handleBackClick} />
         <ImageButton handleSelectFile={handleSelectFile} />
       </Box>
 
@@ -55,18 +57,17 @@ const EditChapterHeader = ({
           }}
         />
 
-        <SaveButton onClick={handleSaveClick} />
+        {isSaving ? (
+          <CircularProgress size={15} sx={{ mx: '6px', color: 'black' }} />
+        ) : (
+          <SaveButton onClick={handleSaveClick} disabled={!changed} />
+        )}
       </Box>
     </Box>
   );
 };
-/*
-        <DefaultButton disabled={!enableSave} onClick={handleSaveClick} exSx={{ height: '30px' }}>
-          {isSaving ? <CircularProgress size={28} sx={{ color: 'white' }} /> : <>保存</>}
-        </DefaultButton>
-        */
 
-const TButton = ({ children, onClick, selected = false }) => {
+const TButton = ({ children, onClick, selected = false, disabled }) => {
   let sx = {
     width: '24px',
     height: '24px',
@@ -83,6 +84,11 @@ const TButton = ({ children, onClick, selected = false }) => {
   };
 
   if (selected) sx.backgroundColor = '#eeeeee';
+
+  if (disabled) {
+    sx['color'] = '#cccccc';
+    sx['&:hover'] = '';
+  }
 
   return (
     <Box sx={sx} onClick={onClick}>
@@ -103,8 +109,8 @@ const ViewButton = ({ onClick }) => (
   </TButton>
 );
 
-const SaveButton = ({ onClick }) => (
-  <TButton onClick={onClick}>
+const SaveButton = ({ onClick, disabled }) => (
+  <TButton onClick={onClick} disabled={disabled}>
     <SaveOutlinedIcon sx={{ transform: 'scale(0.7)' }} />
   </TButton>
 );

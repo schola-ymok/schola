@@ -1,3 +1,5 @@
+import { title } from 'process';
+
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import {
@@ -12,6 +14,7 @@ import {
   Snackbar,
   Tab,
   Tabs,
+  useMediaQuery,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Container } from '@mui/system';
@@ -48,6 +51,7 @@ import EditTextLayout from 'components/layouts/EditTextLayout';
 import RTEditor from 'components/rteditor/RTEditor';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
+import { omitstr } from 'utils/omitstr';
 import useCropImage from 'utils/useCropImage';
 import { validate } from 'utils/validate';
 
@@ -1003,9 +1007,7 @@ const ChapterList = () => {
   }
 
   function handleChapterClick(item) {
-    router.push({
-      pathname: `/chapters/${item.id}/edit`,
-    });
+    router.push(`/chapters/${item.id}/edit`);
   }
 
   async function handleTitleChange(id, title) {
@@ -1019,6 +1021,8 @@ const ChapterList = () => {
 
     mutate(`/texts/${textId}/chapters/`);
   }
+
+  const mq = useMediaQuery('(min-width:600px)');
 
   if (error) return <div>failed to load</div>;
   if (!data) return <CenterLoadingSpinner />;
@@ -1063,7 +1067,9 @@ const ChapterList = () => {
                       handleChapterClick(keyedChapterList[chapterId]);
                     }}
                   >
-                    {keyedChapterList[chapterId]?.title}{' '}
+                    {mq
+                      ? keyedChapterList[chapterId]?.title
+                      : omitstr(keyedChapterList[chapterId]?.title, 10, '...')}
                     {keyedChapterList[chapterId]?.is_trial_reading_available == 1 && (
                       <TrialReadingAvailableLabel sx={{ ml: 1 }} />
                     )}

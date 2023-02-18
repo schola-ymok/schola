@@ -1,7 +1,6 @@
-import { Box, Fab, IconButton, InputBase } from '@mui/material';
+import { Box, Fab, IconButton, InputBase, Snackbar } from '@mui/material';
 import 'katex/dist/katex.min.css';
 
-import InsertPhotoIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { ref, uploadBytes } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -18,6 +17,7 @@ import ScholaMarkdownViewer from 'components/markdown/ScholaMarkdownViewer';
 import { storage } from 'libs/firebase/firebase';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
+import { useKeybind } from 'utils/useKeyBind';
 
 import type { NextPage } from 'next';
 
@@ -30,8 +30,10 @@ const EditChapter: NextPage = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [mode, setMode] = useState(0);
+  const [changed, setChanged] = useState(false);
 
   const [isSaving, setIsSaving] = useState(false);
+  const [notice, setNotice] = useState({ open: false, message: '' });
 
   const { mutate } = useSWRConfig();
 
@@ -46,6 +48,7 @@ const EditChapter: NextPage = () => {
 
   const handleContentChange = (e) => {
     setContent(e.target.value);
+    setChanged(true);
   };
 
   const handleSelectFile = (e) => {
@@ -79,6 +82,14 @@ const EditChapter: NextPage = () => {
     }
   }, [data]);
 
+  useKeybind({
+    key: 's',
+    ctrlKey: true,
+    onKeyDown: () => {
+      if (changed) handleSaveClick();
+    },
+  });
+
   async function handleSaveClick() {
     setIsSaving(true);
     const { error } = await updateChapter(chapterId, title, content, authAxios);
@@ -88,6 +99,12 @@ const EditChapter: NextPage = () => {
       return;
     }
 
+    setNotice({
+      open: true,
+      message: '保存しました',
+    });
+
+    setChanged(false);
     mutate(`chapters/${chapterId}`);
     setIsSaving(false);
   }
@@ -107,6 +124,14 @@ const EditChapter: NextPage = () => {
     );
   };
 
+  const handleBackClick = () => {
+    if (router.query.from == 'v') {
+      router.push(`/texts/${data.text_id}/view?cid=${chapterId}`);
+    } else {
+      router.push(`/texts/${data.text_id}/edit?chp`);
+    }
+  };
+
   const leftWidth = mode == 1 ? '100%' : '50%';
   const rightWidth = mode == 2 ? '100%' : '50%';
 
@@ -115,12 +140,14 @@ const EditChapter: NextPage = () => {
       <EditChapterHeader
         handleSaveClick={handleSaveClick}
         handleSelectFile={handleSelectFile}
+        handleBackClick={handleBackClick}
         handleModeChange={(mode) => {
           setMode(mode);
         }}
         textId={data.text_id}
         chapterId={chapterId}
         isSaving={isSaving}
+        changed={changed}
       />
       <Box
         sx={{
@@ -158,6 +185,15 @@ const EditChapter: NextPage = () => {
           </Box>
         )}
       </Box>
+      <Snackbar
+        open={notice.open}
+        message={notice.message}
+        autoHideDuration={1000}
+        onClose={() => {
+          setNotice({ open: false });
+        }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </>
   );
 };

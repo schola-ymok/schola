@@ -1051,6 +1051,7 @@ const ChapterList = () => {
               {chapterOrder.map((chapterId) => (
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Box
+                    className='scroll-without-bar'
                     sx={{
                       fontSize: { xs: '1.0em', sm: '1.2em' },
                       fontWeight: 'bold',
@@ -1059,17 +1060,16 @@ const ChapterList = () => {
                       '&:hover': { color: Consts.COLOR.Primary },
                       cursor: 'pointer',
                       display: 'flex',
-                      wordBreak: 'break-all',
                       alignItems: 'center',
                       display: 'flex',
+                      overflowX: 'scroll',
+                      whiteSpace: 'nowrap',
                     }}
                     onClick={() => {
                       handleChapterClick(keyedChapterList[chapterId]);
                     }}
                   >
-                    {mq
-                      ? keyedChapterList[chapterId]?.title
-                      : omitstr(keyedChapterList[chapterId]?.title, 10, '...')}
+                    {keyedChapterList[chapterId]?.title}
                     {keyedChapterList[chapterId]?.is_trial_reading_available == 1 && (
                       <TrialReadingAvailableLabel sx={{ ml: 1 }} />
                     )}

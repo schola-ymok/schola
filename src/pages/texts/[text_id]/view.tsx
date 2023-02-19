@@ -104,13 +104,14 @@ const TextView: NextPage = () => {
             }}
           />
           <Box
+            className='scroll-without-bar'
             sx={{
               my: 'auto',
-              mx: 'auto',
-              width: '70%',
+              mr: 'auto',
+              width: '75%',
               fontSize: '0.9em',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
+              textAlign: 'center',
+              overflow: 'auto',
               whiteSpace: 'nowrap',
             }}
           >
@@ -350,8 +351,6 @@ const ChapterContent = ({ dataTocs, mine, chapterOrder }) => {
     </>
   );
 };
-/*
- */
 
 const Toc = ({ data, mobile, onClose, chapterOrder, mine }) => {
   var tocs = {};
@@ -371,6 +370,7 @@ const Toc = ({ data, mobile, onClose, chapterOrder, mine }) => {
 
   function handleChapterClick(id) {
     router.push(`/texts/${textId}/view?cid=${id}`);
+    onClose();
   }
 
   const sx = mobile
@@ -495,6 +495,7 @@ const Toc = ({ data, mobile, onClose, chapterOrder, mine }) => {
                       fontSize: '0.8em',
                       fontWeight: 'bold',
                       color: color,
+                      wordBreak: 'break-all',
 
                       '&:hover': {
                         color: Consts.COLOR.VIEW.TocTitleHover,

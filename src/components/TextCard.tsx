@@ -38,10 +38,15 @@ const TextCard = ({ text }) => {
               src={imageUrl}
             />
 
-            <Box sx={{ fontWeight: 'bold', fontSize: '1.0em', wordBreak: 'break-all' }}>
-              {omitstr(text.title, 19, '...')}
+            <Box
+              className='two-line'
+              sx={{ fontWeight: 'bold', fontSize: '1.0em', wordBreak: 'break-all' }}
+            >
+              {text.title}
             </Box>
-            <Box sx={{ fontSize: '0.8em' }}>{omitstr(text.author_display_name, 12, '...')}</Box>
+            <Box className='one-line' sx={{ fontSize: '0.8em', wordBreak: 'break-all' }}>
+              {text.author_display_name}
+            </Box>
             <Box sx={{ fontSize: '0.8em', color: '#555555', display: 'flex' }}>
               <Rating
                 name='size-small'

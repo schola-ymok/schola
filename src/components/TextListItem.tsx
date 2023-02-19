@@ -36,8 +36,11 @@ const TextListItem = ({ text }) => {
             />
           </Box>
           <Box fullWidth sx={{ width: '100%' }}>
-            <Box sx={{ fontWeight: 'bold', fontSize: '0.9em', wordBreak: 'break-all' }}>
-              {omitstr(text.title, 19, '...')}
+            <Box
+              className='two-line'
+              sx={{ fontWeight: 'bold', fontSize: '0.9em', wordBreak: 'break-all' }}
+            >
+              {text.title}
             </Box>
             <Box sx={{ color: '#000000', fontWeight: 'bold', fontSize: '0.8em' }}>
               ￥{text.price}

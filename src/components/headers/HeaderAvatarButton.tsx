@@ -83,6 +83,7 @@ const HeaderAvatarButton = () => {
         >
           <Stack>
             <Box
+              className='two-line'
               sx={{
                 fontSize: '0.9em',
                 fontWeight: 'bold',
@@ -91,7 +92,7 @@ const HeaderAvatarButton = () => {
                 wordBreak: 'break-all',
               }}
             >
-              {omitstr(state.displayName, 15, '...')}
+              {state.displayName}
             </Box>
             <Box sx={{ fontSize: '0.6em', typography: 'subtitle2', color: '#aaaaaa' }}>
               {state.accountName}

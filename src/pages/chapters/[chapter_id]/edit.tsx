@@ -17,7 +17,7 @@ import ScholaMarkdownViewer from 'components/markdown/ScholaMarkdownViewer';
 import { storage } from 'libs/firebase/firebase';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
-import { useKeybind } from 'utils/useKeyBind';
+import { useKeybind } from 'utils/useKeybind';
 
 import type { NextPage } from 'next';
 

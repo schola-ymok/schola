@@ -3,6 +3,7 @@ import escape from 'sql-template-strings';
 import dbQuery from 'libs/db';
 import { verifyFirebaseToken } from 'libs/firebase/verifyFirebaseToken';
 import Consts from 'utils/Consts';
+import { extractToc } from 'utils/extractToc';
 import { isEmptyString } from 'utils/isEmptyString';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -114,8 +115,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
       if (req.body.content !== undefined) {
         const content = req.body.content;
+        const toc = extractToc(content);
+        const tocJson = JSON.stringify(toc);
+
         if (comma) query = query.append(',');
-        query = query.append(escape` content = ${content}`);
+        query = query.append(escape` content = ${content}, toc = ${tocJson}`);
         comma = true;
       }
 

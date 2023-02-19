@@ -63,7 +63,7 @@ const ReadMoreText = ({ children, id, height, fontSize = '1.0em' }) => {
             pt: '50px',
             pb: '0px',
             background:
-              'linear-gradient(to bottom, rgb(255, 255, 255, 0) 0%, rgb(255, 255, 255, 1) 70%)',
+              'linear-gradient(to bottom, rgb(255, 255, 255, 0) 0%, rgb(255, 255, 255, 1) 90%)',
             display: 'flex',
           }}
         >
@@ -73,8 +73,8 @@ const ReadMoreText = ({ children, id, height, fontSize = '1.0em' }) => {
             }}
             sx={SX}
           >
-            <Box sx={{ my: 'auto', fontSize: '0.9em' }}>もっと読む</Box>
-            <ExpandMoreIcon sx={{ transform: 'scale(0.9)', my: 'auto' }} />
+            <Box sx={{ mt: 'auto', fontSize: '0.9em' }}>もっと読む</Box>
+            <ExpandMoreIcon sx={{ transform: 'scale(0.9)', mt: 'auto' }} />
           </Box>
         </Box>
       </Box>

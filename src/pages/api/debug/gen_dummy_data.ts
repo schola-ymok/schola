@@ -11,7 +11,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const USER_NUM = 50;
-  const REP_AUTHOR_ID = 'jH9PxGXS';
+  const REP_AUTHOR_ID = 'hB0VDtl4';
   const TEXT_NUM_LIMIT = 100000;
 
   function randomAchievement(cat1, cat2) {

@@ -66,6 +66,7 @@ create table chapters (
   updated_at timestamp not null default current_timestamp on update current_timestamp,
   content mediumtext,
   number_of_characters tinyint,
+  toc text,
   fulltext (title,content) with parser ngram,
   constraint cst_chapters_text_id
     foreign key (text_id)

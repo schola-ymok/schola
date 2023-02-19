@@ -21,8 +21,8 @@ const ChapterTitleRow = ({ chapter, eol }) => {
       backgroundColor: '#444444',
     };
     lSx = {
-      fontSize: '1.1em',
       fontWeight: 'bold',
+      color: '#064da1',
     };
   } else if (chapter.depth == 2) {
     dSx = {
@@ -71,10 +71,11 @@ const ChapterTitleRow = ({ chapter, eol }) => {
             top: '1px',
             left: '25px',
             display: 'flex',
+            whiteSpace: 'nowrap',
           }}
         >
           <Link href={'#' + chapter.id} sx={{ my: 'auto', ...lSx }}>
-            <a>{chapter.title}</a>
+            <Box sx={{ ...lSx }}>{chapter.title}</Box>
           </Link>
         </Box>
       </Box>

@@ -24,12 +24,28 @@ import SpeakerDeckBlock from './SpeakerDeckBlock';
 import TocLineBlock from './TocLineBlock';
 import WarningBlock from './WarningBlock';
 
+import { useRouter } from 'next/router';
+import { useEffect, useLayoutEffect, useState } from 'react';
+
 const ScholaMarkdownViewer = ({ children }) => {
   const toc = extractToc(children);
 
   const TocBlock = ({ children }) => {
     return <TocLineBlock chapters={toc} children={children} />;
   };
+
+  const router = useRouter();
+  const [init, setInit] = useState(false);
+
+  useEffect(() => {
+    if (router.isReady && !init) {
+      const splitPath = router.asPath.split('#');
+      if (splitPath.length > 1) {
+        router.replace('#' + splitPath[1]);
+        setInit(true);
+      }
+    }
+  });
 
   return (
     <ReactMarkdown

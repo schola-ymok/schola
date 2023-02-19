@@ -15,6 +15,7 @@ import { getChapterList } from 'api/getChapterList';
 import { getPurchasedInfo } from 'api/getPurchasedInfo';
 import { getReviews } from 'api/getReviews';
 import { getText } from 'api/getText';
+import { getTocs } from 'api/getTocs';
 import { getUser } from 'api/getUser';
 import { getUserTexts } from 'api/getUserTexts';
 import { getViewText } from 'api/getViewText';
@@ -904,7 +905,7 @@ const ChapterList = () => {
   const textId = router.query.text_id;
   const { authAxios } = useContext(AuthContext);
 
-  const { data, error } = useSWR(`texts/${textId}/view`, () => getViewText(textId, authAxios), {
+  const { data, error } = useSWR(`texts/${textId}/toc`, () => getTocs(textId, authAxios), {
     revalidateOnFocus: false,
   });
 
@@ -915,12 +916,11 @@ const ChapterList = () => {
     return <Box>チャプターが存在していません</Box>;
   }
 
-  console.log(data);
-
   const chapterOrder = JSON.parse(data.chapter_order);
   const chapters = chapterOrder.map((id) => {
     return data.chapters[id];
   });
+
   return <TocLine textId={textId} chapters={chapters} />;
 };
 

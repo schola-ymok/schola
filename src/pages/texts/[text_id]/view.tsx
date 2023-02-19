@@ -7,8 +7,9 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 
+import { getChapter } from 'api/getChapter';
 import { getPurchasedInfo } from 'api/getPurchasedInfo';
-import { getViewText } from 'api/getViewText';
+import { getTocs } from 'api/getTocs';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
 import Logo from 'components/headers/Logo';
@@ -32,9 +33,13 @@ const TextView: NextPage = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { data, error } = useSWR(`texts/${textId}/view`, () => getViewText(textId, authAxios), {
-    revalidateOnFocus: false,
-  });
+  const { data: dataTocs, error: errorTocs } = useSWR(
+    `texts/${textId}/toc`,
+    () => getTocs(textId, authAxios),
+    {
+      revalidateOnFocus: false,
+    },
+  );
 
   const { data: dataPurchasedInfo, error: errorPurchasedInfo } = useSWR(
     `texts/${textId}/purchase`,
@@ -47,17 +52,17 @@ const TextView: NextPage = () => {
   const [chapterOrder, setChapterOrder] = useState(null);
 
   useEffect(() => {
-    if (data) {
-      if (data.chapter_order != null) {
-        setChapterOrder(JSON.parse(data.chapter_order));
+    if (dataTocs) {
+      if (dataTocs.chapter_order != null) {
+        setChapterOrder(JSON.parse(dataTocs.chapter_order));
       } else {
-        setChapterOrder((chapterOrder = Object.keys(data.chapters)));
+        setChapterOrder((chapterOrder = Object.keys(dataTocs.chapters)));
       }
     }
-  }, [data]);
+  }, [dataTocs]);
 
-  if (error || errorPurchasedInfo) console.log('error');
-  if (!data || !dataPurchasedInfo || !chapterOrder) return <CenterLoadingSpinner />;
+  if (errorTocs || errorPurchasedInfo) console.log('error');
+  if (!dataTocs || !dataPurchasedInfo || !chapterOrder) return <CenterLoadingSpinner />;
 
   const mine = dataPurchasedInfo.yours;
 
@@ -65,7 +70,7 @@ const TextView: NextPage = () => {
     return (
       <Box sx={{ display: 'flex', overflow: 'hidden' }}>
         <Box sx={{ width: '350px', position: 'fixed', top: 0, left: 0 }}>
-          <Toc data={data} chapterOrder={chapterOrder} mine={mine} />
+          <Toc data={dataTocs} chapterOrder={chapterOrder} mine={mine} />
         </Box>
         <Box
           sx={{
@@ -75,7 +80,7 @@ const TextView: NextPage = () => {
             flexFlow: 'column',
           }}
         >
-          <ChapterContent mine={mine} data={data} chapterOrder={chapterOrder} />
+          <ChapterContent mine={mine} dataTocs={dataTocs} chapterOrder={chapterOrder} />
         </Box>
       </Box>
     );
@@ -109,7 +114,7 @@ const TextView: NextPage = () => {
               whiteSpace: 'nowrap',
             }}
           >
-            {data.title}
+            {dataTocs.title}
           </Box>
         </Box>
         <Drawer
@@ -120,7 +125,7 @@ const TextView: NextPage = () => {
           }}
         >
           <Toc
-            data={data}
+            data={dataTocs}
             chapterOrder={chapterOrder}
             mobile
             mine={mine}
@@ -136,16 +141,17 @@ const TextView: NextPage = () => {
             width: '100%',
           }}
         >
-          <ChapterContent mine={mine} data={data} chapterOrder={chapterOrder} />
+          <ChapterContent dataTocs={dataTocs} mine={mine} chapterOrder={chapterOrder} />
         </Box>
       </>
     );
   }
 };
 
-const ChapterContent = ({ mine, data, chapterOrder }) => {
+const ChapterContent = ({ dataTocs, mine, chapterOrder }) => {
+  const { authAxios } = useContext(AuthContext);
+
   const router = useRouter();
-  const textId = router.query.text_id;
 
   let chapterId;
 
@@ -159,9 +165,17 @@ const ChapterContent = ({ mine, data, chapterOrder }) => {
     }
   }
 
-  const content = data.chapters[chapterId]?.content;
-  const title = data.chapters[chapterId]?.title;
-  const date = data.chapters[chapterId]?.updated_at;
+  const { data, error } = useSWR(`chapters/${chapterId}`, () => getChapter(chapterId, authAxios), {
+    revalidateOnFocus: false,
+  });
+
+  if (error) console.log('error');
+  if (!data) return <CenterLoadingSpinner />;
+
+  const textId = router.query.text_id;
+  const content = data.content;
+  const title = data.title;
+  const date = data.updated_at;
 
   let chapterNo = 0;
 
@@ -174,11 +188,11 @@ const ChapterContent = ({ mine, data, chapterOrder }) => {
 
   if (chapterNo > 0) {
     const index = chapterNo - 1;
-    prevChapter = { id: chapterOrder[index], title: data.chapters[chapterOrder[index]].title };
+    prevChapter = { id: chapterOrder[index], title: dataTocs.chapters[chapterOrder[index]].title };
   }
   if (chapterNo < chapterOrder.length - 1) {
     const index = chapterNo + 1;
-    nextChapter = { id: chapterOrder[index], title: data.chapters[chapterOrder[index]].title };
+    nextChapter = { id: chapterOrder[index], title: dataTocs.chapters[chapterOrder[index]].title };
   }
 
   const PrevButton = ({ id, title }) => (
@@ -336,6 +350,8 @@ const ChapterContent = ({ mine, data, chapterOrder }) => {
     </>
   );
 };
+/*
+ */
 
 const Toc = ({ data, mobile, onClose, chapterOrder, mine }) => {
   var tocs = {};
@@ -346,6 +362,8 @@ const Toc = ({ data, mobile, onClose, chapterOrder, mine }) => {
 
   const router = useRouter();
   const textId = router.query.text_id;
+
+  const authorId = data.author_id;
 
   const imageUrl = data.photo_id
     ? Consts.IMAGE_STORE_URL + data.photo_id + '.png'
@@ -401,45 +419,61 @@ const Toc = ({ data, mobile, onClose, chapterOrder, mine }) => {
           </Box>
           <Divider />
           <Box sx={{ display: 'flex', my: 3 }}>
-            <Box
-              component='img'
-              sx={{
-                display: 'flex',
-                width: 'fit-content',
-                width: 105,
-                height: 58,
-                cursor: 'pointer',
-              }}
-              src={imageUrl}
-              onClick={() => router.push(`/texts/${textId}`)}
-            />
+            <Link href={`/texts/${textId}`}>
+              <a className='no-hover'>
+                <Box
+                  component='img'
+                  sx={{
+                    display: 'flex',
+                    width: 'fit-content',
+                    width: 105,
+                    height: 58,
+                    cursor: 'pointer',
+                    '&:hover': {
+                      filter: 'brightness(90%)',
+                    },
+                  }}
+                  src={imageUrl}
+                />
+              </a>
+            </Link>
             <Box sx={{ display: 'flex', flexFlow: 'column', ml: 1 }}>
-              <Box
-                sx={{
-                  fontSize: '0.9em',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  color: Consts.COLOR.VIEW.Title,
-                  wordBreak: 'break-all',
-                }}
-                onClick={() => router.push(`/texts/${textId}`)}
-              >
-                {data.title}
-              </Box>
-              <Box
-                sx={{
-                  fontSize: '0.8em',
-                  color: Consts.COLOR.VIEW.Author,
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  '&:hover': {
-                    color: Consts.COLOR.VIEW.AuthorHover,
-                  },
-                }}
-                onClick={() => router.push(`/texts/${textId}`)}
-              >
-                {data.author_display_name}
-              </Box>
+              <Link href={`/texts/${textId}`}>
+                <a className='no-hover'>
+                  <Box
+                    sx={{
+                      fontSize: '0.9em',
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                      color: Consts.COLOR.VIEW.Title,
+                      wordBreak: 'break-all',
+                      '&:hover': {
+                        textDecoration: 'underline',
+                      },
+                    }}
+                    onClick={() => router.push(`/texts/${textId}`)}
+                  >
+                    {data.title}
+                  </Box>
+                </a>
+              </Link>
+              <Link href={`/users/${authorId}`}>
+                <a className='no-hover'>
+                  <Box
+                    sx={{
+                      fontSize: '0.8em',
+                      color: Consts.COLOR.VIEW.Author,
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                      '&:hover': {
+                        color: Consts.COLOR.VIEW.AuthorHover,
+                      },
+                    }}
+                  >
+                    {data.author_display_name}
+                  </Box>
+                </a>
+              </Link>
             </Box>
           </Box>
         </Box>

@@ -1,15 +1,24 @@
+import { Title } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 import Consts from 'utils/Consts';
 
 import TrialReadingAvailableLabel from './TrialReadingAvailableLabel';
 
-const ChapterTitleRow = ({ chapter, eol, textId }) => {
-  const rHeight = 40;
+const TitleRow = ({ item, eol, textId }) => {
+  const rHeight = 30;
 
-  const ChapterTitle = ({ chapter, textId }) => {
+  const Title = ({ item, textId }) => {
+    const ml = item.depth * 10 + 'px';
+    const fw = item.depth == 0 ? 'bold' : 'normal';
+    const baseSx = { ml: ml, fontWeight: fw };
+
+    const href =
+      item.depth == 0
+        ? `/texts/${textId}/view?cid=${item.chapterId}`
+        : `/texts/${textId}/view?cid=${item.chapterId}#${item.sectionId}`;
+
     const readableSx = {
       color: 'black',
       '&:hover': {
@@ -18,39 +27,66 @@ const ChapterTitleRow = ({ chapter, eol, textId }) => {
       },
     };
 
-    if (chapter.is_trial_reading_available) {
+    if (item.trialReadingAvailable) {
       return (
-        <>
-          <Link
-            href={`/texts/${textId}/view?cid=${chapter.id}`}
-            sx={{
-              width: '100%',
-              display: 'flex',
-              textDecoration: 'none',
-              '&:hover .child': {
-                color: Consts.COLOR.Primary,
+        <Link href={href}>
+          <a className='no-hover' style={{ width: '100%', display: 'inline-block' }}>
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                flexShrink: 0,
                 textDecoration: 'none',
-              },
-              '&:hover': {
-                textDecoration: 'none',
-              },
-            }}
-          >
-            <Box sx={{ display: 'flex' }}>
-              <Box className='child' sx={readableSx}>
-                {chapter.title}{' '}
+                '&:hover .child': {
+                  color: Consts.COLOR.Primary,
+                  textDecoration: 'none',
+                },
+                '&:hover': {
+                  textDecoration: 'none',
+                },
+              }}
+            >
+              <Box className='child' sx={{ ...baseSx, readableSx }}>
+                {item.title}{' '}
               </Box>
-              {chapter.is_trial_reading_available == 1 && (
+              {item.trialReadingAvailable == 1 && item.depth == 0 && (
                 <TrialReadingAvailableLabel sx={{ ml: 1 }} />
               )}
             </Box>
-          </Link>
-        </>
+          </a>
+        </Link>
       );
     } else {
-      return <Box className='child'>{chapter.title} </Box>;
+      return (
+        <Box sx={{ ...baseSx }} className='child'>
+          {item.title}{' '}
+        </Box>
+      );
     }
   };
+
+  const dotSx =
+    item.depth == 0
+      ? {
+          width: '10px',
+          height: '10px',
+          borderRadius: '5px',
+          border: '2px solid #bccfcf',
+          backgroundColor: '#ffffff',
+          position: 'absolute',
+          top: '10px',
+          left: '4px',
+        }
+      : {
+          width: '6px',
+          height: '6px',
+          backgroundColor: '#bccfcf',
+          borderRadius: '3px',
+          border: '2px solid #bccfcf',
+          position: 'absolute',
+          top: '12px',
+          left: '6px',
+        };
 
   return (
     <>
@@ -63,17 +99,7 @@ const ChapterTitleRow = ({ chapter, eol, textId }) => {
           color: '#aaaaaa',
         }}
       >
-        <Box
-          sx={{
-            width: '10px',
-            height: '10px',
-            borderRadius: '5px',
-            border: '2px solid #bccfcf',
-            position: 'absolute',
-            top: '10px',
-            left: '4px',
-          }}
-        />
+        <Box sx={dotSx} />
         {eol == false && (
           <Box
             sx={{
@@ -96,7 +122,7 @@ const ChapterTitleRow = ({ chapter, eol, textId }) => {
             display: 'flex',
           }}
         >
-          <ChapterTitle chapter={chapter} textId={textId} />
+          <Title item={item} textId={textId} />
         </Box>
       </Box>
     </>
@@ -104,13 +130,34 @@ const ChapterTitleRow = ({ chapter, eol, textId }) => {
 };
 
 const TocLine = ({ chapters, textId }) => {
+  let titles = [];
+  chapters.map((item) => {
+    titles.push({
+      depth: 0,
+      title: item.title,
+      chapterId: item.id,
+      trialReadingAvailable: item.is_trial_reading_available,
+    });
+    if (item.toc) {
+      const toc = JSON.parse(item.toc);
+      toc.map((_item) => {
+        if (_item.depth < 3) {
+          titles.push({
+            depth: _item.depth,
+            title: _item.title,
+            chapterId: item.id,
+            sectionId: _item.id,
+            trialReadingAvailable: item.is_trial_reading_available,
+          });
+        }
+      });
+    }
+  });
+
   return (
     <>
-      <></>
-      {chapters.map((item, index) => {
-        return (
-          <ChapterTitleRow textId={textId} chapter={item} eol={index == chapters.length - 1} />
-        );
+      {titles.map((item, index) => {
+        return <TitleRow textId={textId} item={item} eol={index == titles.length - 1} />;
       })}
     </>
   );

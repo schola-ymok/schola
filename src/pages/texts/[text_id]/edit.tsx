@@ -703,7 +703,7 @@ const EditText = () => {
                   --- サブカテゴリ ---
                 </MenuItem>
                 {category1 != 'nul' &&
-                  Consts.CATEGORY[category1].items.map((item) => {
+                  Consts.CATEGORY[category1]?.items.map((item) => {
                     return (
                       <MenuItem key={item.key} value={item.key}>
                         {item.label}

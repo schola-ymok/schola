@@ -12,7 +12,13 @@ const TitleRow = ({ item, eol, textId }) => {
   const Title = ({ item, textId }) => {
     const ml = item.depth * 10 + 'px';
     const fw = item.depth == 0 ? 'bold' : 'normal';
-    const baseSx = { ml: ml, fontWeight: fw };
+    const baseSx = {
+      ml: ml,
+      fontWeight: fw,
+
+      whiteSpace: 'nowrap',
+      overflowX: 'auto',
+    };
 
     const href =
       item.depth == 0
@@ -46,7 +52,7 @@ const TitleRow = ({ item, eol, textId }) => {
                 },
               }}
             >
-              <Box className='child' sx={{ ...baseSx, readableSx }}>
+              <Box className='child scroll-without-bar' sx={{ ...baseSx, readableSx }}>
                 {item.title}{' '}
               </Box>
               {item.trialReadingAvailable == 1 && item.depth == 0 && (

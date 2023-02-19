@@ -7,10 +7,14 @@ const ChapterTitleRow = ({ chapter, eol }) => {
 
   let rSx = {
     display: 'flex',
-    width: '100%',
     height: `${rHeight}px`,
     position: 'relative',
     mx: 1,
+  };
+
+  const baseSx = {
+    whiteSpace: 'nowrap',
+    overflowX: 'auto',
   };
 
   let dSx;
@@ -66,15 +70,17 @@ const ChapterTitleRow = ({ chapter, eol }) => {
           />
         )}
         <Box
+          className='scroll-without-bar'
           sx={{
             position: 'absolute',
             top: '1px',
             left: '25px',
             display: 'flex',
-            whiteSpace: 'nowrap',
+            width: '95%',
+            ...baseSx,
           }}
         >
-          <Link href={'#' + chapter.id} sx={{ my: 'auto', ...lSx }}>
+          <Link href={'#' + chapter.id} sx={{ my: 'auto' }}>
             <Box sx={{ ...lSx }}>{chapter.title}</Box>
           </Link>
         </Box>

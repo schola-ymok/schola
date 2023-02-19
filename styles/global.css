@@ -158,3 +158,8 @@ a.no-hover:hover {
 .markdown-body p {
   white-space: pre-wrap;
 }
+
+.scroll-without-bar::-webkit-scrollbar {
+  display: none;
+  -webkit-appearance: none;
+}

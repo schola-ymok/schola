@@ -464,6 +464,7 @@ const Toc = ({ data, mobile, onClose, chapterOrder, mine }) => {
                       fontSize: '0.8em',
                       color: Consts.COLOR.VIEW.Author,
                       cursor: 'pointer',
+                      wordBreak: 'break-all',
                       fontWeight: 'bold',
                       '&:hover': {
                         color: Consts.COLOR.VIEW.AuthorHover,

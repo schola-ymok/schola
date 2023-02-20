@@ -71,14 +71,14 @@ const AccountNameSettingDialog = ({ key, open, onClose, name, onChange }) => {
   const SubmitButton = () => {
     if (loading) {
       return (
-        <DefaultButton sx={{ width: '90px' }}>
+        <DefaultButton sx={{ width: '90px', mr: 1, mb: 1 }}>
           <CircularProgress size={24} sx={{ p: 0, m: 0, color: 'white' }} />
         </DefaultButton>
       );
     } else {
       return (
         <DefaultButton
-          sx={{ width: '90px' }}
+          sx={{ width: '90px', mr: 1, mb: 1 }}
           disabled={!nameValidation?.ok || oldName == newName}
           onClick={() => {
             change();
@@ -129,6 +129,7 @@ const AccountNameSettingDialog = ({ key, open, onClose, name, onChange }) => {
       </Box>
       <DialogActions>
         <DefaultButton
+          sx={{ mb: 1 }}
           onClick={() => {
             onClose();
           }}

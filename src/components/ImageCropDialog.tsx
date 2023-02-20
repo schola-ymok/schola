@@ -1,4 +1,4 @@
-import { Box, Slider } from '@mui/material';
+import { Box, Slider, useMediaQuery } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Cropper from 'react-easy-crop';
 
@@ -16,22 +16,33 @@ const ImageCropDialog = ({
   showCroppedImage,
   cropShape,
   cropSize,
+  avatar,
 }) => {
   const handleClose = () => setOpen(false);
+
+  const style = {
+    containerStyle: {
+      width: '100%',
+      margin: 'auto',
+    },
+  };
+
+  const objectFit = avatar ? 'contain' : 'horizontal-cover';
 
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
         <Box className='ImageCropDialog-container'>
           <Cropper
+            style={style}
             image={image}
             crop={crop}
             zoom={zoom}
             cropShape={cropShape ?? 'round'}
             cropSize={cropSize ?? { width: 128, height: 128 }}
-            aspect={4 / 3}
             onCropChange={onCropChange}
             onCropComplete={onCropComplete}
+            objectFit={objectFit}
           />
         </Box>
         <Box sx={{ display: 'flex', flexFlow: 'column' }}>

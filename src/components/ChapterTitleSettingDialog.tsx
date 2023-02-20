@@ -65,6 +65,7 @@ const ChapterTitleSettingDialog = ({ key, open, onClose, title, onChange }) => {
       </Box>
       <DialogActions>
         <DefaultButton
+          sx={{ mb: 1 }}
           onClick={() => {
             onClose();
           }}
@@ -72,6 +73,7 @@ const ChapterTitleSettingDialog = ({ key, open, onClose, title, onChange }) => {
           キャンセル
         </DefaultButton>
         <DefaultButton
+          sx={{ mr: 1, mb: 1 }}
           disabled={!titleValidation?.ok || oldTitle == newTitle}
           onClick={() => {
             onChange(newTitle);

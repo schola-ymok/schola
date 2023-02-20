@@ -39,6 +39,7 @@ const useCropImage = (path, onUploadBegin, onUploadComplete) => {
       const reader = new FileReader();
       reader.addEventListener('load', () => {
         setImageSrc(reader.result?.toString() || '');
+        setZoom(1);
         setOpenImageCropDialog(true);
       });
       reader.readAsDataURL(e.target.files[0]);

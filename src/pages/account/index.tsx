@@ -636,6 +636,7 @@ const ProfileSetting = () => {
               onCropComplete={onCropComplete}
               onZoomChange={setZoom}
               showCroppedImage={showCroppedImage}
+              avatar
             />
           </>
         )}

@@ -3,6 +3,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 
+import Footer from 'components/Footer';
 import HomeTextList from 'components/HomeTextList';
 import TextList from 'components/TextList';
 import HeaderWithMenuButton from 'components/headers/HeaderWithMenuButton';
@@ -74,6 +75,7 @@ const Home: NextPage = () => {
           )}
         </Box>
       </Box>
+      <Footer />
     </>
   );
 };

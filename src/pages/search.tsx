@@ -2,6 +2,7 @@ import { Box, Drawer, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 
+import Footer from 'components/Footer';
 import SearchTextList from 'components/SearchTextList';
 import HeaderWithMenuButton from 'components/headers/HeaderWithMenuButton';
 import FilterMenu from 'components/sidemenu/FilterMenu';
@@ -81,6 +82,7 @@ const Search: NextPage = () => {
           </Box>
         </Box>
       </Box>
+      <Footer />
     </>
   );
 };

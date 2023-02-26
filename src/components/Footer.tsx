@@ -23,7 +23,7 @@ const Footer = () => {
             <h6>About</h6>
             <ul className='footer'>
               <li className='footer'>
-                <Link href=''>
+                <Link href='/info/about'>
                   <a>Scholaについて</a>
                 </Link>
               </li>
@@ -38,17 +38,17 @@ const Footer = () => {
             <h6>Legal</h6>
             <ul className='footer'>
               <li className='footer'>
-                <Link href=''>
+                <Link href='/info/termofuse'>
                   <a>利用規約</a>
                 </Link>
               </li>
               <li className='footer'>
-                <Link href=''>
+                <Link href='/info/privacy'>
                   <a>プライバシーポリシー</a>
                 </Link>
               </li>
               <li className='footer'>
-                <Link href=''>
+                <Link href='/info/notation'>
                   <a>特定法表記</a>
                 </Link>
               </li>

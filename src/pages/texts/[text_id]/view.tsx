@@ -70,7 +70,14 @@ const TextView: NextPage = () => {
     return (
       <Box sx={{ display: 'flex', overflow: 'hidden' }}>
         <Box sx={{ width: '350px', position: 'fixed', top: 0, left: 0 }}>
-          <Toc data={dataTocs} chapterOrder={chapterOrder} mine={mine} />
+          <Toc
+            data={dataTocs}
+            onClose={() => {
+              setMenuOpen(false);
+            }}
+            chapterOrder={chapterOrder}
+            mine={mine}
+          />
         </Box>
         <Box
           sx={{

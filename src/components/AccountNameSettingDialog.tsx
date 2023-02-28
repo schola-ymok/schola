@@ -1,15 +1,11 @@
 import { title } from 'process';
 
 import {
-  Box,
-  InputBase,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  CircularProgress,
+  Box, CircularProgress, Dialog,
+  DialogActions, InputBase
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useEffect, useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { changeAccount } from 'api/changeAccount';
 import { AuthContext } from 'components/auth/AuthContext';

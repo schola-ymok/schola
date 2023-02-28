@@ -1,4 +1,4 @@
-import { Box, Fab, IconButton, InputBase, Snackbar } from '@mui/material';
+import { Box, Snackbar } from '@mui/material';
 import 'katex/dist/katex.min.css';
 
 import { ref, uploadBytes } from 'firebase/storage';
@@ -8,11 +8,10 @@ import useSWR, { useSWRConfig } from 'swr';
 
 import { getChapter } from 'api/getChapter';
 import { updateChapter } from 'api/updateChapter';
-import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import EditChapterHeader from 'components/headers/EditChapterHeader';
 import EditChapterLayout from 'components/layouts/EditChapterLayout';
-import Markdown from 'components/markdown/ScholaMarkdownViewer';
 import ScholaMarkdownViewer from 'components/markdown/ScholaMarkdownViewer';
 import { storage } from 'libs/firebase/firebase';
 import Consts from 'utils/Consts';

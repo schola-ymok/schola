@@ -1,5 +1,4 @@
-import { Box, Button } from '@mui/material';
-import router from 'next/router';
+import { Box } from '@mui/material';
 
 import Consts from 'utils/Consts';
 

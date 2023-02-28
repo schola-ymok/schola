@@ -1,14 +1,10 @@
-import { match } from 'assert';
 
-import { useEffect } from 'react';
 import { TwitterTweetEmbed } from 'react-twitter-embed';
 
 import YoutubeBlock from './YoutubeBlock';
 
 const LinkBlock = (props) => {
   const { href, children, id } = props;
-
-  console.log(props);
 
   if (href.startsWith('https://www.youtube.com/watch?v=')) {
     const hrefSplit = href.split('=');

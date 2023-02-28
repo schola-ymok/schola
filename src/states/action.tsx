@@ -1,4 +1,3 @@
-import AuthUser from 'types/AuthUser';
 
 export type Login = {
   type: 'Login';

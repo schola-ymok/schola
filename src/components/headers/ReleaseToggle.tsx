@@ -1,4 +1,4 @@
-import { Box, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useState } from 'react';
 
 import Consts from 'utils/Consts';

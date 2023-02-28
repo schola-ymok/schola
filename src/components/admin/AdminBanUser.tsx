@@ -1,20 +1,12 @@
-import { Box, InputBase, Pagination, Snackbar } from '@mui/material';
-import error from 'next/error';
+import { Box, InputBase, Snackbar } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useContext, useState, useEffect } from 'react';
-import { mutate } from 'swr';
+import { useContext, useState } from 'react';
 
-import { approveAdminReviewApplication } from 'api/approveAdminReviewApplication';
-import { banText } from 'api/banText';
-import { getAdminReviewApplicationList } from 'api/getAdminReviewApplicationList';
-import { rejectAdminReviewApplication } from 'api/rejectAdminReviewApplication';
-import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import { banUser } from 'api/banUser';
+import { AuthContext } from 'components/auth/AuthContext';
 import DefaultButton from 'components/DefaultButton';
 import LoadingBackDrop from 'components/LoadingBackDrop';
-import { AuthContext } from 'components/auth/AuthContext';
-import RTEditor from 'components/rteditor/RTEditor';
 import Consts from 'utils/Consts';
-import { banUser } from 'api/banUser';
 
 const AdminBanUser = () => {
   const router = useRouter();

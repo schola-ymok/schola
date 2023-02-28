@@ -1,14 +1,14 @@
-import { Dialog, Box, DialogContent, Button, DialogActions } from '@mui/material';
+import { Box, Dialog, DialogActions, DialogContent } from '@mui/material';
 import axios from 'axios';
 import { getAuth, signOut } from 'firebase/auth';
-import router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { createContext, memo, useContext, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { getMyBriefAccount } from 'api/getMyBriefAccount';
+import { SignUpForm } from 'components/auth/SignUpForm';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import DefaultButton from 'components/DefaultButton';
-import { SignUpForm } from 'components/auth/SignUpForm';
 import Header from 'components/headers/Header';
 import { AppContext } from 'states/store';
 

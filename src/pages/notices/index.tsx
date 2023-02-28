@@ -4,18 +4,10 @@ import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 import useSWR from 'swr';
 
-import { getBriefText } from 'api/getBriefText';
 import { getNotifications } from 'api/getNotifications';
-import { getReviews } from 'api/getReviews';
-import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
-import DefaultButton from 'components/DefaultButton';
-import MiniText from 'components/MiniText';
-import RatingReportPanel from 'components/RatingReportPanel';
-import ReviewList from 'components/ReviewList';
 import { AuthContext } from 'components/auth/AuthContext';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import Layout from 'components/layouts/Layout';
-import { AppContext } from 'states/store';
-import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
 import { pagenation } from 'utils/pagenation';
 

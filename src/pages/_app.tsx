@@ -17,8 +17,8 @@ import { StateProvider } from 'states/store';
 
 import { GlobalStyles } from '@mui/material';
 
-import '../../styles/global.css';
 import Consts from 'utils/Consts';
+import '../../styles/global.css';
 
 type NextPageWithLayout = NextPage & {
   gtLayout?: (page: ReactElement) => ReactNode;

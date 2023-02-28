@@ -4,11 +4,9 @@ import { useContext } from 'react';
 import useSWR from 'swr';
 
 import { getReviewListForMyText } from 'api/getReviewListForMyText';
+import { AuthContext } from 'components/auth/AuthContext';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import Review from 'components/ReviewItem';
-import { AuthContext } from 'components/auth/AuthContext';
-import Layout from 'components/layouts/Layout';
-import DashboardMenuLeft from 'components/sidemenu/DashboardMenuLeft';
 import { pagenation } from 'utils/pagenation';
 
 const DashboardReviews = () => {

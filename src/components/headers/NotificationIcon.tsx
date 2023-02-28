@@ -1,15 +1,15 @@
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import { IconButton, Menu, Box, Divider, Skeleton } from '@mui/material';
+import { Box, Divider, IconButton, Menu } from '@mui/material';
 import Badge from '@mui/material/Badge';
 import htmlParse from 'html-react-parser';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
-import useSWR, { useSWRConfig } from 'swr';
+import useSWR from 'swr';
 
 import { getLatestNotification } from 'api/getLatestNotification';
 import { getNotificationCount } from 'api/getNotificationCount';
-import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 

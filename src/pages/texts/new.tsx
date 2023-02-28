@@ -1,13 +1,13 @@
-import { Box, Button, CircularProgress, InputBase } from '@mui/material';
+import { Box, CircularProgress, InputBase } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 
 import { createNewText } from 'api/createNewText';
+import { AuthContext } from 'components/auth/AuthContext';
 import DefaultButton from 'components/DefaultButton';
 import FormItemLabel from 'components/FormItemLabel';
 import FormItemState from 'components/FormItemState';
 import FormItemSubLabel from 'components/FormItemSubLabel';
-import { AuthContext } from 'components/auth/AuthContext';
 import EditTitleLayout from 'components/layouts/EditTitleLayout';
 import Consts from 'utils/Consts';
 import { validate } from 'utils/validate';

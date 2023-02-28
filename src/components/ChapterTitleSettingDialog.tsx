@@ -1,7 +1,6 @@
-import { title } from 'process';
 
-import { Box, InputBase, Dialog, DialogActions, DialogContent } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { Box, Dialog, DialogActions, InputBase } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 import Consts from 'utils/Consts';
 import { validate } from 'utils/validate';

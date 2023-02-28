@@ -1,5 +1,4 @@
 import { Box, useMediaQuery } from '@mui/material';
-import router from 'next/router';
 
 import ShowMore from 'components/ShowMore';
 

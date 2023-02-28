@@ -3,10 +3,10 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 import Footer from 'components/Footer';
-import HomeTextList from 'components/HomeTextList';
-import TextList from 'components/TextList';
 import HeaderWithMenuButton from 'components/headers/HeaderWithMenuButton';
+import HomeTextList from 'components/HomeTextList';
 import RootCategory from 'components/sidemenu/RootCategory';
+import TextList from 'components/TextList';
 
 import type { NextPage } from 'next';
 

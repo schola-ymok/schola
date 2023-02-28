@@ -1,10 +1,10 @@
-import { Box, Button, InputBase, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, InputBase } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 
 import { createNewAccount } from 'api/createNewAcount';
-import DefaultButton from 'components/DefaultButton';
 import { AuthContext } from 'components/auth/AuthContext';
+import DefaultButton from 'components/DefaultButton';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 

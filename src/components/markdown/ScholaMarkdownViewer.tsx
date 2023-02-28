@@ -6,8 +6,8 @@ import remarkDirectiveRehype from 'remark-directive-rehype';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 
-import 'katex/dist/katex.min.css';
 import 'github-markdown-css/github-markdown.css';
+import 'katex/dist/katex.min.css';
 
 import CodeBlock from 'components/markdown/CodeBlock';
 import { extractToc } from 'utils/extractToc';
@@ -25,7 +25,7 @@ import TocLineBlock from './TocLineBlock';
 import WarningBlock from './WarningBlock';
 
 import { useRouter } from 'next/router';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const ScholaMarkdownViewer = ({ children }) => {
   const toc = extractToc(children);

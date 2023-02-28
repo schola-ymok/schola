@@ -1,4 +1,3 @@
-import error from 'next/error';
 import escape from 'sql-template-strings';
 
 import dbQuery from 'libs/db';

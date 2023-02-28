@@ -1,6 +1,5 @@
 import StarIcon from '@mui/icons-material/Star';
-import { Box, Divider, IconButton, Rating } from '@mui/material';
-import { border, color } from '@mui/system';
+import { Box, Rating } from '@mui/material';
 import router from 'next/router';
 
 import Consts from 'utils/Consts';

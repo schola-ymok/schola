@@ -1,4 +1,3 @@
-import { count } from 'console';
 
 import { Box, Divider, Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -7,8 +6,8 @@ import useSWR, { useSWRConfig } from 'swr';
 
 import { deleteText } from 'api/deleteText';
 import { getMyTextList } from 'api/getMyTextList';
-import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import DashboardTextListItem from 'components/dashboard/DashboardTextListItem';
 import { pagenation } from 'utils/pagenation';
 

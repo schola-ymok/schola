@@ -1,8 +1,7 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Box, IconButton, Menu, MenuItem } from '@mui/material';
-import { useContext, useState } from 'react';
+import { Box, IconButton, Menu } from '@mui/material';
+import { useState } from 'react';
 
-import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 
 import SMenuItem from '../SMenuItem';

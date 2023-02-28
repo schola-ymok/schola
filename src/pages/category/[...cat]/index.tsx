@@ -4,11 +4,10 @@ import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 
 import Footer from 'components/Footer';
-import HomeTextList from 'components/HomeTextList';
-import TextList from 'components/TextList';
 import HeaderWithMenuButton from 'components/headers/HeaderWithMenuButton';
-import FilterMenu from 'components/sidemenu/FilterMenu';
+import HomeTextList from 'components/HomeTextList';
 import SubCategory from 'components/sidemenu/SubCategory';
+import TextList from 'components/TextList';
 import Consts from 'utils/Consts';
 
 const Home: NextPage = () => {

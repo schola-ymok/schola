@@ -2,7 +2,7 @@ import {
   EmailAuthProvider,
   FacebookAuthProvider,
   getAuth,
-  GoogleAuthProvider,
+  GoogleAuthProvider
 } from 'firebase/auth';
 import { auth } from 'firebaseui';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';

@@ -1,22 +1,15 @@
-import StarIcon from '@mui/icons-material/Star';
 import {
-  Box,
-  Button,
-  Dialog,
+  Box, Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Divider,
-  IconButton,
-  Rating,
+  Divider
 } from '@mui/material';
-import router from 'next/router';
 import { useState } from 'react';
 
 import DefaultButton from 'components/DefaultButton';
 import RTEditor from 'components/rteditor/RTEditor';
-import Consts from 'utils/Consts';
 
 import AdminApplicationListMenuButton from './AdminApplicationListMenuButton';
 

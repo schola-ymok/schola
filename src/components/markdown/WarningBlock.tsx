@@ -1,7 +1,6 @@
 import InfoIcon from '@mui/icons-material/Info';
 import { Box } from '@mui/material';
 
-import Consts from 'utils/Consts';
 
 const WarningBlock = ({ children }) => {
   return (

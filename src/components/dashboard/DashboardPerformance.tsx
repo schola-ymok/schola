@@ -10,10 +10,8 @@ import { useContext } from 'react';
 import useSWR from 'swr';
 
 import { getPerformance } from 'api/getPerformance';
-import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import { AuthContext } from 'components/auth/AuthContext';
-import Layout from 'components/layouts/Layout';
-import { omitstr } from 'utils/omitstr';
+import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 
 const DashboardPerformance = () => {
   const router = useRouter();

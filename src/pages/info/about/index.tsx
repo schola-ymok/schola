@@ -1,18 +1,4 @@
-import {
-  Backdrop,
-  Box,
-  CircularProgress,
-  Container,
-  IconButton,
-  InputBase,
-  MenuItem,
-  Select,
-  Slider,
-  Snackbar,
-  Tab,
-  Tabs,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, Container } from '@mui/material';
 
 import StaticPageLayout from 'components/layouts/StaticPageLayout';
 

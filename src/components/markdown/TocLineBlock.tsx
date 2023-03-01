@@ -44,48 +44,46 @@ const ChapterTitleRow = ({ chapter, eol }) => {
   }
 
   return (
-    <>
-      <Box sx={rSx}>
+    <Box sx={rSx}>
+      <Box
+        sx={{
+          ...dSx,
+          width: '6px',
+          height: '6px',
+          borderRadius: '3px',
+          top: '11px',
+          left: '6px',
+          position: 'absolute',
+        }}
+      />
+      {eol == false && (
         <Box
           sx={{
-            ...dSx,
-            width: '6px',
-            height: '6px',
-            borderRadius: '3px',
-            top: '11px',
-            left: '6px',
+            height: `${rHeight - 8}px`,
             position: 'absolute',
+            top: '18px',
+            left: '8px',
+            width: '2px',
+            borderRight: '2px solid #cccccc',
           }}
         />
-        {eol == false && (
-          <Box
-            sx={{
-              height: `${rHeight - 8}px`,
-              position: 'absolute',
-              top: '18px',
-              left: '8px',
-              width: '2px',
-              borderRight: '2px solid #cccccc',
-            }}
-          />
-        )}
-        <Box
-          className='scroll-without-bar'
-          sx={{
-            position: 'absolute',
-            top: '1px',
-            left: '25px',
-            display: 'flex',
-            width: '95%',
-            ...baseSx,
-          }}
-        >
-          <Link href={'#' + chapter.id} sx={{ my: 'auto' }}>
-            <Box sx={{ ...lSx }}>{chapter.title}</Box>
-          </Link>
-        </Box>
+      )}
+      <Box
+        className='scroll-without-bar'
+        sx={{
+          position: 'absolute',
+          top: '1px',
+          left: '25px',
+          display: 'flex',
+          width: '95%',
+          ...baseSx,
+        }}
+      >
+        <Link href={'#' + chapter.id} sx={{ my: 'auto' }}>
+          <Box sx={{ ...lSx }}>{chapter.title}</Box>
+        </Link>
       </Box>
-    </>
+    </Box>
   );
 };
 
@@ -109,7 +107,7 @@ const TocLineBlock = ({ chapters, children }) => {
     <>
       {chapters.map((item, index) => {
         if (item.depth <= depth)
-          return <ChapterTitleRow chapter={item} eol={index == lastChapterIndex} />;
+          return <ChapterTitleRow key={index} chapter={item} eol={index == lastChapterIndex} />;
       })}
     </>
   );

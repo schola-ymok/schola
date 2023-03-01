@@ -6,7 +6,9 @@ class Document extends NextDocument<Props> {
   render() {
     return (
       <Html>
-        <Head />
+        <Head>
+          <link rel='icon' href='/favicon.ico' />
+        </Head>
         <body id='schola'>
           <Main />
           <NextScript />

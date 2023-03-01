@@ -13,6 +13,14 @@ import { AuthContext } from 'components/auth/AuthContext';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 
+const setFavicon = (href) => {
+  const link = document.querySelector("link[rel*='icon']");
+  link.type = 'image/x-icon';
+  link.rel = 'shortcut icon';
+  link.href = href;
+  document.getElementsByTagName('head')[0].appendChild(link);
+};
+
 const LatestNotificationList = ({ setShowBadge, handleClose }) => {
   const { authAxios } = useContext(AuthContext);
   const router = useRouter();
@@ -23,6 +31,7 @@ const LatestNotificationList = ({ setShowBadge, handleClose }) => {
 
   useEffect(() => {
     setShowBadge(false);
+    setFavicon('./favicon.ico');
   }, [setShowBadge]);
 
   if (error) return <>error</>;
@@ -109,7 +118,10 @@ const NotificationIcon = () => {
     if (authAxios) {
       (async () => {
         const { data } = await getNotificationCount(authAxios);
-        if (data.total > 0) setShowBadge(true);
+        if (data.total > 0) {
+          setShowBadge(true);
+          setFavicon('/favicon-badged.ico');
+        }
       })();
     }
   }, [authAxios]);

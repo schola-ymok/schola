@@ -490,7 +490,7 @@ const Toc = ({ data, mobile, onClose, chapterOrder, mine }) => {
                 ? Consts.COLOR.VIEW.TocTitleHover
                 : Consts.COLOR.VIEW.TocTitle;
             return (
-              <Link href={`/texts/${textId}/view?cid=${id}`}>
+              <Link key={id} href={`/texts/${textId}/view?cid=${id}`}>
                 <a style={{ textDecoration: 'none' }}>
                   <Box
                     key={id}

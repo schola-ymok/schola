@@ -32,7 +32,7 @@ const AddText: NextPage = () => {
       return;
     }
 
-    router.push(`/texts/${textId}/edit`);
+    router.replace(`/texts/${textId}/edit`);
   }
 
   return (

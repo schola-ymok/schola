@@ -3,7 +3,6 @@ export const getPurchasedInfo = async (textId, authAxios) => {
     let url = '/api/purchase/' + textId;
 
     const res = await authAxios.get(url);
-    console.log(res);
     if (res.data.status == 'ok') {
       return res.data;
     } else {

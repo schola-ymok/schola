@@ -35,7 +35,7 @@ const TextListItem = ({ text }) => {
               src={imageUrl}
             />
           </Box>
-          <Box fullWidth sx={{ width: '100%' }}>
+          <Box sx={{ width: '100%' }}>
             <Box
               className='two-line'
               sx={{ fontWeight: 'bold', fontSize: '0.9em', wordBreak: 'break-all' }}

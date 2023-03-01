@@ -4,21 +4,19 @@ import PeopleIcon from '@mui/icons-material/People';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import UpdateIcon from '@mui/icons-material/Update';
-import { Box, CircularProgress, colors, Grid, Rating, Stack, useMediaQuery } from '@mui/material';
+import { Box, CircularProgress, Grid, Rating, useMediaQuery } from '@mui/material';
 import htmlParse from 'html-react-parser';
 import Link from 'next/link';
-import router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { useCallback, useContext, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 
-import { getChapterList } from 'api/getChapterList';
 import { getPurchasedInfo } from 'api/getPurchasedInfo';
 import { getReviews } from 'api/getReviews';
 import { getText } from 'api/getText';
 import { getTocs } from 'api/getTocs';
 import { getUser } from 'api/getUser';
 import { getUserTexts } from 'api/getUserTexts';
-import { getViewText } from 'api/getViewText';
 import { purchaseText } from 'api/purchaseText';
 import AuthorTexts from 'components/AuthorTexts';
 import AvatarButton from 'components/AvatarButton';
@@ -31,8 +29,6 @@ import TocLine from 'components/TocLine';
 import { AuthContext } from 'components/auth/AuthContext';
 import ViewTextAbstractLayout from 'components/layouts/ViewTextAbstractLayout';
 import Consts from 'utils/Consts';
-import { extractToc } from 'utils/extractToc';
-import { genid } from 'utils/genid';
 
 import type { NextPage } from 'next';
 
@@ -238,7 +234,7 @@ const Text: NextPage = () => {
             </Box>
             <Box sx={{ p: 1, width: '100%' }}>
               {reviews.map((item) => {
-                return <Review review={item} />;
+                return <Review key={item.id} review={item} />;
               })}
             </Box>
             <_ShowMore />
@@ -582,9 +578,9 @@ const Text: NextPage = () => {
       <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>学習内容</Box>
 
       <Grid container>
-        {learningContents?.map((item) => {
+        {learningContents?.map((item, index) => {
           return (
-            <Grid xs={6}>
+            <Grid item xs={6} key={index}>
               <Box sx={{ display: 'flex', width: '100%', mt: { xs: 0, sm: 1 } }}>
                 <Box sx={{ ml: { xs: 0.4, sm: 1 }, mb: 'auto', fontSize: '0.6em' }}>
                   <CheckIcon sx={{ transform: 'scale(0.7)' }} />
@@ -610,8 +606,8 @@ const Text: NextPage = () => {
       <Box sx={{ fontSize: '1.4em', fontWeight: 'bold' }}>対象・要件</Box>
 
       <ul className='learningRequirements'>
-        {learningRequirements?.map((item) => {
-          return <li>{item}</li>;
+        {learningRequirements?.map((item, index) => {
+          return <li key={index}>{item}</li>;
         })}
       </ul>
     </>

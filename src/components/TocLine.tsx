@@ -163,7 +163,9 @@ const TocLine = ({ chapters, textId }) => {
   return (
     <>
       {titles.map((item, index) => {
-        return <TitleRow textId={textId} item={item} eol={index == titles.length - 1} />;
+        return (
+          <TitleRow key={index} textId={textId} item={item} eol={index == titles.length - 1} />
+        );
       })}
     </>
   );

@@ -8,8 +8,8 @@ import useSWR from 'swr';
 
 import { getLatestNotification } from 'api/getLatestNotification';
 import { getNotificationCount } from 'api/getNotificationCount';
-import { AuthContext } from 'components/auth/AuthContext';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import { AuthContext } from 'components/auth/AuthContext';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 
@@ -20,6 +20,10 @@ const LatestNotificationList = ({ setShowBadge, handleClose }) => {
   const { data, error } = useSWR(`api/notices?latest`, () => getLatestNotification(authAxios), {
     revalidateOnFocus: false,
   });
+
+  useEffect(() => {
+    setShowBadge(false);
+  }, [setShowBadge]);
 
   if (error) return <>error</>;
 
@@ -35,15 +39,13 @@ const LatestNotificationList = ({ setShowBadge, handleClose }) => {
     );
   }
 
-  setShowBadge(false);
-
   return (
     <>
       {data.notices.map((item, index) => {
         const html = htmlParse(item.message);
         const date = new Date(item.created_at).toLocaleString('ja');
         return (
-          <>
+          <Box key={index}>
             {index > 0 && <Divider />}
             <NoticeItem
               onClick={() => {
@@ -53,7 +55,7 @@ const LatestNotificationList = ({ setShowBadge, handleClose }) => {
               <Box sx={{ fontSize: '0.9em', mr: 'auto' }}>{html}</Box>
               <Box sx={{ ml: 'auto', fontSize: '0.7em', color: '#999999' }}>{date}</Box>
             </NoticeItem>
-          </>
+          </Box>
         );
       })}
       {data.total > Consts.NOTICE_MENU_LIST_NUM && (

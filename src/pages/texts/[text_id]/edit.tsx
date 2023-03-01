@@ -1,5 +1,3 @@
-import { title } from 'process';
-
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import {
@@ -51,7 +49,6 @@ import EditTextLayout from 'components/layouts/EditTextLayout';
 import RTEditor from 'components/rteditor/RTEditor';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
-import { omitstr } from 'utils/omitstr';
 import useCropImage from 'utils/useCropImage';
 import { validate } from 'utils/validate';
 
@@ -447,7 +444,7 @@ const EditText = () => {
               p: { xs: 0.4, sm: 2 },
             }}
           >
-            {textState == Consts.TEXTSTATE.UnderReview && <LimitedBackdrop open={open} />}
+            {textState == Consts.TEXTSTATE.UnderReview && <LimitedBackdrop open={true} />}
 
             <DefaultButton
               sx={{ width: '100px', ml: 'auto' }}
@@ -538,7 +535,7 @@ const EditText = () => {
                 placeholder='タイトル'
                 value={title}
                 variant='outlined'
-                fullWidth
+                sx={{ width: '100%' }}
                 onChange={onTitleChange}
               />
             </Box>
@@ -564,7 +561,7 @@ const EditText = () => {
               <InputBase
                 placeholder='テキストの概要'
                 value={abstract}
-                fullWidth
+                sx={{ width: '100%' }}
                 rows={4}
                 multiline
                 onChange={onAbstractChange}
@@ -761,13 +758,13 @@ const EditText = () => {
         </TabPanel>
         <TabPanel value={tab} index={1}>
           <Box sx={{ position: 'relative' }}>
-            {textState == Consts.TEXTSTATE.UnderReview && <LimitedBackdrop open={open} />}
+            {textState == Consts.TEXTSTATE.UnderReview && <LimitedBackdrop open={true} />}
             <Box sx={{ display: 'flex' }}>
               <Box sx={{ mt: 1.5, mx: { xs: 'auto', md: 2 } }}>
                 <h5>Chapters</h5>
               </Box>
             </Box>
-            <Box fullWidth sx={{ p: 1 }}>
+            <Box sx={{ width: '100%', p: 1 }}>
               <ChapterList />
             </Box>
           </Box>
@@ -817,10 +814,10 @@ const LearningContentsList = ({
   return (
     <>
       {learningContents.map((item, index) => {
+        if (!item) item = '';
         return (
-          <>
+          <Box key={index}>
             <ListItem
-              key={'learningContent-' + index}
               placeholder={'マーティングの基礎'}
               value={item}
               deleteEnable={learningContents.length > 4}
@@ -836,7 +833,7 @@ const LearningContentsList = ({
               }}
             />
             <FormItemState validation={learningContentsValidation[index]} />
-          </>
+          </Box>
         );
       })}
     </>
@@ -851,8 +848,9 @@ const LearningRequirementsList = ({
   return (
     <>
       {learningRequirements.map((item, index) => {
+        if (!item) item = '';
         return (
-          <>
+          <Box key={index}>
             <ListItem
               placeholder={'マーティングの基礎'}
               value={item}
@@ -869,7 +867,7 @@ const LearningRequirementsList = ({
               }}
             />
             <FormItemState validation={learningRequirementsValidation[index]} />
-          </>
+          </Box>
         );
       })}
     </>
@@ -895,7 +893,7 @@ const ListItem = ({ value, placeholder, onChange, deleteEnable, onDelete }) => {
           placeholder={placeholder}
           value={value}
           variant='outlined'
-          fullWidth
+          sx={{ width: '100%' }}
           onChange={(e) => {
             onChange(e.target.value);
           }}
@@ -1022,8 +1020,6 @@ const ChapterList = () => {
     mutate(`/texts/${textId}/chapters/`);
   }
 
-  const mq = useMediaQuery('(min-width:600px)');
-
   if (error) return <div>failed to load</div>;
   if (!data) return <CenterLoadingSpinner />;
 
@@ -1049,7 +1045,7 @@ const ChapterList = () => {
               }}
             >
               {chapterOrder.map((chapterId) => (
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Box key={chapterId} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Box
                     className='scroll-without-bar'
                     sx={{
@@ -1115,7 +1111,7 @@ const ChapterList = () => {
         </Box>
       </Box>
       <ChapterTitleSettingDialog
-        key={Math.random()}
+        rkey={Math.random()}
         title=''
         open={chapterNameSettingOpen}
         onChange={handleChapterNameDecided}

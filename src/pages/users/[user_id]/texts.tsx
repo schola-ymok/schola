@@ -50,7 +50,7 @@ const UserTexts = () => {
         {mq ? (
           <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap' }}>
             {data.texts.map((item) => {
-              return <TextCard text={item} />;
+              return <TextCard key={item.id} text={item} />;
             })}
           </Box>
         ) : (

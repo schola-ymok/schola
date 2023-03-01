@@ -7,15 +7,15 @@ import { deleteReview } from 'api/deleteReview';
 import { getBriefText } from 'api/getBriefText';
 import { getMyReview } from 'api/getMyReview';
 import { upsertReview } from 'api/upsertReview';
-import { AuthContext } from 'components/auth/AuthContext';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import DefaultButton from 'components/DefaultButton';
 import FormItemLabel from 'components/FormItemLabel';
 import FormItemState from 'components/FormItemState';
 import FormItemSubLabel from 'components/FormItemSubLabel';
-import Layout from 'components/layouts/Layout';
 import LoadingBackDrop from 'components/LoadingBackDrop';
 import MiniText from 'components/MiniText';
+import { AuthContext } from 'components/auth/AuthContext';
+import Layout from 'components/layouts/Layout';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
 import { validate } from 'utils/validate';
@@ -32,12 +32,12 @@ const EditReview: NextPage = () => {
   const [oldRate, setOldRate] = useState();
   const [rateChanged, setRateChanged] = useState(false);
 
-  const [title, setTitle] = useState();
+  const [title, setTitle] = useState('');
   const [oldTitle, setOldTitle] = useState();
   const [titleChanged, setTitleChanged] = useState(false);
   const [titleValidation, setTitleValidation] = useState();
 
-  const [comment, setComment] = useState();
+  const [comment, setComment] = useState('');
   const [oldComment, setOldComment] = useState();
   const [commentChanged, setCommentChanged] = useState(false);
   const [commentValidation, setCommentValidation] = useState();
@@ -140,7 +140,8 @@ const EditReview: NextPage = () => {
   useEffect(() => {
     if (dataReview) {
       let _rate = 3;
-      let _title, _comment;
+      let _title = '',
+        _comment = '';
       if (dataReview.exists) {
         _title = dataReview.review.title;
         _comment = dataReview.review.comment;

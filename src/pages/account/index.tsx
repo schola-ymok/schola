@@ -327,7 +327,7 @@ const AccountSetting = ({
         </ItemBox>
       </Box>
       <AccountNameSettingDialog
-        key={Math.random()}
+        rkey={Math.random()}
         name={accountName}
         open={accountNameSettingOpen}
         onChange={() => {}}

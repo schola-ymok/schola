@@ -69,13 +69,13 @@ const TextList = () => {
         {mq ? (
           <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap' }}>
             {data.texts.map((item) => {
-              return <TextCard text={item} />;
+              return <TextCard key={item.id} text={item} />;
             })}
           </Box>
         ) : (
           <Box sx={{ width: '100%', mb: 2, display: 'flex', flexFlow: 'column' }}>
             {data.texts.map((item) => {
-              return <TextListItem text={item} />;
+              return <TextListItem key={item.id} text={item} />;
             })}
           </Box>
         )}

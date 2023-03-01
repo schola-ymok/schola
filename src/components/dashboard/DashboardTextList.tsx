@@ -1,4 +1,3 @@
-
 import { Box, Divider, Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
@@ -6,8 +5,8 @@ import useSWR, { useSWRConfig } from 'swr';
 
 import { deleteText } from 'api/deleteText';
 import { getMyTextList } from 'api/getMyTextList';
-import { AuthContext } from 'components/auth/AuthContext';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import { AuthContext } from 'components/auth/AuthContext';
 import DashboardTextListItem from 'components/dashboard/DashboardTextListItem';
 import { pagenation } from 'utils/pagenation';
 
@@ -60,14 +59,14 @@ const DashboardTextList = () => {
         </Box>
         {data.texts.map((item, index) => {
           return (
-            <>
-              {index > 0 && <Divider />}
+            <Box key={item.id}>
+              {index > 0 && <Divider key={item.id + '_d'} />}
               <DashboardTextListItem
                 text={item}
                 handleDeleteText={() => handleDeleteText(item.id)}
                 handleEditText={() => handleEditText(item.id)}
               />
-            </>
+            </Box>
           );
         })}
         {count > 1 && (

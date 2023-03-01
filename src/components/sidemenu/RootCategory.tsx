@@ -16,7 +16,7 @@ const RootCategory = ({ onClose }) => {
       <ul>
         {keys.map((item) => {
           return (
-            <li className={className}>
+            <li key={item} className={className}>
               <Link href={'/category/' + item + '/'}>
                 <a>{Consts.CATEGORY[item].label}</a>
               </Link>

@@ -5,13 +5,13 @@ import useSWR from 'swr';
 
 import { getBriefText } from 'api/getBriefText';
 import { getReviews } from 'api/getReviews';
-import { AuthContext } from 'components/auth/AuthContext';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import DefaultButton from 'components/DefaultButton';
-import Layout from 'components/layouts/Layout';
 import MiniText from 'components/MiniText';
 import RatingReportPanel from 'components/RatingReportPanel';
 import ReviewList from 'components/ReviewList';
+import { AuthContext } from 'components/auth/AuthContext';
+import Layout from 'components/layouts/Layout';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';

@@ -5,8 +5,8 @@ import { useContext, useState } from 'react';
 import useSWR from 'swr';
 
 import { getNotifications } from 'api/getNotifications';
-import { AuthContext } from 'components/auth/AuthContext';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
 import { genid } from 'utils/genid';
 import { pagenation } from 'utils/pagenation';
@@ -66,7 +66,7 @@ const Notices: NextPage = () => {
             const html = htmlParse(item.message);
             const date = new Date(item.created_at).toLocaleString('ja');
             return (
-              <>
+              <Box key={index}>
                 {index > 0 && <Divider />}
                 <NoticeItem
                   onClick={() => {
@@ -76,7 +76,7 @@ const Notices: NextPage = () => {
                   <Box sx={{ fontSize: '0.9em', mr: 'auto' }}>{html}</Box>
                   <Box sx={{ mr: 'auto', fontSize: '0.7em', color: '#999999' }}>{date}</Box>
                 </NoticeItem>
-              </>
+              </Box>
             );
           })}
         </Box>

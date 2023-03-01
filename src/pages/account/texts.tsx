@@ -38,7 +38,7 @@ const PurchasedTexts = () => {
           {data.total}件 （{from} - {to} を表示）
         </Box>
         {data.texts.map((item) => {
-          return <TextListItem text={item} />;
+          return <TextListItem key={item.id} text={item} />;
         })}
         {count > 1 && (
           <Pagination

@@ -3,7 +3,6 @@ import { Box, Rating } from '@mui/material';
 import Link from 'next/link';
 
 import Consts from 'utils/Consts';
-import { omitstr } from 'utils/omitstr';
 
 const TextCard = ({ text }) => {
   const imageUrl = text.photo_id

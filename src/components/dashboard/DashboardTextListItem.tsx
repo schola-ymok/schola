@@ -38,6 +38,7 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
   return (
     <>
       <Box
+        key={text.id}
         sx={{
           width: '100%',
           p: { xs: 0.4, sm: 1 },
@@ -77,7 +78,7 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
             {stateLabel}
           </Box>
         </Box>
-        <Box fullWidth sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%' }}>
           <Box
             sx={{
               display: 'flex',

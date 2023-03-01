@@ -29,7 +29,7 @@ const AuthorTexts = ({ data, authorId, textId }) => {
       <>
         <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap' }}>
           {texts.map((item) => {
-            return <TextCard text={item} />;
+            return <TextCard key={item.id} text={item} />;
           })}
         </Box>
         {showMore()}
@@ -39,7 +39,7 @@ const AuthorTexts = ({ data, authorId, textId }) => {
     return (
       <Box sx={{ width: '100%', mb: 2, display: 'flex', flexFlow: 'column' }}>
         {texts.map((item) => {
-          return <TextListItem text={item} />;
+          return <TextListItem key={item.id} text={item} />;
         })}
         {showMore()}
       </Box>

@@ -1,4 +1,3 @@
-
 import { Box, Dialog, DialogActions, InputBase } from '@mui/material';
 import { useEffect, useState } from 'react';
 
@@ -10,7 +9,7 @@ import FormItemLabel from './FormItemLabel';
 import FormItemState from './FormItemState';
 import FormItemSubLabel from './FormItemSubLabel';
 
-const ChapterTitleSettingDialog = ({ key, open, onClose, title, onChange }) => {
+const ChapterTitleSettingDialog = ({ rkey, open, onClose, title, onChange }) => {
   const [newTitle, setNewTitle] = useState(title);
   const [oldTitle, setOldTitle] = useState(title);
 
@@ -31,7 +30,7 @@ const ChapterTitleSettingDialog = ({ key, open, onClose, title, onChange }) => {
   };
 
   return (
-    <Dialog key={key} fullWidth open={open} onClose={onClose}>
+    <Dialog key={rkey} fullWidth open={open} onClose={onClose}>
       <Box
         sx={{
           m: { xs: 1, sm: 3 },

@@ -1,9 +1,6 @@
 import { title } from 'process';
 
-import {
-  Box, CircularProgress, Dialog,
-  DialogActions, InputBase
-} from '@mui/material';
+import { Box, CircularProgress, Dialog, DialogActions, InputBase } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 
@@ -17,7 +14,7 @@ import FormItemLabel from './FormItemLabel';
 import FormItemState from './FormItemState';
 import FormItemSubLabel from './FormItemSubLabel';
 
-const AccountNameSettingDialog = ({ key, open, onClose, name, onChange }) => {
+const AccountNameSettingDialog = ({ rkey, open, onClose, name, onChange }) => {
   const router = useRouter();
   const { authAxios } = useContext(AuthContext);
   const [newName, setNewName] = useState(name);
@@ -87,7 +84,7 @@ const AccountNameSettingDialog = ({ key, open, onClose, name, onChange }) => {
   };
 
   return (
-    <Dialog key={key} fullWidth open={open} onClose={onClose}>
+    <Dialog key={rkey} fullWidth open={open} onClose={onClose}>
       <Box
         sx={{
           m: { xs: 1, sm: 3 },

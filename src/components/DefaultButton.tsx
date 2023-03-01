@@ -1,8 +1,8 @@
-import { Box } from '@mui/material';
+import { Button } from '@mui/material';
 
 import Consts from 'utils/Consts';
 
-const DefaultButton = ({ onClick, children, disabled, sx }) => {
+const DefaultButton = ({ tabIndex, onClick, children, disabled, sx }) => {
   const __sx = {
     backgroundColor: Consts.COLOR.Primary,
     color: 'white',
@@ -14,7 +14,11 @@ const DefaultButton = ({ onClick, children, disabled, sx }) => {
     height: 40,
     whiteSpace: 'nowrap',
     fontWeight: 'bold',
+    tabIndex: tabIndex,
     '&:hover': {
+      backgroundColor: Consts.COLOR.PrimaryDark,
+    },
+    '&:focus': {
       backgroundColor: Consts.COLOR.PrimaryDark,
     },
   };
@@ -25,17 +29,18 @@ const DefaultButton = ({ onClick, children, disabled, sx }) => {
     _sx.backgroundColor = '#cccccc';
     _sx.cursor = 'default';
     _sx['&:hover'] = 'unset';
+    _sx['&:focus'] = 'unset';
   }
 
   return (
-    <Box
+    <Button
       onClick={() => {
         if (!disabled && onClick !== undefined) onClick();
       }}
       sx={{ ..._sx, ...sx }}
     >
       {children}
-    </Box>
+    </Button>
   );
 };
 

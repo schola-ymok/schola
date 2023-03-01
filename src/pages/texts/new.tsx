@@ -3,11 +3,11 @@ import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 
 import { createNewText } from 'api/createNewText';
-import { AuthContext } from 'components/auth/AuthContext';
 import DefaultButton from 'components/DefaultButton';
 import FormItemLabel from 'components/FormItemLabel';
 import FormItemState from 'components/FormItemState';
 import FormItemSubLabel from 'components/FormItemSubLabel';
+import { AuthContext } from 'components/auth/AuthContext';
 import EditTitleLayout from 'components/layouts/EditTitleLayout';
 import Consts from 'utils/Consts';
 import { validate } from 'utils/validate';
@@ -54,11 +54,12 @@ const AddText: NextPage = () => {
           }}
         >
           <InputBase
+            autoFocus
             placeholder='タイトルを入力'
             rows={2}
             multiline
             fullWidth
-            sx={{ fontSize: '1.3em', fontWeight: 'bold' }}
+            sx={{ fontSize: '1.3em', fontWeight: 'bold', tabIndex: 0 }}
             onChange={(e) => {
               setTitle(e.target.value);
               setTitleValidation(validate(e.target.value, Consts.VALIDATE.textTitle));
@@ -70,6 +71,7 @@ const AddText: NextPage = () => {
 
       <Box sx={{ mx: 'auto', mt: 3 }}>
         <DefaultButton
+          tabIndex={0}
           disabled={!titleValidation.ok}
           onClick={handleAddText}
           sx={{ width: '200px' }}

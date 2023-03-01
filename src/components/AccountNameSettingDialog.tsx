@@ -106,6 +106,7 @@ const AccountNameSettingDialog = ({ rkey, open, onClose, name, onChange }) => {
           }}
         >
           <InputBase
+            autoFocus
             placeholder='アカウント名'
             pattern='^[0-9a-zA-Z]+$'
             value={newName}

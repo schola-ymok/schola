@@ -532,6 +532,7 @@ const EditText = () => {
               }}
             >
               <InputBase
+                autoFocus
                 placeholder='タイトル'
                 value={title}
                 variant='outlined'

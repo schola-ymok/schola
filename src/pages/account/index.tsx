@@ -662,6 +662,7 @@ const ProfileSetting = () => {
           }}
         >
           <InputBase
+            autoFocus
             placeholder='表示名'
             value={displayName}
             sx={{ fontSize: '1.0em' }}

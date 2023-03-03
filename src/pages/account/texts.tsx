@@ -6,6 +6,7 @@ import useSWR from 'swr';
 import { getPurchasedTextList } from 'api/getPurchasedTextList';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import TextListItem from 'components/TextListItem';
+import Title from 'components/Title';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
 import { pagenation } from 'utils/pagenation';
@@ -55,6 +56,7 @@ const PurchasedTexts = () => {
 
   return (
     <Box sx={{ display: 'flex', flexFlow: 'column', width: '100%', maxWidth: '700px' }}>
+      <Title title={'Schola | 購入済テキスト'} />
       <Box>
         <Box sx={{ fontSize: '1.2em', fontWeight: 'bold' }}>購入済テキスト一覧</Box>
         <DataContent data={data} />

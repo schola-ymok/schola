@@ -11,6 +11,7 @@ import { getChapter } from 'api/getChapter';
 import { getPurchasedInfo } from 'api/getPurchasedInfo';
 import { getTocs } from 'api/getTocs';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import Title from 'components/Title';
 import { AuthContext } from 'components/auth/AuthContext';
 import Logo from 'components/headers/Logo';
 import ScholaMarkdownViewer from 'components/markdown/ScholaMarkdownViewer';
@@ -66,6 +67,7 @@ const TextView: NextPage = () => {
   if (mq) {
     return (
       <Box sx={{ display: 'flex', overflow: 'hidden' }}>
+        <Title title={dataTocs.title} />
         <Box sx={{ width: '350px', position: 'fixed', top: 0, left: 0 }}>
           <Toc
             data={dataTocs}
@@ -91,6 +93,7 @@ const TextView: NextPage = () => {
   } else {
     return (
       <>
+        <Title title={dataTocs.title} />
         <Box
           sx={{
             pt: { xs: 0, sm: 1 },

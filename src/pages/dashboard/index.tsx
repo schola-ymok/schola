@@ -3,6 +3,7 @@ import { Container } from '@mui/system';
 import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 
+import Title from 'components/Title';
 import { AuthContext } from 'components/auth/AuthContext';
 import DashboardPerformance from 'components/dashboard/DashboardPerformance';
 import DashboardRevenue from 'components/dashboard/DashboardRevenue';
@@ -51,6 +52,7 @@ const Dashboard = () => {
 
   return (
     <Container maxWidth='md'>
+      <Title title={'Schola | ダッシュボード'} />
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           TabIndicatorProps={{ sx: { top: 'unset' } }}

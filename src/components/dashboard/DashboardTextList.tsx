@@ -1,11 +1,12 @@
 import { Box, Divider, Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 
 import { deleteText } from 'api/deleteText';
 import { getMyTextList } from 'api/getMyTextList';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import LoadingBackDrop from 'components/LoadingBackDrop';
 import { AuthContext } from 'components/auth/AuthContext';
 import DashboardTextListItem from 'components/dashboard/DashboardTextListItem';
 import { pagenation } from 'utils/pagenation';
@@ -16,6 +17,8 @@ const DashboardTextList = () => {
   const page = router.query.page ?? 1;
   const { authAxios } = useContext(AuthContext);
 
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const { mutate } = useSWRConfig();
   const { data, error } = useSWR(
     `/dashboard/texts?page=${page}`,
@@ -25,9 +28,14 @@ const DashboardTextList = () => {
     },
   );
 
+  useEffect(() => {
+    setIsDeleting(false);
+  }, [data]);
+
   if (error) return <h1>error</h1>;
 
   async function handleDeleteText(textId) {
+    setIsDeleting(true);
     const { error } = await deleteText(textId, authAxios);
     if (error) {
       console.log(error);
@@ -54,6 +62,7 @@ const DashboardTextList = () => {
 
     return (
       <>
+        {isDeleting && <LoadingBackDrop />}
         <Box>
           {data.total}件 （{from} - {to} を表示）
         </Box>

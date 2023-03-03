@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import Footer from 'components/Footer';
 import SearchTextList from 'components/SearchTextList';
+import Title from 'components/Title';
 import HeaderWithMenuButton from 'components/headers/HeaderWithMenuButton';
 import FilterMenu from 'components/sidemenu/FilterMenu';
 
@@ -44,6 +45,7 @@ const Search: NextPage = () => {
 
   return (
     <>
+      <Title title={'検索結果 | Schola'} />
       <HeaderWithMenuButton
         onClick={() => {
           setMenuOpen(true);

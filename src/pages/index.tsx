@@ -1,12 +1,14 @@
 import { Box, Drawer, useMediaQuery } from '@mui/material';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 import Footer from 'components/Footer';
-import HeaderWithMenuButton from 'components/headers/HeaderWithMenuButton';
 import HomeTextList from 'components/HomeTextList';
-import RootCategory from 'components/sidemenu/RootCategory';
 import TextList from 'components/TextList';
+import Title from 'components/Title';
+import HeaderWithMenuButton from 'components/headers/HeaderWithMenuButton';
+import RootCategory from 'components/sidemenu/RootCategory';
 
 import type { NextPage } from 'next';
 
@@ -20,6 +22,7 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <Title />
       <HeaderWithMenuButton
         onClick={() => {
           setMenuOpen(true);

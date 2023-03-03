@@ -7,6 +7,7 @@ import DefaultButton from 'components/DefaultButton';
 import FormItemLabel from 'components/FormItemLabel';
 import FormItemState from 'components/FormItemState';
 import FormItemSubLabel from 'components/FormItemSubLabel';
+import Title from 'components/Title';
 import { AuthContext } from 'components/auth/AuthContext';
 import EditTitleLayout from 'components/layouts/EditTitleLayout';
 import Consts from 'utils/Consts';
@@ -37,6 +38,7 @@ const AddText: NextPage = () => {
 
   return (
     <Box sx={{ display: 'flex', flexFlow: 'column', justifyContent: 'center', width: '100%' }}>
+      <Title title={'Schola | テキストの作成'} />
       <Box sx={{ width: '90%', maxWidth: '600px', mx: 'auto' }}>
         <FormItemLabel>テキストのタイトル</FormItemLabel>
         <FormItemSubLabel>

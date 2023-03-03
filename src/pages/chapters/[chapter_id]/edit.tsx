@@ -8,8 +8,9 @@ import useSWR, { useSWRConfig } from 'swr';
 
 import { getChapter } from 'api/getChapter';
 import { updateChapter } from 'api/updateChapter';
-import { AuthContext } from 'components/auth/AuthContext';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import Title from 'components/Title';
+import { AuthContext } from 'components/auth/AuthContext';
 import EditChapterHeader from 'components/headers/EditChapterHeader';
 import EditChapterLayout from 'components/layouts/EditChapterLayout';
 import ScholaMarkdownViewer from 'components/markdown/ScholaMarkdownViewer';
@@ -136,6 +137,7 @@ const EditChapter: NextPage = () => {
 
   return (
     <>
+      <Title title={title} />
       <EditChapterHeader
         handleSaveClick={handleSaveClick}
         handleSelectFile={handleSelectFile}

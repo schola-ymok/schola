@@ -31,6 +31,7 @@ import FormItemLabel from 'components/FormItemLabel';
 import FormItemState from 'components/FormItemState';
 import FormItemSubLabel from 'components/FormItemSubLabel';
 import ImageCropDialog from 'components/ImageCropDialog';
+import Title from 'components/Title';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
 import RTEditor from 'components/rteditor/RTEditor';
@@ -138,6 +139,7 @@ const Account = () => {
 
   return (
     <Container maxWidth='md'>
+      <Title title={'Schola | アカウントとプロフィール'} />
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={tab} onChange={handleTabChange} TabIndicatorProps={{ sx: { top: 'unset' } }}>
           <Tab label={<Box sx={{ fontWeight: 'bold' }}>アカウント</Box>} />

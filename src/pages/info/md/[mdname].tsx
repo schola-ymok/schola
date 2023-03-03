@@ -2,6 +2,7 @@ import { Container } from '@mui/material';
 import { useRouter } from 'next/router';
 
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import Title from 'components/Title';
 import StaticPageLayout from 'components/layouts/StaticPageLayout';
 import ScholaMarkdownViewer from 'components/markdown/ScholaMarkdownViewer';
 import { useStaticMarkdownPage } from 'utils/useStaticMarkdownPage';
@@ -16,6 +17,7 @@ const SMP = () => {
 
   return (
     <Container maxWidth='md' sx={{ my: 5 }}>
+      <Title />
       <ScholaMarkdownViewer>{markdown}</ScholaMarkdownViewer>
     </Container>
   );

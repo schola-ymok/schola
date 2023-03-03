@@ -52,6 +52,7 @@ const ChapterTitleSettingDialog = ({ rkey, open, onClose, title, onChange }) => 
           }}
         >
           <InputBase
+            autoFocus
             placeholder='チャプターのタイトル'
             value={newTitle}
             variant='outlined'

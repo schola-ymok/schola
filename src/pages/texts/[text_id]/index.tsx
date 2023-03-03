@@ -25,6 +25,7 @@ import RatingReportPanel from 'components/RatingReportPanel';
 import ReadMoreText from 'components/ReadMoreText';
 import Review from 'components/ReviewItem';
 import ShowMore from 'components/ShowMore';
+import Title from 'components/Title';
 import TocLine from 'components/TocLine';
 import { AuthContext } from 'components/auth/AuthContext';
 import ViewTextAbstractLayout from 'components/layouts/ViewTextAbstractLayout';
@@ -683,6 +684,7 @@ const Text: NextPage = () => {
   if (mq) {
     return (
       <>
+        <Title title={data.title} />
         <NoticeBanner />
         <Box
           sx={{

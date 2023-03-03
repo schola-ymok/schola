@@ -6,9 +6,10 @@ import { createContext, memo, useContext, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { getMyBriefAccount } from 'api/getMyBriefAccount';
-import { SignUpForm } from 'components/auth/SignUpForm';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import DefaultButton from 'components/DefaultButton';
+import Title from 'components/Title';
+import { SignUpForm } from 'components/auth/SignUpForm';
 import Header from 'components/headers/Header';
 import { AppContext } from 'states/store';
 
@@ -19,8 +20,6 @@ export const AuthContext = createContext(
     authAxios: authAxios;
   },
 );
-
-//export const useAuth = () => useContext(AuthContext);
 
 const Root = memo((props) => {
   const cstate = props.cstate;
@@ -43,6 +42,7 @@ const Root = memo((props) => {
   function CLoading() {
     return (
       <>
+        <Title />
         <Header authLoading />
         <Box sx={{ width: '100%', height: '100vh' }}>
           <CenterLoadingSpinner />
@@ -94,17 +94,28 @@ const Root = memo((props) => {
       router.push('/');
       return (
         <>
+          <Title />
           <h3>forbidden</h3>
         </>
       );
     } else {
-      return <>{props.children}</>;
+      return (
+        <>
+          <Title />
+          {props.children}
+        </>
+      );
     }
   }
 
   function CMember() {
     console.log('##meber');
-    return <AuthContext.Provider value={{ authAxios }}>{props.children}</AuthContext.Provider>;
+    return (
+      <AuthContext.Provider value={{ authAxios }}>
+        <Title />
+        {props.children}
+      </AuthContext.Provider>
+    );
   }
 });
 

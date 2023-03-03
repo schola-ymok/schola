@@ -1,7 +1,9 @@
 import StarIcon from '@mui/icons-material/Star';
 import { Box, Rating } from '@mui/material';
 import router from 'next/router';
+import { useState } from 'react';
 
+import ConfirmDialog from 'components/ConfirmDialog';
 import Consts from 'utils/Consts';
 
 import DashboardTextListMenuButton from './DashboardTextListMenuButton';
@@ -14,6 +16,8 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
       handleEditText(text.id);
     }
   };
+
+  const [textDeleteConfirmDialogOpen, setTextDeleteConfirmDialogOpen] = useState(false);
 
   const imageUrl = text.photo_id
     ? Consts.IMAGE_STORE_URL + text.photo_id + '.png'
@@ -122,7 +126,9 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
                 <Box sx={{ display: 'flex' }}>
                   <DashboardTextListMenuButton
                     isReleased={text.is_public}
-                    handleDelete={handleDeleteText}
+                    handleDelete={() => {
+                      setTextDeleteConfirmDialogOpen(true);
+                    }}
                     handleView={handleTextClick}
                     handleEdit={handleEditText}
                   />
@@ -132,6 +138,18 @@ const DashboardTextListItem = ({ text, handleDeleteText, handleEditText }) => {
           </Box>
         </Box>
       </Box>
+      <ConfirmDialog
+        title={'テキストの削除'}
+        message={'「' + text.title + '」を削除しますか？'}
+        open={textDeleteConfirmDialogOpen}
+        onClose={() => {
+          setTextDeleteConfirmDialogOpen(false);
+        }}
+        onOk={() => {
+          setTextDeleteConfirmDialogOpen(false);
+          handleDeleteText();
+        }}
+      />
     </>
   );
 };

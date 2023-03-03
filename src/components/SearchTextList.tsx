@@ -63,7 +63,7 @@ const SearchTextList = () => {
       ) : (
         <Box sx={{ width: '100%', mb: 2, display: 'flex', flexFlow: 'column' }}>
           {data.texts.map((item) => {
-            return <TextListItem text={item} />;
+            return <TextListItem key={item.id} text={item} />;
           })}
         </Box>
       )}

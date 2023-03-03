@@ -12,7 +12,6 @@ import {
   Snackbar,
   Tab,
   Tabs,
-  useMediaQuery,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Container } from '@mui/system';
@@ -36,12 +35,14 @@ import { updateText } from 'api/updateText';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import ChapterListMenuButton from 'components/ChapterListMenuButton';
 import ChapterTitleSettingDialog from 'components/ChapterTitleSettingDialog';
+import ConfirmDialog from 'components/ConfirmDialog';
 import DefaultButton from 'components/DefaultButton';
 import FormItemLabel from 'components/FormItemLabel';
 import FormItemState from 'components/FormItemState';
 import FormItemSubLabel from 'components/FormItemSubLabel';
 import ImageCropDialog from 'components/ImageCropDialog';
 import LoadingBackDrop from 'components/LoadingBackDrop';
+import Title from 'components/Title';
 import TrialReadingAvailableLabel from 'components/TrialReadingAvailableLabel';
 import { AuthContext } from 'components/auth/AuthContext';
 import EditTextHeader from 'components/headers/EditTextHeader';
@@ -60,6 +61,8 @@ const EditText = () => {
   if (router.query.chp !== undefined) _tab = 1;
   if (router.query.ntc !== undefined) _tab = 2;
   const [tab, setTab] = useState(_tab);
+
+  const [chapterDeleteConfirmDialog, setChapterDeleteConfirmDialogOpen] = useState(false);
 
   const textId = router.query.text_id;
 
@@ -103,6 +106,8 @@ const EditText = () => {
   const [category2Changed, setCategory2Changed] = useState(false);
 
   const [textState, setTextState] = useState();
+
+  const [hasChapter, setHasChapter] = useState(false);
 
   const [savingState, setSavingState] = useState(null);
   const { mutate } = useSWRConfig();
@@ -331,6 +336,9 @@ const EditText = () => {
       setLearningRequirementsChanged(false);
       validateLearningRequirements(_learningRequirements);
 
+      const chapterOrder = JSON.parse(data.chapter_order);
+      setHasChapter(chapterOrder.length > 0 ? true : false);
+
       setSetComplete(true);
       if (savingState == 'saving') setSavingState('saved');
     }
@@ -396,6 +404,7 @@ const EditText = () => {
 
   return (
     <>
+      <Title title={'Schola | テキストの編集'} />
       <Snackbar
         open={snack.open}
         message={snack.message}
@@ -408,6 +417,7 @@ const EditText = () => {
       <EditTextHeader
         state={data.state}
         textId={textId}
+        hasChapter={hasChapter}
         handleReleaseToggle={handleReleaseToggle}
         handleApplicationClick={handleApplicationClick}
         release={data.is_public}
@@ -766,7 +776,7 @@ const EditText = () => {
               </Box>
             </Box>
             <Box sx={{ width: '100%', p: 1 }}>
-              <ChapterList />
+              <ChapterList setHasChapter={setHasChapter} />
             </Box>
           </Box>
         </TabPanel>
@@ -917,7 +927,72 @@ const ListItem = ({ value, placeholder, onChange, deleteEnable, onDelete }) => {
   );
 };
 
-const ChapterList = () => {
+const ChapterListItem = ({
+  keyedChapterList,
+  chapterId,
+  handleChapterClick,
+  handleTitleChange,
+  handleDeleteChapterClick,
+  handleToggleTrialReadingAvailable,
+}) => {
+  const [chapterDeleteConfirmDialogOpen, setChapterDeleteConfirmDialogOpen] = useState(false);
+
+  return (
+    <Box key={chapterId} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box
+        className='scroll-without-bar'
+        sx={{
+          fontSize: { xs: '1.0em', sm: '1.2em' },
+          fontWeight: 'bold',
+          p: { xs: 0.5, md: 1.5 },
+          width: '100%',
+          '&:hover': { color: Consts.COLOR.Primary },
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          display: 'flex',
+          overflowX: 'scroll',
+          whiteSpace: 'nowrap',
+        }}
+        onClick={() => {
+          handleChapterClick(keyedChapterList[chapterId]);
+        }}
+      >
+        {keyedChapterList[chapterId]?.title}
+        {keyedChapterList[chapterId]?.is_trial_reading_available == 1 && (
+          <TrialReadingAvailableLabel sx={{ ml: 1 }} />
+        )}
+      </Box>
+      <ChapterListMenuButton
+        key={chapterId + keyedChapterList[chapterId]?.title}
+        item={keyedChapterList[chapterId]}
+        handleToggleTrialReadingAvailable={handleToggleTrialReadingAvailable}
+        handleDelete={() => {
+          setChapterDeleteConfirmDialogOpen(true);
+        }}
+        handleEdit={handleChapterClick}
+        handleTitleChange={(title) => {
+          handleTitleChange(chapterId, title);
+        }}
+      />
+      <ConfirmDialog
+        key={chapterId}
+        title={'チャプターの削除'}
+        message={'「' + keyedChapterList[chapterId]?.title + '」を削除しますか？'}
+        open={chapterDeleteConfirmDialogOpen}
+        onClose={() => {
+          setChapterDeleteConfirmDialogOpen(false);
+        }}
+        onOk={() => {
+          setChapterDeleteConfirmDialogOpen(false);
+          handleDeleteChapterClick(keyedChapterList[chapterId]);
+        }}
+      />
+    </Box>
+  );
+};
+
+const ChapterList = ({ setHasChapter }) => {
   const { authAxios } = useContext(AuthContext);
   const router = useRouter();
   const textId = router.query.text_id;
@@ -925,7 +1000,6 @@ const ChapterList = () => {
   const { data, error } = useSWR(`/texts/${textId}/chapters/`, () => getChapterList(textId), {
     revalidateOnFocus: false,
   });
-
   const [chapterOrder, setChapterOrder] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -947,6 +1021,8 @@ const ChapterList = () => {
         const _chapterOrder = data.chapters?.map((item) => item.id);
         setChapterOrder(_chapterOrder);
       }
+
+      setHasChapter(data.chapters.length > 0);
 
       setIsLoading(false);
     }
@@ -1046,42 +1122,15 @@ const ChapterList = () => {
               }}
             >
               {chapterOrder.map((chapterId) => (
-                <Box key={chapterId} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Box
-                    className='scroll-without-bar'
-                    sx={{
-                      fontSize: { xs: '1.0em', sm: '1.2em' },
-                      fontWeight: 'bold',
-                      p: { xs: 0.5, md: 1.5 },
-                      width: '100%',
-                      '&:hover': { color: Consts.COLOR.Primary },
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      display: 'flex',
-                      overflowX: 'scroll',
-                      whiteSpace: 'nowrap',
-                    }}
-                    onClick={() => {
-                      handleChapterClick(keyedChapterList[chapterId]);
-                    }}
-                  >
-                    {keyedChapterList[chapterId]?.title}
-                    {keyedChapterList[chapterId]?.is_trial_reading_available == 1 && (
-                      <TrialReadingAvailableLabel sx={{ ml: 1 }} />
-                    )}
-                  </Box>
-                  <ChapterListMenuButton
-                    key={chapterId + keyedChapterList[chapterId]?.title}
-                    item={keyedChapterList[chapterId]}
-                    handleToggleTrialReadingAvailable={handleToggleTrialReadingAvailable}
-                    handleDelete={handleDeleteChapterClick}
-                    handleEdit={handleChapterClick}
-                    handleTitleChange={(title) => {
-                      handleTitleChange(chapterId, title);
-                    }}
-                  />
-                </Box>
+                <ChapterListItem
+                  key={chapterId}
+                  chapterId={chapterId}
+                  keyedChapterList={keyedChapterList}
+                  handleChapterClick={handleAddChapterClick}
+                  handleTitleChange={handleTitleChange}
+                  handleDeleteChapterClick={handleDeleteChapterClick}
+                  handleToggleTrialReadingAvailable={handleToggleTrialReadingAvailable}
+                />
               ))}
             </ReactSortable>
           ) : (

@@ -57,21 +57,23 @@ function MyApp(props: AppPropsWithLayout) {
   updateBody();
 
   return (
-    <CacheProvider value={emotionCache}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <GlobalStyles />
-        <StateProvider>
-          <NextNprogress
-            color={Consts.COLOR.Primary}
-            height={2}
-            showOnShallow={true}
-            options={{ showSpinner: false }}
-          />
-          <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
-        </StateProvider>
-      </ThemeProvider>
-    </CacheProvider>
+    <>
+      <CacheProvider value={emotionCache}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <GlobalStyles />
+          <StateProvider>
+            <NextNprogress
+              color={Consts.COLOR.Primary}
+              height={2}
+              showOnShallow={true}
+              options={{ showSpinner: false }}
+            />
+            <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
+          </StateProvider>
+        </ThemeProvider>
+      </CacheProvider>
+    </>
   );
 }
 

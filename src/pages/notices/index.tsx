@@ -6,6 +6,7 @@ import useSWR from 'swr';
 
 import { getNotifications } from 'api/getNotifications';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import Title from 'components/Title';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
 import { genid } from 'utils/genid';
@@ -56,6 +57,7 @@ const Notices: NextPage = () => {
   return (
     <>
       <Container maxWidth='sm'>
+        <Title title={'Schola | 通知一覧'} />
         <Box sx={{ fontWeight: 'bold', fontSize: '1.4em' }}>通知一覧</Box>
         <Box sx={{ width: '100%' }}>
           {data.total}件のうち {from} - {to} 件

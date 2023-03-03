@@ -56,11 +56,12 @@ const EditTextHeader = ({
           />
           {(state == Consts.TEXTSTATE.Draft ||
             state == Consts.TEXTSTATE.DraftRejected ||
-            state == Consts.TEXTSTATE.DraftBanned) && (
-            <DefaultButton sx={{ ml: 1 }} onClick={handleApplicationClick}>
-              販売審査に提出
-            </DefaultButton>
-          )}
+            state == Consts.TEXTSTATE.DraftBanned) &&
+            hasChapter && (
+              <DefaultButton sx={{ ml: 1 }} onClick={handleApplicationClick}>
+                販売審査に提出
+              </DefaultButton>
+            )}
         </Box>
       </Box>
     </>

@@ -10,7 +10,7 @@ const ConfirmDialog = ({ title, message, open, onClose, onOk }) => (
       }}
     >
       <Box sx={{ fontSize: '1.5em', fontWeight: 'bold' }}>{title}</Box>
-      <Box sx={{ fontSize: '1.0em' }}>{message}</Box>
+      <Box sx={{ fontSize: '1.0em', mt: 1 }}>{message}</Box>
     </Box>
     <DialogActions>
       <DefaultButton sx={{ mb: 1 }} onClick={onClose}>

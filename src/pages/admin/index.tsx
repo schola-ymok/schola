@@ -1,18 +1,12 @@
-import { Tabs, Tab, Box } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import { Container } from '@mui/system';
 import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 
 import AdminApplcationList from 'components/admin/AdminApplicationList';
 import AdminBanText from 'components/admin/AdminBanText';
 import AdminBanUser from 'components/admin/AdminBanUser';
-import { AuthContext } from 'components/auth/AuthContext';
-import DashboardPerformance from 'components/dashboard/DashboardPerformance';
-import DashboardRevenue from 'components/dashboard/DashboardRevenue';
-import DashboardReviews from 'components/dashboard/DashboardReviews';
-import DashboardTextList from 'components/dashboard/DashboardTextList';
 import AdminHeader from 'components/headers/AdminHeader';
-import Layout from 'components/layouts/Layout';
 
 import type { NextPage } from 'next';
 

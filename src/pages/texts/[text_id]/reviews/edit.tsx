@@ -21,6 +21,7 @@ import { genid } from 'utils/genid';
 import { validate } from 'utils/validate';
 
 import type { NextPage } from 'next';
+import ConfirmDialog from 'components/ConfirmDialog';
 
 const EditReview: NextPage = () => {
   const router = useRouter();
@@ -49,6 +50,8 @@ const EditReview: NextPage = () => {
   const [isSaving, setSaving] = useState(false);
 
   const [notice, setNotice] = useState({ open: false, message: '' });
+
+  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false);
 
   function checkChange() {
     return rateChanged || titleChanged || commentChanged;
@@ -118,7 +121,7 @@ const EditReview: NextPage = () => {
     }, 1000);
   }
 
-  async function handleDeleteReviewClick() {
+  async function handleDeleteReview() {
     setSaving(true);
     const { data, error } = await deleteReview(textId, authAxios);
 
@@ -173,6 +176,20 @@ const EditReview: NextPage = () => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
       {isSaving && <LoadingBackDrop />}
+
+      <ConfirmDialog
+        open={deleteConfirmDialogOpen}
+        title={'レビューの削除'}
+        message={'レビューを削除しますか？'}
+        onClose={() => {
+          setDeleteConfirmDialogOpen(false);
+        }}
+        onOk={() => {
+          setDeleteConfirmDialogOpen(false);
+          handleDeleteReview();
+        }}
+      />
+
       <Box sx={{ width: { xs: '100%', sm: '600px' }, display: 'flex', flexFlow: 'column' }}>
         <Box sx={{ fontSize: '1.2em', fontWeight: 'bold' }}>このテキストをレビュー</Box>
         <MiniText text={dataText} />
@@ -248,7 +265,9 @@ const EditReview: NextPage = () => {
                 fontSize: '1.0em',
                 fontWeight: 'bold',
               }}
-              onClick={handleDeleteReviewClick}
+              onClick={() => {
+                setDeleteConfirmDialogOpen(true);
+              }}
             >
               レビューを削除
             </DefaultButton>

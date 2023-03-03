@@ -19,6 +19,7 @@ const EditTextHeader = ({
   release,
   handleReleaseToggle,
   handleApplicationClick,
+  handleApplicationCancelClick,
 }) => {
   const mq = useMediaQuery('(min-width:600px)');
 
@@ -62,6 +63,11 @@ const EditTextHeader = ({
                 販売審査に提出
               </DefaultButton>
             )}
+          {state == Consts.TEXTSTATE.UnderReview && (
+            <DefaultButton sx={{ ml: 1 }} onClick={handleApplicationCancelClick}>
+              販売審査を取り消し
+            </DefaultButton>
+          )}
         </Box>
       </Box>
     </>

@@ -21,6 +21,7 @@ import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 import useSWR, { useSWRConfig } from 'swr';
 
+import { cancelApplication } from 'api/cancelApplication';
 import { createNewChapter } from 'api/createNewChapter';
 import { deleteChapter } from 'api/deleteChapter';
 import { getChapterList } from 'api/getChapterList';
@@ -32,6 +33,7 @@ import { submitApplication } from 'api/submitApplication';
 import { updateChapterOrder } from 'api/updateChapterOrder';
 import { updateChapterTitle } from 'api/updateChapterTitle';
 import { updateText } from 'api/updateText';
+import ApplicationConfirmDialog from 'components/ApplicationConfirmDialog';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import ChapterListMenuButton from 'components/ChapterListMenuButton';
 import ChapterTitleSettingDialog from 'components/ChapterTitleSettingDialog';
@@ -71,6 +73,9 @@ const EditText = () => {
   const [priceChanged, setPriceChanged] = useState(false);
 
   const [setComplete, setSetComplete] = useState(false);
+  const [applicationConfirmDialogOpen, setApplicationConfirmDialogOpen] = useState(false);
+  const [applicationCancelConfirmDialogOpen, setApplicationCancelConfirmDialogOpen] =
+    useState(false);
 
   const [title, setTitle] = useState();
   const [oldTitle, setOldTitle] = useState();
@@ -373,6 +378,14 @@ const EditText = () => {
     mutate(`texts/${textId}`);
   }
 
+  async function handleApplicationCancelClick() {
+    setIsReleaseToggleLoading(true);
+    const { error } = await cancelApplication(textId, authAxios);
+
+    setSnack({ open: true, message: '審査を取り消しました' });
+    router.reload(`/texts/${textId}/edit`);
+  }
+
   async function handleApplicationClick() {
     setIsReleaseToggleLoading(true);
     const { error } = await submitApplication(textId, authAxios);
@@ -405,6 +418,28 @@ const EditText = () => {
   return (
     <>
       <Title title={'Schola | テキストの編集'} />
+      <ConfirmDialog
+        open={applicationCancelConfirmDialogOpen}
+        title='販売審査の取り消し'
+        message='販売審査を取り消しますか？'
+        onClose={() => {
+          setApplicationCancelConfirmDialogOpen(false);
+        }}
+        onOk={() => {
+          setApplicationCancelConfirmDialogOpen(false);
+          handleApplicationCancelClick();
+        }}
+      />
+      <ApplicationConfirmDialog
+        open={applicationConfirmDialogOpen}
+        onClose={() => {
+          setApplicationConfirmDialogOpen(false);
+        }}
+        onOk={() => {
+          setApplicationConfirmDialogOpen(false);
+          handleApplicationClick();
+        }}
+      />
       <Snackbar
         open={snack.open}
         message={snack.message}
@@ -419,7 +454,12 @@ const EditText = () => {
         textId={textId}
         hasChapter={hasChapter}
         handleReleaseToggle={handleReleaseToggle}
-        handleApplicationClick={handleApplicationClick}
+        handleApplicationClick={() => {
+          setApplicationConfirmDialogOpen(true);
+        }}
+        handleApplicationCancelClick={() => {
+          setApplicationCancelConfirmDialogOpen(true);
+        }}
         release={data.is_public}
       />
 
@@ -794,7 +834,7 @@ const EditText = () => {
 };
 
 const Notice = ({ message }) => {
-  const html = htmlParse(message);
+  const html = message ? htmlParse(message) : '';
 
   return <Box className='richtext'>{html}</Box>;
 };
@@ -1126,7 +1166,7 @@ const ChapterList = ({ setHasChapter }) => {
                   key={chapterId}
                   chapterId={chapterId}
                   keyedChapterList={keyedChapterList}
-                  handleChapterClick={handleAddChapterClick}
+                  handleChapterClick={handleChapterClick}
                   handleTitleChange={handleTitleChange}
                   handleDeleteChapterClick={handleDeleteChapterClick}
                   handleToggleTrialReadingAvailable={handleToggleTrialReadingAvailable}

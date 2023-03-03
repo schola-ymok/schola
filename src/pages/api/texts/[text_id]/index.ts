@@ -64,6 +64,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
         data = dataReqReview;
         error = errorReqReview;
+      } else if (req.query.cancelreview !== undefined) {
+        const { data: dataCancelReview, error: errorCancelReview } = await dbQuery(escape`
+        update texts
+        set
+        state = ${Consts.TEXTSTATE.Draft}
+        where
+        id = ${req.query.text_id}
+        and
+        author_id = ${req.headers.user_id}
+        and
+        state = ${Consts.TEXTSTATE.UnderReview}`);
+        data = dataCancelReview;
+        error = errorCancelReview;
       } else if (req.query.rls) {
         const isPublic = req.body.is_public;
         const { data: dataRelease, error: errorRelease } = await dbQuery(escape`

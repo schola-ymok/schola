@@ -8,6 +8,7 @@ import { getBriefText } from 'api/getBriefText';
 import { getReview } from 'api/getReview';
 import { getReviews } from 'api/getReviews';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import ConfirmDialog from 'components/ConfirmDialog';
 import DefaultButton from 'components/DefaultButton';
 import LoadingBackDrop from 'components/LoadingBackDrop';
 import MiniText from 'components/MiniText';
@@ -30,6 +31,7 @@ const Review: NextPage = () => {
   const { state } = useContext(AppContext);
   const [swrKey] = useState(genid(4));
   const [isLoading, setLoading] = useState(false);
+  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false);
 
   const [notice, setNotice] = useState({ open: false, message: '' });
 
@@ -60,7 +62,7 @@ const Review: NextPage = () => {
     router.push(`/texts/${textId}/reviews/edit`);
   };
 
-  async function handleDeleteReviewClick() {
+  async function handleDeleteReview() {
     setLoading(true);
 
     const { data, error } = await deleteReview(textId, authAxios);
@@ -84,6 +86,18 @@ const Review: NextPage = () => {
   return (
     <>
       {isLoading && <LoadingBackDrop />}
+      <ConfirmDialog
+        open={deleteConfirmDialogOpen}
+        title={'レビューの削除'}
+        message={'レビューを削除しますか？'}
+        onClose={() => {
+          setDeleteConfirmDialogOpen(false);
+        }}
+        onOk={() => {
+          setDeleteConfirmDialogOpen(false);
+          handleDeleteReview();
+        }}
+      />
       <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
         <Box
           sx={{
@@ -100,7 +114,9 @@ const Review: NextPage = () => {
             <Box sx={{ display: 'flex', mb: 2 }}>
               <DefaultButton
                 sx={{ fontWeight: 'bold', width: '20%', minWidth: '150px' }}
-                onClick={handleDeleteReviewClick}
+                onClick={() => {
+                  setDeleteConfirmDialogOpen(true);
+                }}
               >
                 レビューを削除
               </DefaultButton>

@@ -1,10 +1,11 @@
 import {
-  Box, Dialog,
+  Box,
+  Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Divider
+  Divider,
 } from '@mui/material';
 import { useState } from 'react';
 
@@ -28,7 +29,7 @@ const AdminApplicationListItem = ({ text, handleClick, handleApprove, handleReje
           display: 'flex',
         }}
       >
-        <Box fullWidth sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%' }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box
               sx={{ display: 'flex', flexFlow: 'column', width: '90%', cursor: 'pointer' }}

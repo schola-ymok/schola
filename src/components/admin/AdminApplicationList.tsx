@@ -6,9 +6,9 @@ import useSWR, { useSWRConfig } from 'swr';
 import { approveAdminReviewApplication } from 'api/approveAdminReviewApplication';
 import { getAdminReviewApplicationList } from 'api/getAdminReviewApplicationList';
 import { rejectAdminReviewApplication } from 'api/rejectAdminReviewApplication';
-import { AuthContext } from 'components/auth/AuthContext';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import LoadingBackDrop from 'components/LoadingBackDrop';
+import { AuthContext } from 'components/auth/AuthContext';
 import { pagenation } from 'utils/pagenation';
 
 import AdminApplicationListItem from './AdminApplicationListItem';
@@ -79,8 +79,11 @@ const AdminApplcationList = () => {
         {data.texts.map((item) => {
           return (
             <AdminApplicationListItem
+              key={item.id}
               text={item}
-              handleView={() => {}}
+              handleClick={() => {
+                window.open(`/texts/${item.id}`);
+              }}
               handleApprove={handleApprove}
               handleReject={handleReject}
             />

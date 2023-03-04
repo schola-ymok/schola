@@ -28,6 +28,7 @@ const PreviewButton = ({ onClick, disabled }) => {
         pl: 2,
         ml: 1,
         height: 40,
+        fontSize: '0.9em',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

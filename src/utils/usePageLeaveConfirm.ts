@@ -1,9 +1,10 @@
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import Consts from './Consts';
 
 const usePageLeaveConfirm = (watchChange, checkChange, exceptUrl) => {
+  const [isCancel, setIsCancel] = useState(false);
   const router = useRouter();
   const pageChangeHandler = (url) => {
     let except;
@@ -27,7 +28,7 @@ const usePageLeaveConfirm = (watchChange, checkChange, exceptUrl) => {
     event.returnValue = Consts.PAGE_LEAVE_WARNING_MESSGAE;
   };
   useEffect(() => {
-    if (checkChange()) {
+    if (checkChange() && !isCancel) {
       router.events.on('routeChangeStart', pageChangeHandler);
       window.addEventListener('beforeunload', beforeUnloadHandler);
       return () => {
@@ -36,6 +37,12 @@ const usePageLeaveConfirm = (watchChange, checkChange, exceptUrl) => {
       };
     }
   }, watchChange);
+
+  const cancel = () => {
+    setIsCancel(true);
+  };
+
+  return { cancel: cancel };
 };
 
 export default usePageLeaveConfirm;

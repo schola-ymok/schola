@@ -138,10 +138,14 @@ const EditText = () => {
   }
 
   function checkValidation() {
+    if (learningContentsValidation == undefined) return false;
+    if (learningRequirementsValidation == undefined) return false;
+
     let _learningContentsValidation = true;
     for (let i = 0; i < learningContentsValidation.length; i++) {
       _learningContentsValidation = _learningContentsValidation && learningContentsValidation[i].ok;
     }
+
     let _learningRequirementsValidation = true;
     for (let i = 0; i < learningRequirementsValidation.length; i++) {
       _learningRequirementsValidation =
@@ -349,12 +353,14 @@ const EditText = () => {
       }
 
       setSetComplete(true);
+
       if (savingState == 'saving') setSavingState('saved');
     }
   }, [data]);
 
-  usePageLeaveConfirm(
+  const { cancel: cancelPageLeaveConfirm } = usePageLeaveConfirm(
     [
+      /*
       priceChanged,
       titleChanged,
       abstractChanged,
@@ -363,9 +369,13 @@ const EditText = () => {
       category2Changed,
       learningContentsChanged,
       learningRequirementsChanged,
+      */
+      checkChange,
+      savingState,
+      checkValidation,
     ],
     () => {
-      return checkChange() && savingState != 'saving';
+      return checkChange() && savingState != 'saving' && checkValidation();
     },
     [`/texts/${textId}/edit`, `/texts/${textId}/edit?chp`],
   );
@@ -403,7 +413,7 @@ const EditText = () => {
     setIsReleaseToggleLoading(true);
     const { error } = await cancelApplication(textId, authAxios);
 
-    setSnack({ open: true, message: '審査を取り消しました' });
+    setSnack({ open: true, message: '審査申請を取り消しました' });
     router.reload(`/texts/${textId}/edit`);
   }
 
@@ -411,7 +421,7 @@ const EditText = () => {
     setIsReleaseToggleLoading(true);
     const { error } = await submitApplication(textId, authAxios);
 
-    setSnack({ open: true, message: '審査を提出しました' });
+    setSnack({ open: true, message: '審査申請を提出しました' });
     router.reload(`/texts/${textId}/edit`);
   }
 
@@ -437,13 +447,13 @@ const EditText = () => {
   }
 
   const TextInfoTabThumb = () => {
-    if (checkChange()) {
+    if (checkValidation() && checkChange()) {
       return (
         <Badge
           variant='dot'
           sx={{
             '& .MuiBadge-badge': {
-              backgroundColor: '#6666ff',
+              backgroundColor: '#4444ff',
             },
           }}
         >
@@ -454,6 +464,8 @@ const EditText = () => {
       return <Box sx={{ fontWeight: 'bold' }}>テキスト情報</Box>;
     }
   };
+
+  const autoFocus = textState == Consts.TEXTSTATE.UnderReview ? false : true;
 
   return (
     <>
@@ -496,9 +508,10 @@ const EditText = () => {
         handleReleaseToggle={handleReleaseToggle}
         handleApplicationClick={() => {
           setApplicationConfirmDialogOpen(true);
+          cancelPageLeaveConfirm();
         }}
         handleApplicationCancelClick={() => {
-          setApplicationCancelConfirmDialogOpen(false);
+          setApplicationCancelConfirmDialogOpen(true);
         }}
         release={data.is_public}
       />
@@ -622,7 +635,7 @@ const EditText = () => {
               }}
             >
               <InputBase
-                autoFocus
+                autoFocus={autoFocus}
                 placeholder='タイトル'
                 value={title}
                 variant='outlined'
@@ -1214,7 +1227,9 @@ const ChapterList = ({ setHasChapter }) => {
               ))}
             </ReactSortable>
           ) : (
-            <span>チャプターはありません</span>
+            <span>
+              チャプターはありません。テキストを販売するには最低１つのチャプターを作成してください。
+            </span>
           )}
         </Box>
         <Box sx={{ pt: 3, display: 'flex' }}>

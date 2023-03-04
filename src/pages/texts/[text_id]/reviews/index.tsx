@@ -10,6 +10,7 @@ import DefaultButton from 'components/DefaultButton';
 import MiniText from 'components/MiniText';
 import RatingReportPanel from 'components/RatingReportPanel';
 import ReviewList from 'components/ReviewList';
+import Title from 'components/Title';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
 import { AppContext } from 'states/store';
@@ -58,13 +59,10 @@ const Review: NextPage = () => {
     router.push(`/texts/${textId}/reviews/edit`);
   };
 
-  const imageUrl = dataText.photo_id
-    ? Consts.IMAGE_STORE_URL + dataText.photo_id + '.png'
-    : '/cover-default.svg';
-
   return (
     <>
       <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+        <Title title={'Schola | レビューの一覧'} />
         <Box sx={{ width: { xs: '100%', sm: 'fit-content' } }}>
           <Box sx={{ fontWeight: 'bold', fontSize: '1.4em' }}>読者からのレビュー</Box>
           <RatingReportPanel text={dataText} />

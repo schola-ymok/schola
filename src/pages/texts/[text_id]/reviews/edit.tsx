@@ -15,6 +15,7 @@ import FormItemState from 'components/FormItemState';
 import FormItemSubLabel from 'components/FormItemSubLabel';
 import LoadingBackDrop from 'components/LoadingBackDrop';
 import MiniText from 'components/MiniText';
+import Title from 'components/Title';
 import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
 import Consts from 'utils/Consts';
@@ -180,6 +181,7 @@ const EditReview: NextPage = () => {
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+      <Title title={`Schola | レビューの投稿`} />
       {isSaving && <LoadingBackDrop />}
 
       <ConfirmDialog

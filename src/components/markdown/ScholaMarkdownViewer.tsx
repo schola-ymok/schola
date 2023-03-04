@@ -58,7 +58,7 @@ const ScholaMarkdownViewer = ({ children }) => {
         toc: TocBlock,
         note: NoteBlock,
         gmap: GoogleMapBlock,
-        warning: WarningBlock,
+        warn: WarningBlock,
         neort: NeortBlock,
         slideshare: SlideShareBlock,
         speakerdeck: SpeakerDeckBlock,

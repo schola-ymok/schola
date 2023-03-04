@@ -34,8 +34,7 @@ interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
 
-function updateBody() {
-  const { pathname } = useRouter();
+function updateBody(pathname) {
   useEffect(() => {
     let element = document.getElementById('schola');
 
@@ -53,8 +52,22 @@ function MyApp(props: AppPropsWithLayout) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
   const getLayout = Component.getLayout ?? ((page) => page);
+  const { pathname } = useRouter();
 
-  updateBody();
+  updateBody(pathname);
+
+  let showProgress = true;
+
+  // ページ離脱警告を出すページと遷移先ページのプログレスバー表示を抑制。routeChangeStartをフックするとNextNprogessのプログレスバー進捗が止まって見えるため
+  if (
+    pathname == '/texts/[text_id]/edit' ||
+    pathname == '/texts/[text_id]/reviews/edit' ||
+    pathname == '/texts/[text_id]/reviews' ||
+    pathname == '/account' ||
+    pathname == '/account?prf' ||
+    pathname == '/chapters/[chapter_id]/edit'
+  )
+    showProgress = false;
 
   return (
     <>
@@ -63,12 +76,14 @@ function MyApp(props: AppPropsWithLayout) {
           <CssBaseline />
           <GlobalStyles />
           <StateProvider>
-            <NextNprogress
-              color={Consts.COLOR.Primary}
-              height={2}
-              showOnShallow={true}
-              options={{ showSpinner: false }}
-            />
+            {showProgress && (
+              <NextNprogress
+                color={Consts.COLOR.Primary}
+                height={2}
+                showOnShallow={true}
+                options={{ showSpinner: false }}
+              />
+            )}
             <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
           </StateProvider>
         </ThemeProvider>

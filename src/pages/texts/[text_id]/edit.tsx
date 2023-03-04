@@ -53,6 +53,7 @@ import RTEditor from 'components/rteditor/RTEditor';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
 import useCropImage from 'utils/useCropImage';
+import usePageLeaveConfirm from 'utils/usePageLeaveConfirm';
 import { validate } from 'utils/validate';
 
 const EditText = () => {
@@ -63,8 +64,6 @@ const EditText = () => {
   if (router.query.chp !== undefined) _tab = 1;
   if (router.query.ntc !== undefined) _tab = 2;
   const [tab, setTab] = useState(_tab);
-
-  const [chapterDeleteConfirmDialog, setChapterDeleteConfirmDialogOpen] = useState(false);
 
   const textId = router.query.text_id;
 
@@ -342,12 +341,33 @@ const EditText = () => {
       validateLearningRequirements(_learningRequirements);
 
       const chapterOrder = JSON.parse(data.chapter_order);
-      setHasChapter(chapterOrder.length > 0 ? true : false);
+      if (Array.isArray(chapterOrder) && chapterOrder.length > 0) {
+        setHasChapter(true);
+      } else {
+        setHasChapter(false);
+      }
 
       setSetComplete(true);
       if (savingState == 'saving') setSavingState('saved');
     }
   }, [data]);
+
+  usePageLeaveConfirm(
+    [
+      priceChanged,
+      titleChanged,
+      abstractChanged,
+      explanationChanged,
+      category1Changed,
+      category2Changed,
+      learningContentsChanged,
+      learningRequirementsChanged,
+    ],
+    () => {
+      return checkChange() && savingState != 'saving';
+    },
+    [`/texts/${textId}/edit`, `/texts/${textId}/edit?chp`],
+  );
 
   async function handleSaveClick() {
     setSavingState('saving');

@@ -12,7 +12,6 @@ import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { getAuth, sendEmailVerification } from 'firebase/auth';
-import error from 'next/error';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
@@ -26,6 +25,7 @@ import { updateProfile } from 'api/updateProfile';
 import AccountNameSettingDialog from 'components/AccountNameSettingDialog';
 import AvatarButton from 'components/AvatarButton';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import ConfirmDialog from 'components/ConfirmDialog';
 import DefaultButton from 'components/DefaultButton';
 import FormItemLabel from 'components/FormItemLabel';
 import FormItemState from 'components/FormItemState';
@@ -39,6 +39,7 @@ import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
 import useCropImage from 'utils/useCropImage';
+import usePageLeaveConfirm from 'utils/usePageLeaveConfirm';
 import { validate } from 'utils/validate';
 
 const Account = () => {
@@ -57,11 +58,15 @@ const Account = () => {
   const [notifyOnUpdateMailCheck, setNotifyOnUpdateMailCheck] = useState(false);
   const [swrKey] = useState(genid(4));
 
+  const [changed, setChanged] = useState(false);
+
   const [tab, setTab] = useState(_tab);
 
   const { data, error } = useSWR(`getMyAccount_${swrKey}`, () => getMyAccount(authAxios), {
     revalidateOnFocus: false,
   });
+
+  const [pageLeaveConfirmDialogOpen, setPageLeaveConfirmDialogOpen] = useState(false);
 
   const firebaseUser = getAuth().currentUser;
   const emailVerified = firebaseUser.emailVerified;
@@ -123,12 +128,17 @@ const Account = () => {
   };
 
   const handleTabChange = (event, newNumber) => {
-    if (newNumber == 1) {
-      router.replace(`account?prf`);
+    if (newNumber == 0) {
+      if (changed) {
+        setPageLeaveConfirmDialogOpen(true);
+      } else {
+        router.replace(`account`);
+        setTab(newNumber);
+      }
     } else {
-      router.replace(`account`);
+      router.replace(`account?prf`);
+      setTab(newNumber);
     }
-    setTab(newNumber);
   };
 
   const handleSendEmailVerificationClick = () => {
@@ -139,6 +149,19 @@ const Account = () => {
 
   return (
     <Container maxWidth='md'>
+      <ConfirmDialog
+        title={'確認'}
+        open={pageLeaveConfirmDialogOpen}
+        message={Consts.PAGE_LEAVE_WARNING_MESSGAE}
+        onClose={() => {
+          setPageLeaveConfirmDialogOpen(false);
+        }}
+        onOk={() => {
+          setPageLeaveConfirmDialogOpen(false);
+          router.replace(`account`);
+          setTab(0);
+        }}
+      />
       <Title title={'Schola | アカウントとプロフィール'} />
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={tab} onChange={handleTabChange} TabIndicatorProps={{ sx: { top: 'unset' } }}>
@@ -165,7 +188,11 @@ const Account = () => {
         />
       </TabPanel>
       <TabPanel value={tab} index={1}>
-        <ProfileSetting />
+        <ProfileSetting
+          notifyChanged={(_changed) => {
+            setChanged(_changed);
+          }}
+        />
       </TabPanel>
     </Container>
   );
@@ -341,14 +368,12 @@ const AccountSetting = ({
   );
 };
 
-const ProfileSetting = () => {
+const ProfileSetting = ({ notifyChanged }) => {
   const { data, error } = useSWR(`getMyAccount`, () => getMyAccount(authAxios), {
     revalidateOnFocus: false,
   });
   const { state, dispatch } = useContext(AppContext);
 
-  const [isLoading, setIsLoading] = useState();
-  const [snackBarOpen, setSnackBarOpen] = useState(false);
   const { authAxios } = useContext(AuthContext);
 
   const [displayName, setDisplayName] = useState();
@@ -389,14 +414,16 @@ const ProfileSetting = () => {
   const [savingState, setSavingState] = useState(null);
 
   function checkChange() {
-    return (
+    const changed =
       displayNameChanged ||
       majorsChanged ||
       profileChanged ||
       webChanged ||
       twitterChanged ||
-      facebookChanged
-    );
+      facebookChanged;
+
+    notifyChanged(changed);
+    return changed;
   }
 
   function checkValidation() {
@@ -530,6 +557,37 @@ const ProfileSetting = () => {
     }
   }, [data]);
 
+  usePageLeaveConfirm(
+    [
+      displayNameChanged,
+      majorsChanged,
+      profileChanged,
+      webChanged,
+      twitterChanged,
+      facebookChanged,
+    ],
+    () => {
+      return checkChange() && savingState != 'saving';
+    },
+    [`/account`],
+  );
+
+  const SaveButton = ({ sx }) => (
+    <DefaultButton
+      disabled={!checkChange() || !checkValidation()}
+      sx={{
+        width: '150px',
+        mt: 4,
+        ...sx,
+      }}
+      onClick={() => {
+        if (savingState !== 'saving') handleSaveClick();
+      }}
+    >
+      {saveButtonContent}
+    </DefaultButton>
+  );
+
   const [
     crop,
     setCrop,
@@ -568,7 +626,7 @@ const ProfileSetting = () => {
 
   return (
     <Box sx={{ width: { xs: '98%', md: '90%' }, pt: { xs: 0, sm: 2 }, mx: 'auto' }}>
-      <Box sx={{ display: 'flex', width: '100%' }}>
+      <Box sx={{ display: 'flex', width: '100%', mb: 1 }}>
         <FormItemLabel>プロフィール画像</FormItemLabel>
         <Link
           href={`/users/${state.userId}`}
@@ -644,9 +702,11 @@ const ProfileSetting = () => {
         )}
       </Box>
 
+      <SaveButton sx={{ ml: 'auto' }} />
+
       <Box sx={{ display: 'flex', flexFlow: 'column' }}>
         {/* display name */}
-        <FormItemLabel sx={{ mt: 3 }}>表示名</FormItemLabel>
+        <FormItemLabel sx={{ mt: 1 }}>表示名</FormItemLabel>
         <FormItemSubLabel>
           表示名を{Consts.VALIDATE.displayName.min}～{Consts.VALIDATE.displayName.max}
           文字で入力
@@ -833,18 +893,7 @@ const ProfileSetting = () => {
         </Box>
         <FormItemState validation={facebookValidation} />
 
-        <DefaultButton
-          disabled={!checkChange() || !checkValidation()}
-          sx={{
-            width: '150px',
-            mt: 4,
-          }}
-          onClick={() => {
-            if (savingState !== 'saving') handleSaveClick();
-          }}
-        >
-          {saveButtonContent}
-        </DefaultButton>
+        <SaveButton />
       </Box>
     </Box>
   );

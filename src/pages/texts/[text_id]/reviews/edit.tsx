@@ -8,6 +8,7 @@ import { getBriefText } from 'api/getBriefText';
 import { getMyReview } from 'api/getMyReview';
 import { upsertReview } from 'api/upsertReview';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
+import ConfirmDialog from 'components/ConfirmDialog';
 import DefaultButton from 'components/DefaultButton';
 import FormItemLabel from 'components/FormItemLabel';
 import FormItemState from 'components/FormItemState';
@@ -18,10 +19,10 @@ import { AuthContext } from 'components/auth/AuthContext';
 import Layout from 'components/layouts/Layout';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
+import usePageLeaveConfirm from 'utils/usePageLeaveConfirm';
 import { validate } from 'utils/validate';
 
 import type { NextPage } from 'next';
-import ConfirmDialog from 'components/ConfirmDialog';
 
 const EditReview: NextPage = () => {
   const router = useRouter();
@@ -168,6 +169,10 @@ const EditReview: NextPage = () => {
       setSetComplete(true);
     }
   }, [dataReview]);
+
+  usePageLeaveConfirm([titleChanged, rateChanged, commentChanged, isSaving], () => {
+    return checkChange() && !isSaving;
+  });
 
   if (errorText) console.log(errorText);
   if (errorReview) console.log(errorReview);

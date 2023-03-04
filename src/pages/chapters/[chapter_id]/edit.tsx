@@ -18,6 +18,7 @@ import { storage } from 'libs/firebase/firebase';
 import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
 import { useKeybind } from 'utils/useKeybind';
+import usePageLeaveConfirm from 'utils/usePageLeaveConfirm';
 
 import type { NextPage } from 'next';
 
@@ -81,6 +82,10 @@ const EditChapter: NextPage = () => {
       if (data.content) setContent(data.content);
     }
   }, [data]);
+
+  usePageLeaveConfirm([changed, isSaving], () => {
+    return changed && !isSaving;
+  });
 
   useKeybind({
     key: 's',
@@ -160,7 +165,7 @@ const EditChapter: NextPage = () => {
         }}
       >
         {mode !== 2 && (
-          <Box sx={{ width: leftWidth }}>
+          <Box sx={{ width: leftWidth, fontSize: '0.9em' }}>
             <textarea
               placeholder='マークダウンで入力'
               className='mde'

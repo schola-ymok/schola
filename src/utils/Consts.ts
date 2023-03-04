@@ -21,6 +21,8 @@ namespace Consts {
     reviewed: 'に対するレビューが投稿されました',
   };
 
+  export const PAGE_LEAVE_WARNING_MESSGAE = '内容が保存されていません。ページを離れてよいですか？';
+
   export const COLOR = {
     Primary: '#008080',
     PrimaryDark: '#006060',

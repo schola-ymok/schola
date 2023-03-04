@@ -28,8 +28,12 @@ const DefaultButton = ({ tabIndex, onClick, children, disabled, sx }) => {
     _sx.color = '#888888';
     _sx.backgroundColor = '#cccccc';
     _sx.cursor = 'default';
-    _sx['&:hover'] = 'unset';
-    _sx['&:focus'] = 'unset';
+    _sx['&:hover'] = {
+      backgroundColor: '#cccccc',
+    };
+    _sx['&:focus'] = {
+      backgroundColor: '#cccccc',
+    };
   }
 
   return (

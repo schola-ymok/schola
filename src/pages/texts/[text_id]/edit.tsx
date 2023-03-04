@@ -2,6 +2,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import {
   Backdrop,
+  Badge,
   Box,
   CircularProgress,
   IconButton,
@@ -435,6 +436,25 @@ const EditText = () => {
     saveButtonContent = <>保存</>;
   }
 
+  const TextInfoTabThumb = () => {
+    if (checkChange()) {
+      return (
+        <Badge
+          variant='dot'
+          sx={{
+            '& .MuiBadge-badge': {
+              backgroundColor: '#6666ff',
+            },
+          }}
+        >
+          <Box sx={{ fontWeight: 'bold' }}>テキスト情報&nbsp;&nbsp;</Box>
+        </Badge>
+      );
+    } else {
+      return <Box sx={{ fontWeight: 'bold' }}>テキスト情報</Box>;
+    }
+  };
+
   return (
     <>
       <Title title={'Schola | テキストの編集'} />
@@ -478,7 +498,7 @@ const EditText = () => {
           setApplicationConfirmDialogOpen(true);
         }}
         handleApplicationCancelClick={() => {
-          setApplicationCancelConfirmDialogOpen(true);
+          setApplicationCancelConfirmDialogOpen(false);
         }}
         release={data.is_public}
       />
@@ -486,7 +506,7 @@ const EditText = () => {
       <Container maxWidth='md'>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={tab} onChange={handleTabChange} TabIndicatorProps={{ sx: { top: 'unset' } }}>
-            <Tab label={<Box sx={{ fontWeight: 'bold' }}>テキスト情報</Box>} />
+            <Tab label={<TextInfoTabThumb />} />
             <Tab label={<Box sx={{ fontWeight: 'bold' }}>チャプター</Box>} />
             {(textState == Consts.TEXTSTATE.DraftBanned ||
               textState == Consts.TEXTSTATE.DraftRejected) && (

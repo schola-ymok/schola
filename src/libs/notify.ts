@@ -5,6 +5,10 @@ import Consts from 'utils/Consts';
 import { genid } from 'utils/genid';
 import { omitstr } from 'utils/omitstr';
 
+const { Sha256 } = require('@aws-crypto/sha256-js');
+const { HttpRequest } = require('@aws-sdk/protocol-http');
+const { SignatureV4 } = require('@aws-sdk/signature-v4');
+
 async function notify(textId, message, url) {
   const { data } = await dbQuery(escape`
         select author_id, title from texts where id = ${textId}`);
@@ -55,4 +59,40 @@ export async function notifyPurchase(textId) {
 
 export async function notifyReviewed(textId, reviewId) {
   notify(textId, Consts.NOTICE_MESSAGE.reviewed, `/texts/${textId}/reviews/${reviewId}`);
+  sendMail();
+}
+
+export async function sendMail(addr, message) {
+  const signer = new SignatureV4({
+    region: process.env.AWS_LAMBDA_REGION,
+    service: 'lambda',
+    sha256: Sha256,
+    credentials: {
+      accessKeyId: process.env.AWS_LAMBDA_FUNCTION_IAM_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_LAMBDA_FUNCTION_IAM_SECRET_ACCESS_KEY,
+    },
+  });
+
+  const req = await signer.sign(
+    new HttpRequest({
+      method: 'POST',
+      protocol: 'https:',
+      path: '/',
+      hostname: process.env.AWS_LAMBDA_FUNCTION_URL,
+      headers: {
+        host: process.env.AWS_LAMBDA_FUNCTION_URL,
+      },
+      body: JSON.stringify({ hello: 'world' }),
+    }),
+  );
+
+  console.log(req);
+
+  const res = await fetch(`${req.protocol}${req.hostname}${req.path}`, {
+    method: req.method,
+    body: req.body,
+    headers: req.headers,
+  });
+
+  console.log(await res);
 }

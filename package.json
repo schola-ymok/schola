@@ -11,6 +11,9 @@
     "format": "prettier --write --ignore-path .gitignore ./**/*.{js,jsx,ts,tsx,json,css}"
   },
   "dependencies": {
+    "@aws-crypto/sha256-js": "^4.0.0",
+    "@aws-sdk/protocol-http": "^3.282.0",
+    "@aws-sdk/signature-v4": "^3.282.0",
     "@emotion/react": "^11.10.0",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.0",

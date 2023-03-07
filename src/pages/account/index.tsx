@@ -61,6 +61,7 @@ const Account = () => {
   const [changed, setChanged] = useState(false);
 
   const [tab, setTab] = useState(_tab);
+  const [isSendingEmailVerification, setIsSendingEmailVerification] = useState(false);
 
   const { data, error } = useSWR(`getMyAccount_${swrKey}`, () => getMyAccount(authAxios), {
     revalidateOnFocus: false,
@@ -141,11 +142,15 @@ const Account = () => {
     }
   };
 
-  const handleSendEmailVerificationClick = () => {
-    sendEmailVerification(firebaseUser).then(() => {
-      console.log('send');
-    });
-  };
+  async function handleSendEmailVerificationClick() {
+    setIsSendingEmailVerification(true);
+    try {
+      await sendEmailVerification(firebaseUser);
+    } catch (err) {
+      console.log(err);
+    }
+    setIsSendingEmailVerification(false);
+  }
 
   return (
     <Container maxWidth='md'>
@@ -185,6 +190,7 @@ const Account = () => {
           notifyOnUpdateMailCheck={notifyOnUpdateMailCheck}
           notifyOnPurchaseWebCheck={notifyOnPurchaseWebCheck}
           notifyOnPurchaseMailCheck={notifyOnPurchaseMailCheck}
+          isSendingEmailVerification={isSendingEmailVerification}
         />
       </TabPanel>
       <TabPanel value={tab} index={1}>
@@ -213,14 +219,23 @@ const AccountSetting = ({
   notifyOnPurchaseMailCheck,
   notifyOnReviewMailCheck,
   notifyOnUpdateMailCheck,
+  isSendingEmailVerification,
 }) => {
   const [accountNameSettingOpen, setAccountNameSettingOpen] = useState(false);
 
+  let mailVerifyButtonContent;
+  if (isSendingEmailVerification) {
+    mailVerifyButtonContent = <CircularProgress size={28} sx={{ color: 'white' }} />;
+  } else {
+    mailVerifyButtonContent = <>確認メールを送信</>;
+  }
   const emailVerify = emailVerified ? (
     <>確認済み</>
   ) : (
     <>
-      <DefaultButton onClick={handleSendEmailVerificationClick}>確認メールを送信</DefaultButton>
+      <DefaultButton onClick={handleSendEmailVerificationClick}>
+        {mailVerifyButtonContent}
+      </DefaultButton>
     </>
   );
 

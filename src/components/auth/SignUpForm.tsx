@@ -1,12 +1,17 @@
+import CheckIcon from '@mui/icons-material/Check';
 import { Box, CircularProgress, InputBase } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-import { createNewAccount } from 'api/createNewAcount';
-import { AuthContext } from 'components/auth/AuthContext';
+import { createNewAccount } from 'api/createNewAccount';
 import DefaultButton from 'components/DefaultButton';
+import FormItemLabel from 'components/FormItemLabel';
+import FormItemState from 'components/FormItemState';
+import FormItemSubLabel from 'components/FormItemSubLabel';
+import { AuthContext } from 'components/auth/AuthContext';
 import { AppContext } from 'states/store';
 import Consts from 'utils/Consts';
+import { validate } from 'utils/validate';
 
 import type { NextPage } from 'next';
 
@@ -14,46 +19,62 @@ export const SignUpForm: NextPage = () => {
   const router = useRouter();
   const { state, dispatch } = useContext(AppContext);
   const [displayName, setDisplayName] = useState(state.displayName);
-  const [accountName, setAccountName] = useState();
+  const [accountName, setAccountName] = useState('');
   const [result, setResult] = useState(null);
   const { authAxios } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [buttonEnable, setButtonEnable] = useState(true);
+
+  const [isSaving, setIsSaving] = useState(false);
+  const [isComplite, setIsComplete] = useState(false);
+
+  const [displayNameValidation, setDisplayNameValidation] = useState(false);
+  const [accountNameValidation, setAccountNameValidation] = useState(false);
+
+  function checkValidation() {
+    return displayNameValidation.ok && accountNameValidation.ok;
+  }
 
   const onDisplayNameChange = (value) => {
     setDisplayName(value);
+    setDisplayNameValidation(validate(value, Consts.VALIDATE.displayName));
   };
 
   const onAccountChange = (value) => {
     setAccountName(value);
+    setAccountNameValidation(validate(value, Consts.VALIDATE.accountName));
   };
 
   async function save() {
     setResult(null);
-    setIsLoading(true);
-    setButtonEnable(false);
+    setIsSaving(true);
     const { userId, duplicate, error } = await createNewAccount(
       accountName,
       displayName,
+      state.email,
+      state.emailVerified,
       authAxios,
     );
 
     if (error) {
       setResult('error');
-      setIsLoading(false);
-      setButtonEnable(true);
+      setIsSaving(false);
       return;
     } else if (duplicate) {
       setResult('duplicate');
-      setIsLoading(false);
+      setIsSaving(false);
       setButtonEnable(true);
       return;
     } else if (userId) {
       setResult('complete');
-      setIsLoading(false);
+      setIsSaving(false);
+      setIsComplete(true);
       router.reload();
     }
   }
+
+  useEffect(() => {
+    setDisplayNameValidation(validate(state.displayName, Consts.VALIDATE.displayName));
+    setAccountNameValidation(validate(state.accountName, Consts.VALIDATE.accountName));
+  }, []);
 
   let resultMessage;
   switch (result) {
@@ -66,6 +87,15 @@ export const SignUpForm: NextPage = () => {
     case 'complete':
       resultMessage = 'ようこそ schola へ';
       break;
+  }
+
+  let buttonContent;
+  if (isSaving) {
+    buttonContent = <CircularProgress size={28} sx={{ color: 'white' }} />;
+  } else if (isComplite) {
+    buttonContent = <CheckIcon sx={{ color: 'black' }} />;
+  } else {
+    buttonContent = <>登録</>;
   }
 
   return (
@@ -86,26 +116,16 @@ export const SignUpForm: NextPage = () => {
       </Box>
 
       <Box sx={{ mt: 3, width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <Box sx={{ width: 'fit-content', display: 'flex' }}>
-          <Box
-            sx={{
-              width: 120,
-              pr: 1.5,
-              ml: 'auto',
-              fontWeight: 'bold',
-              mt: 2,
-              mb: 1,
-              mr: { xs: 'auto', md: 'unset' },
-              textAlign: 'right',
-            }}
-          >
-            アカウント名
-          </Box>
-
+        <Box sx={{ display: 'flex', flexFlow: 'column' }}>
+          <FormItemLabel sx={{ mt: 1 }}>アカウント名</FormItemLabel>
+          <FormItemSubLabel>
+            アカウント名を{Consts.VALIDATE.accountName.min}～{Consts.VALIDATE.accountName.max}
+            文字で入力
+          </FormItemSubLabel>
           <Box
             sx={{
               p: 1,
-              width: 200,
+              width: 250,
               border: '2px solid ' + Consts.COLOR.Grey,
               '&:hover': {
                 border: '2px solid ' + Consts.COLOR.Primary,
@@ -121,29 +141,21 @@ export const SignUpForm: NextPage = () => {
               onChange={(e) => onAccountChange(e.target.value)}
             />
           </Box>
+          <FormItemState validation={accountNameValidation} />
         </Box>
       </Box>
 
-      <Box sx={{ mt: 3, width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <Box sx={{ width: 'fit-content', display: 'flex' }}>
-          <Box
-            sx={{
-              width: 120,
-              pr: 1.5,
-              ml: 'auto',
-              fontWeight: 'bold',
-              mt: 2,
-              mb: 1,
-              textAlign: 'right',
-            }}
-          >
-            表示名
-          </Box>
-
+      <Box sx={{ mt: 1, width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', flexFlow: 'column' }}>
+          <FormItemLabel>表示名</FormItemLabel>
+          <FormItemSubLabel>
+            表示名を{Consts.VALIDATE.displayName.min}～{Consts.VALIDATE.displayName.max}
+            文字で入力
+          </FormItemSubLabel>
           <Box
             sx={{
               p: 1,
-              width: 200,
+              width: 250,
               border: '2px solid ' + Consts.COLOR.Grey,
               '&:hover': {
                 border: '2px solid ' + Consts.COLOR.Primary,
@@ -159,23 +171,24 @@ export const SignUpForm: NextPage = () => {
               onChange={(e) => onDisplayNameChange(e.target.value)}
             />
           </Box>
+          <FormItemState validation={displayNameValidation} />
         </Box>
       </Box>
+
+      <DefaultButton
+        disabled={isSaving || !checkValidation()}
+        variant='contained'
+        sx={{ mx: 'auto', mt: 4, width: '100px' }}
+        onClick={() => save()}
+      >
+        {buttonContent}
+      </DefaultButton>
 
       {result && (
         <Box sx={{ p: 1, fontWeight: 'bold', color: Consts.COLOR.PrimaryDark, mx: 'auto', mt: 2 }}>
           {resultMessage}
         </Box>
       )}
-
-      <DefaultButton
-        disabled={!buttonEnable}
-        variant='contained'
-        sx={{ mx: 'auto', mt: 3, width: '100px' }}
-        onClick={() => save()}
-      >
-        {isLoading ? <CircularProgress size={28} sx={{ color: 'white' }} /> : <>登録</>}
-      </DefaultButton>
     </Box>
   );
 };

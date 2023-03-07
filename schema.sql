@@ -8,6 +8,8 @@ create table users (
   firebase_id varchar(64) unique not null,
   display_name varchar(255),
   account_name varchar(24) unique not null,
+  email varchar(255),
+  email_verified boolean,
   notify_on_purchase_mail boolean,
   notify_on_purchase_web boolean,
   notify_on_review_mail boolean,

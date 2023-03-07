@@ -10,6 +10,8 @@ export const getMyBriefAccount = async (authAxios) => {
         accountName: res.data.account_name,
         displayName: res.data.display_name,
         photoId: res.data.photo_id,
+        email: res.data.email,
+        emailVerified: res.data.email_verified,
       },
     };
   } catch (error) {

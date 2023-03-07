@@ -1,4 +1,3 @@
-
 export type Login = {
   type: 'Login';
   userId: string;
@@ -15,7 +14,7 @@ export type PreLogin = {
   type: 'PreLogin';
   displayName: string;
   email: string;
-  isEmailVerified: boolean;
+  emailVerified: boolean;
 };
 
 export type Banned = {

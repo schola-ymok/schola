@@ -1,11 +1,18 @@
-export const createNewAccount = async (accountName, displayName, authAxios) => {
+export const createNewAccount = async (
+  accountName,
+  displayName,
+  email,
+  emailVerified,
+  authAxios,
+) => {
   try {
     const res = await authAxios.post('/api/account', {
       account_name: accountName,
       display_name: displayName,
+      email: email,
+      email_verified: emailVerified,
     });
 
-    console.log(res.data);
     if (res.data.status == 'ok') {
       return { userId: res.data.user_id };
     } else if (res.data.status == 'exists') {

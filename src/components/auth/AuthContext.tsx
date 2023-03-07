@@ -6,6 +6,7 @@ import { createContext, memo, useContext, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { getMyBriefAccount } from 'api/getMyBriefAccount';
+import { updateEmail } from 'api/updateEmail';
 import CenterLoadingSpinner from 'components/CenterLoadingSpinner';
 import DefaultButton from 'components/DefaultButton';
 import Title from 'components/Title';
@@ -195,6 +196,9 @@ export const AuthProvider = ({ children }) => {
           emailVerified: firebaseUser.emailVerified,
         });
 
+        console.log('firebaseUser');
+        console.log(firebaseUser);
+
         const { data } = await getMyBriefAccount(authAxios);
         // if error then signup form is displayed
 
@@ -207,6 +211,19 @@ export const AuthProvider = ({ children }) => {
               ...authAxiosParams,
               userId: data.userId,
             });
+
+            // メールアドレスと確認済フラグが データベースとfirebaseの間で異なる時はfirebaseの方でデータベースを上書きする
+            data.emailVerified = data.emailVerified == 1 ? true : false;
+            if (
+              firebaseUser.email != data.email ||
+              firebaseUser.emailVerified != data.emailVerified
+            ) {
+              console.log(`firebase-mail = ` + firebaseUser.email);
+              console.log(`firebase-veri= ` + firebaseUser.emailVerified);
+              console.log(`data-mail = ` + data.email);
+              console.log(`data-veri= ` + data.emailVerified);
+              await updateEmail(firebaseUser.email, firebaseUser.emailVerified, authAxios);
+            }
 
             dispatch({
               type: 'Login',

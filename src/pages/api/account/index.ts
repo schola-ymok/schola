@@ -15,7 +15,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   switch (req.method) {
     case 'GET':
       const selectPhrase =
-        req.query.prl !== undefined ? 'id, display_name, banned, account_name, photo_id' : '*';
+        req.query.prl !== undefined
+          ? 'id, display_name, banned, account_name, photo_id, email, email_verified'
+          : '*';
 
       const { data, error } = await dbQuery(`
       select ${selectPhrase} 
@@ -39,6 +41,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'POST':
       const accountName = req.body.account_name;
       const displayName = req.body.display_name;
+      const email = req.body.email;
+      const emailVerified = req.body.email_verified;
       if (isEmptyString(accountName) || isEmptyString(displayName))
         return res.status(Consts.HTTP_BAD_REQUEST).end('bad parameter');
 
@@ -71,12 +75,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         id,
         firebase_id,
         account_name,
-        display_name
+        display_name,
+        email,
+        email_verified
       ) values (
         ${userId},
         ${req.headers.firebase_id},
         ${accountName},
-        ${displayName}
+        ${displayName},
+        ${req.body.email},
+        ${req.body.email_verified}
       )`);
 
       if (errorAdd) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
@@ -97,6 +105,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         where firebase_id = ${req.headers.firebase_id}
         `);
         if (error) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+        return res.status(Consts.HTTP_OK).json({ status: 'ok' });
+      } else if (req.query.updateemail) {
+        //メールアドレスとメール確認フラグの更新
+
+        const email = req.body.email;
+        const emailVerified = req.body.emailVerified ? 1 : 0;
+
+        console.log('---');
+        query = escape`update users set email =${email},email_verified=${emailVerified} where firebase_id=${req.headers.firebase_id}`;
+
+        const { error } = await dbQuery(query);
+        if (error) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+        return res.status(Consts.HTTP_OK).json({ status: 'ok' });
+      } else if (req.query.emailverified) {
+        //メール確認フラグ
+        query = escape`update users set email_verified = true where firebase_id=${req.headers.firebase_id}`;
+
+        const { error } = await dbQuery(query);
+
+        if (error) return res.status(Consts.HTTP_INTERNAL_SERVER_ERROR).end('error');
+
         return res.status(Consts.HTTP_OK).json({ status: 'ok' });
       } else if (req.query.notifypurchase) {
         // change notify on purchase flag

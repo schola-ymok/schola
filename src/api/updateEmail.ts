@@ -6,6 +6,7 @@ export const updateEmail = async (email, emailVerified, authAxios) => {
     });
 
     if (res.data.status == 'ok') {
+      console.log('email information updated');
       return;
     } else {
       throw new Error();

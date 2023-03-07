@@ -61,7 +61,6 @@ export const SignUpForm: NextPage = () => {
     } else if (duplicate) {
       setResult('duplicate');
       setIsSaving(false);
-      setButtonEnable(true);
       return;
     } else if (userId) {
       setResult('complete');
@@ -176,7 +175,7 @@ export const SignUpForm: NextPage = () => {
       </Box>
 
       <DefaultButton
-        disabled={isSaving || !checkValidation()}
+        disabled={isSaving || !checkValidation() || isComplite}
         variant='contained'
         sx={{ mx: 'auto', mt: 4, width: '100px' }}
         onClick={() => save()}

@@ -212,17 +212,13 @@ export const AuthProvider = ({ children }) => {
               userId: data.userId,
             });
 
-            // メールアドレスと確認済フラグが データベースとfirebaseの間で異なる時はfirebaseの方でデータベースを上書きする
+            // メールアドレスとメール確認済フラグが データベースとfirebaseの間で異なる時はfirebaseの方でデータベースを上書きする
             data.emailVerified = data.emailVerified == 1 ? true : false;
             if (
               firebaseUser.email != data.email ||
               firebaseUser.emailVerified != data.emailVerified
             ) {
-              console.log(`firebase-mail = ` + firebaseUser.email);
-              console.log(`firebase-veri= ` + firebaseUser.emailVerified);
-              console.log(`data-mail = ` + data.email);
-              console.log(`data-veri= ` + data.emailVerified);
-              await updateEmail(firebaseUser.email, firebaseUser.emailVerified, authAxios);
+              updateEmail(firebaseUser.email, firebaseUser.emailVerified, authAxios);
             }
 
             dispatch({

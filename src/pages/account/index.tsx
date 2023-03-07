@@ -21,6 +21,7 @@ import { setNotifyOnPurchase } from 'api/setNotifyOnPurchase';
 import { setNotifyOnReview } from 'api/setNotifyOnReview';
 import { setNotifyOnUpdate } from 'api/setNotifyOnUpdate';
 import { setProfilePhotoId } from 'api/setProfilePhotoId';
+import { updateEmail } from 'api/updateEmail';
 import { updateProfile } from 'api/updateProfile';
 import AccountNameSettingDialog from 'components/AccountNameSettingDialog';
 import AvatarButton from 'components/AvatarButton';
@@ -56,6 +57,7 @@ const Account = () => {
   const [notifyOnPurchaseMailCheck, setNotifyOnPurchaseMailCheck] = useState(false);
   const [notifyOnReviewMailCheck, setNotifyOnReviewMailCheck] = useState(false);
   const [notifyOnUpdateMailCheck, setNotifyOnUpdateMailCheck] = useState(false);
+
   const [swrKey] = useState(genid(4));
 
   const [changed, setChanged] = useState(false);
@@ -70,7 +72,9 @@ const Account = () => {
   const [pageLeaveConfirmDialogOpen, setPageLeaveConfirmDialogOpen] = useState(false);
 
   const firebaseUser = getAuth().currentUser;
+
   const emailVerified = firebaseUser.emailVerified;
+  const email = firebaseUser.email;
 
   useEffect(() => {
     if (data) {
@@ -80,6 +84,10 @@ const Account = () => {
       if (data.notifyOnPurchaseMail) setNotifyOnPurchaseMailCheck(true);
       if (data.notifyOnReviewMail) setNotifyOnReviewMailCheck(true);
       if (data.notifyOnUpdateMail) setNotifyOnUpdateMailCheck(true);
+
+      if (emailVerified != data.emailVerified || email != data.email) {
+        updateEmail(email, emailVerified, authAxios);
+      }
     }
   }, [data]);
 
@@ -145,7 +153,12 @@ const Account = () => {
   async function handleSendEmailVerificationClick() {
     setIsSendingEmailVerification(true);
     try {
-      await sendEmailVerification(firebaseUser);
+      const auth = getAuth();
+      auth.languageCode = 'ja';
+
+      await sendEmailVerification(firebaseUser, {
+        url: 'http://localhost:3000/account',
+      });
     } catch (err) {
       console.log(err);
     }
@@ -177,7 +190,7 @@ const Account = () => {
       <TabPanel value={tab} index={0}>
         <AccountSetting
           accountName={state.accountName}
-          email={state.email}
+          email={email}
           emailVerified={emailVerified}
           handleSendEmailVerificationClick={handleSendEmailVerificationClick}
           userId={data.userId}
@@ -587,9 +600,9 @@ const ProfileSetting = ({ notifyChanged }) => {
     [`/account`],
   );
 
-  const SaveButton = ({ sx }) => (
+  const SaveButton = ({ sx, _checkChange, _checkValidation }) => (
     <DefaultButton
-      disabled={!checkChange() || !checkValidation()}
+      disabled={!_checkChange || !_checkValidation}
       sx={{
         width: '150px',
         mt: 4,
@@ -717,7 +730,11 @@ const ProfileSetting = ({ notifyChanged }) => {
         )}
       </Box>
 
-      <SaveButton sx={{ ml: 'auto' }} />
+      <SaveButton
+        sx={{ ml: 'auto' }}
+        _checkChange={checkChange()}
+        _checkValidation={checkValidation()}
+      />
 
       <Box sx={{ display: 'flex', flexFlow: 'column' }}>
         {/* display name */}

@@ -16,6 +16,8 @@ export const getMyAccount = async (authAxios) => {
       twitter: res.data.twitter,
       web: res.data.web,
       facebook: res.data.facebook,
+      email: res.data.email,
+      emailVerified: res.data.email_verified,
     };
   } catch (error) {
     return { error: error };
